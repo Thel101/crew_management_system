@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Roles;
+use App\Models\MedicalDocuments;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
-class RolesController extends Controller
+class MedicalDocumentsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        return Inertia::render('Admin/Roles/index', [
-            'roles' => Roles::paginate(10),
-        ]);
+        //
     }
 
     /**
@@ -32,19 +28,13 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:30',
-            'description' => 'required'
-        ]);
-
-        Roles::create($validated);
-        return redirect(route('roles.index'));
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Roles $roles)
+    public function show(MedicalDocuments $medicalDocuments)
     {
         //
     }
@@ -52,7 +42,7 @@ class RolesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Roles $roles)
+    public function edit(MedicalDocuments $medicalDocuments)
     {
         //
     }
@@ -60,7 +50,7 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Roles $roles)
+    public function update(Request $request, MedicalDocuments $medicalDocuments)
     {
         //
     }
@@ -68,7 +58,7 @@ class RolesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Roles $roles)
+    public function destroy(MedicalDocuments $medicalDocuments)
     {
         //
     }

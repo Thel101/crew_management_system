@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('certificates', function (Blueprint $table) {
+        Schema::create('medical_documents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('certificate_no');
-            $table->string('issue_date');
-            $table->string('expiry_date');
-            $table->string('issuing_authority');
-            $table->enum('status', ['active', 'warning', 'expired']);
-            $table->string('cert_image');
+            $table->enum('type', ['d_c', 'vaccination', 'general']);
+            $table->string('clinic');
+            $table->string('document_date');
+            $table->string('result')->nullable();
+            $table->string('file');
+            $table->enum('status', ['uploaded', 'approved', 'rejected']);
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('certificates');
+        Schema::dropIfExists('medical_documents');
     }
 };

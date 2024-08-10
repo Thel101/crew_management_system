@@ -9,7 +9,7 @@ import TableCell from '@/Components/TableCell.vue';
 defineProps({
     roles:
     {
-        type: Array
+        type: Object
     }
 })
 const form = useForm({
@@ -36,8 +36,9 @@ const submit = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="max-w-lg mx-auto">
+                <div class="overflow-hidden">
+                    <div class="max-w-lg mx-auto bg-slate-200 rounded-md p-3 mb-5">
+                        <h1 class="text-center text-xl font-semibold mb-5 mt-3">Create New Role</h1>
                         <form @submit.prevent="submit">
                             <div>
                                 <InputLabel for="name" value="Role Name" />
@@ -57,7 +58,7 @@ const submit = () => {
                                 <InputError class="mt-2" :message="form.errors.description" />
                             </div>
                             <div class="flex justify-center">
-                                <PrimaryButton class="my-5" :class="{ 'opacity-25': form.processing }"
+                                <PrimaryButton class="mt-5 mb-3" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
                                     Create New Role
                                 </PrimaryButton>
@@ -65,37 +66,59 @@ const submit = () => {
 
 
                         </form>
-                        <h1 class="text-xl font-bold text-center">Roles</h1>
                     </div>
 
-                    <div class="flex justify-center">
-                        <table class="table-auto border border-gray-500 w-1/2 bg-slate-300">
-                            <thead>
+
+                    <div v-show="roles.data.length <= 0">
+                        <h1 class="text-center text-red-500 font-bold text-2xl">There is no registered roles!</h1>
+                    </div>
+
+                    <div v-show="roles.data.length > 0" class="max-w-md mx-auto">
+
+                        <div class="flex flex-row justify-between my-5">
+                            <h1 class="text-xl text-center lg:ms-14 md:ms-4"> Roles </h1>
+                            <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-14 md:me-4"
+                                name="search" placeholder="search.....">
+                        </div>
+                        <table v-show="roles.data.length > 0"
+                            class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+
+                            <thead class="ltr:text-left rtl:text-right">
                                 <tr>
-                                    <th class="border border-slate-700">Role Name</th>
-                                    <th class="border border-slate-700">Description</th>
-                                    <th class="border border-slate-700">Actions</th>
-                                </tr>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
 
+                                    <th class="px-4 py-2"></th>
+                                </tr>
                             </thead>
-                            <tbody>
-                                <tr v-for="role in roles" :key="role.id">
-                                    <TableCell>{{ role.name }}</TableCell>
-                                    <TableCell>{{ role.description }}</TableCell>
 
-                                    <TableCell>
-                                        <div class="flex flex-row justify-start">
-                                            <Link href="#" class="me-2 text-blue-400 font-bold hover:text-blue-700">View
-                                            </Link>
-                                            <Link href="#" class="me-3 text-red-400 font-bold hover:text-red-700">
-                                            Deactivate</Link>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr v-for="role in roles.data" :key="role.id">
+                                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ role.name }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ role.description }}</td>
 
-                                        </div>
-                                    </TableCell>
+                                    <td class="whitespace-nowrap px-4 py-2">
+                                        <a href="#"
+                                            class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                            View
+                                        </a>
+                                    </td>
                                 </tr>
+
+
                             </tbody>
                         </table>
+                        <div class="flex justify-end mt-5 me-5" v-show="roles.data.length > 0">
+                            <ul class="flex">
+                                <li class="mr-2" v-for="link in roles.links" :key="link.label">
+                                    <a :href="link.url" v-html="link.label"></a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+
+
                 </div>
 
 

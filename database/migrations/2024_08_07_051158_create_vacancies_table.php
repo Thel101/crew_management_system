@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('description');
             $table->integer('availability');
             $table->enum('status', ['active', 'inactive']);
+            $table->string('requirements');
             $table->timestamps();
         });
     }

@@ -5,13 +5,27 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TableCell from '@/Components/TableCell.vue';
-defineProps({
+import { ref, watch } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
+import { debounce } from 'lodash';
+const props = defineProps({
     vessels:
     {
-        type: Array
+        type: Object
+    },
+    filters: {
+        String
     }
 })
+const search = ref(props.filters);
+watch(search, debounce((value) => {
+    Inertia.get(route('vessels.index'), { search: value },
+        {
+            preserveState: true,
+            replace: true
+        }
+    );
+}, 300));
 const form = useForm({
     name: '',
     flag: '',
@@ -45,36 +59,35 @@ const submit = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="max-w-lg mx-auto">
+                <div class="overflow-hidden">
+                    <div class="max-w-2xl mx-auto bg-slate-200 rounded-md p-3 mb-5">
+                        <h1 class="text-center text-xl font-semibold mb-5 mt-3">Create New Vessel</h1>
                         <form @submit.prevent="submit">
                             <div class="flex flex-row justify-between">
-                                <div>
+                                <div class="mr-5">
                                     <InputLabel for="name" value="Vessel Name" />
 
-                                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name"
-                                        autofocus />
+                                    <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" />
 
                                     <InputError class="mt-2" :message="form.errors.name" />
                                 </div>
 
-                                <div>
+                                <div class="mr-5">
                                     <InputLabel for="flag" value="Vessel Flag" />
 
                                     <TextInput id="flag" type="text" class="mt-1 block w-full" v-model="form.flag" />
 
                                     <InputError class="mt-2" :message="form.errors.flag" />
                                 </div>
-                            </div>
-                            <div class="flex flex-row justify-between mt-4">
                                 <div>
                                     <InputLabel for="type" value="Vessel Type" />
 
-                                    <TextInput id="type" type="text" class="mt-1 block w-full" v-model="form.type"
-                                        autofocus />
+                                    <TextInput id="type" type="text" class="mt-1 block w-full" v-model="form.type" />
 
                                     <InputError class="mt-2" :message="form.errors.type" />
                                 </div>
+                            </div>
+                            <div class="flex flex-row justify-between mt-4">
 
                                 <div>
                                     <InputLabel for="IMO_num" value="IMO Number" />
@@ -84,13 +97,10 @@ const submit = () => {
 
                                     <InputError class="mt-2" :message="form.errors.IMO_number" />
                                 </div>
-                            </div>
-                            <div class="flex flex-row justify-between mt-4">
                                 <div>
                                     <InputLabel for="built" value="Vessel Built Year" />
 
-                                    <TextInput id="built" type="text" class="mt-1 block w-full" v-model="form.built"
-                                        autofocus />
+                                    <TextInput id="built" type="text" class="mt-1 block w-full" v-model="form.built" />
 
                                     <InputError class="mt-2" :message="form.errors.built" />
                                 </div>
@@ -103,17 +113,17 @@ const submit = () => {
                                     <InputError class="mt-2" :message="form.errors.GRT" />
                                 </div>
                             </div>
+
                             <div class="flex flex-row justify-between mt-4">
-                                <div>
+                                <div class="mr-3">
                                     <InputLabel for="dwt" value="Vessel DWT" />
 
-                                    <TextInput id="dwt" type="text" class="mt-1 block w-full" v-model="form.DWT"
-                                        autofocus />
+                                    <TextInput id="dwt" type="text" class="mt-1 block w-full" v-model="form.DWT" />
 
                                     <InputError class="mt-2" :message="form.errors.DWT" />
                                 </div>
 
-                                <div>
+                                <div class="mr-3">
                                     <InputLabel for="engine" value="Engine Make" />
 
                                     <TextInput id="engine" type="text" class="mt-1 block w-full"
@@ -121,17 +131,13 @@ const submit = () => {
 
                                     <InputError class="mt-2" :message="form.errors.Engine" />
                                 </div>
-                            </div>
-                            <div class="flex flex-row justify-between mt-4">
-                                <div>
+                                <div class="mr-3">
                                     <InputLabel for="bhp" value="Vessel BHP" />
 
-                                    <TextInput id="bhp" type="text" class="mt-1 block w-full" v-model="form.BHP"
-                                        autofocus />
+                                    <TextInput id="bhp" type="text" class="mt-1 block w-full" v-model="form.BHP" />
 
                                     <InputError class="mt-2" :message="form.errors.BHP" />
                                 </div>
-
                                 <div>
                                     <InputLabel for="trade" value="Trade" />
 
@@ -141,61 +147,77 @@ const submit = () => {
                                 </div>
                             </div>
 
-                            <div class="flex justify-center">
-                                <PrimaryButton class="my-5" :class="{ 'opacity-25': form.processing }"
-                                    :disabled="form.processing">
-                                    Create New Role
+
+                            <div class="flex justify-center mt-5">
+                                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                    Create New Vessel
                                 </PrimaryButton>
                             </div>
 
 
                         </form>
-                        <h1 class="text-xl font-bold text-center">Roles</h1>
+
                     </div>
 
-                    <div class="flex justify-center">
-                        <table class="table-auto border border-gray-500 w-1/2 bg-slate-300">
-                            <thead>
-                                <tr>
-                                    <th class="border border-slate-700">Name</th>
-                                    <th class="border border-slate-700">Flag</th>
-                                    <th class="border border-slate-700">Type</th>
-                                    <th class="border border-slate-700">IMO_Number</th>
-                                    <th class="border border-slate-700">Built</th>
-                                    <th class="border border-slate-700">GRT</th>
-                                    <th class="border border-slate-700">DWT</th>
-                                    <th class="border border-slate-700">Engine</th>
-                                    <th class="border border-slate-700">Trade</th>
-                                    <th class="border border-slate-700">Actions</th>
-                                </tr>
-
-                            </thead>
-                            <tbody>
-                                <tr v-for="vessel in vessels" :key="vessel.id">
-                                    <TableCell>{{ vessel.name }}</TableCell>
-                                    <TableCell>{{ vessel.flag }}</TableCell>
-                                    <TableCell>{{ vessel.type }}</TableCell>
-                                    <TableCell>{{ vessel.IMO_number }}</TableCell>
-                                    <TableCell>{{ vessel.built }}</TableCell>
-                                    <TableCell>{{ vessel.GRT }}</TableCell>
-                                    <TableCell>{{ vessel.DWT }}</TableCell>
-                                    <TableCell>{{ vessel.Engine }}</TableCell>
-                                    <TableCell>{{ vessel.BHP }}</TableCell>
-                                    <TableCell>{{ vessel.Trade }}</TableCell>
-
-                                    <TableCell>
-                                        <div class="flex flex-row justify-start">
-                                            <Link href="#" class="me-2 text-blue-400 font-bold hover:text-blue-700">View
-                                            </Link>
-                                            <Link href="#" class="me-3 text-red-400 font-bold hover:text-red-700">
-                                            Deactivate</Link>
-
-                                        </div>
-                                    </TableCell>
-                                </tr>
-                            </tbody>
-                        </table>
+                </div>
+                <div v-show="vessels.data.length <= 0">
+                    <h1 class="text-center text-red-500 font-bold text-2xl">There is no registered vessels!</h1>
+                </div>
+                <h1 v-show="vessels.length > 0" class="text-xl font-bold text-center">Vessels</h1>
+                <div class="overflow-x-auto">
+                    <div class="flex flex-row justify-between min-w-xl w-lg my-5">
+                        <h1 class="text-xl text-center lg:ms-14 md:ms-4"> Vessels </h1>
+                        <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-14 md:me-4"
+                            name="search" placeholder="search.....">
                     </div>
+
+                    <table v-show="vessels.data.length > 0" class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                        <thead class="ltr:text-left rtl:text-right">
+                            <tr>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessle Name</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Flag</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessel Type</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">IMO Number</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Built</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">DWT</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Engine</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">BHP</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Trade</th>
+                                <th class="px-4 py-2"></th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-gray-200">
+                            <tr v-for="vessel in vessels.data" :key="vessel.id">
+                                <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ vessel.name }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.flag }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.type }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.IMO_number }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.built }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.GRT }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.DWT }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.Engine }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.BHP }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.Trade }}</td>
+
+                                <td class="whitespace-nowrap px-4 py-2">
+                                    <a href="#"
+                                        class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-end" v-if="vessels.links.length > 0">
+                    <ul class="flex">
+                        <li class="mr-2" v-for="link in vessels.links" :key="link.label">
+                            <a :href="link.url" v-html="link.label"></a>
+                        </li>
+                    </ul>
                 </div>
 
 

@@ -17,7 +17,7 @@ class VacanciesController extends Controller
     {
 
         return Inertia::render('Admin/Vacancies/index', [
-            'vacancies' => Vacancies::with(['role', 'vessel'])->get(),
+            'vacancies' => Vacancies::with(['role', 'vessel'])->paginate(5),
             'roles' => Roles::all(),
             'vessels' => Vessels::all(),
         ]);
@@ -40,6 +40,7 @@ class VacanciesController extends Controller
             'role_id' => 'required',
             'vessel_id' => 'required',
             'description' => 'required|string',
+            'requirements' => 'required',
             'availability' => 'required',
 
         ]);

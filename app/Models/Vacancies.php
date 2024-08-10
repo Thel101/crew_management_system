@@ -13,6 +13,7 @@ class Vacancies extends Model
         'role_id',
         'vessel_id',
         'description',
+        'requirements',
         'availability',
         'status'
     ];

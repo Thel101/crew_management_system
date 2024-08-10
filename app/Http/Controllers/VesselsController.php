@@ -11,10 +11,24 @@ class VesselsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return Inertia::render('Admin/Vessels/index', [
-            'vessels' => Vessels::all(),
+            'vessels' => Vessels::query()
+                ->when($request->input('search'), function ($query, $search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('flag', 'like', '%' . $search . '%')
+                            ->orWhere('type', 'like', '%' . $search . '%')
+                            ->orWhere('IMO_number', 'like', '%' . $search . '%')
+                            ->orWhere('built', 'like', '%' . $search . '%')
+                            ->orWhere('Engine', 'like', '%' . $search . '%')
+                            ->orWhere('Trade', 'like', '%' . $search . '%');
+                    });
+                })
+                ->paginate(2)
+                ->withQueryString(),
+            'filters' => $request->input('search')
         ]);
     }
 

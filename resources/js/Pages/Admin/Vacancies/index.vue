@@ -19,7 +19,7 @@ defineProps
             type: Array
         },
         vacancies: {
-            type: Array
+            type: Object
         }
     })
 const selectedVessel = ref('');
@@ -36,6 +36,7 @@ const form = useForm({
     role_id: '',
     vessel_id: '',
     description: '',
+    requirements: '',
     availability: '',
 });
 
@@ -62,127 +63,155 @@ const submit = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="max-w-lg mx-auto">
+                <div class="overflow-hidden">
+                    <div class="max-w-lg mx-auto shadow-sm sm:rounded-lg bg-slate-200 p-2 px-5">
+                        <h1 class="text-xl font-bold text-center mb-5 mt-3">Create New Vacancy</h1>
                         <form @submit.prevent="submit">
-                            <div class="flex flex-row justify-between">
-                                <div>
-                                    <InputLabel for="name" value="Vessel" />
 
-                                    <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
-                                        <template #trigger>
-                                            <div
-                                                class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                                {{ selectedVessel || 'Select Vessel' }}</div>
+                            <div>
+                                <InputLabel for="name" value="Vessel" />
 
-                                        </template>
-                                        <template #content>
-                                            <ul>
-                                                <li v-for="vessel in vessels" :key="vessel"
-                                                    @click="selectVessel(vessel.id, vessel.name)"
-                                                    class="cursor-pointer hover:bg-gray-200">{{ vessel.name }}</li>
-                                            </ul>
-                                        </template>
-                                    </Dropdown>
+                                <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
+                                    <template #trigger>
+                                        <div
+                                            class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
+                                            {{ selectedVessel || 'Select Vessel' }}</div>
 
-
-                                </div>
-                                <div>
-                                    <InputLabel for="role" value="Role" />
-
-                                    <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
-                                        <template #trigger>
-                                            <div
-                                                class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                                {{ selectedRole || 'Select Role' }}</div>
-
-                                        </template>
-                                        <template #content>
-                                            <ul>
-                                                <li v-for="role in roles" :key="role"
-                                                    @click="selectRole(role.id, role.name)"
-                                                    class="cursor-pointer hover:bg-gray-200">{{ role.name }}</li>
-                                            </ul>
-                                        </template>
-                                    </Dropdown>
+                                    </template>
+                                    <template #content>
+                                        <ul>
+                                            <li v-for="vessel in vessels" :key="vessel"
+                                                @click="selectVessel(vessel.id, vessel.name)"
+                                                class="cursor-pointer hover:bg-gray-200">{{ vessel.name }}</li>
+                                        </ul>
+                                    </template>
+                                </Dropdown>
 
 
-                                </div>
-
-                                <div>
-                                    <InputLabel for="availability" value="Availabile vacancy count" />
-
-                                    <TextInput id="availability" type="number" class="mt-1 block w-full"
-                                        v-model="form.availability" />
-
-                                    <InputError class="mt-2" :message="form.errors.availability" />
-                                </div>
                             </div>
-                            <div class="flex flex-row justify-between mt-4">
-                                <div>
-                                    <InputLabel for="description" value="Vacancy description" />
+                            <div>
+                                <InputLabel for="role" value="Role" />
 
-                                    <TextInput id="description" type="text" class="mt-1 block w-full"
-                                        v-model="form.description" />
+                                <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
+                                    <template #trigger>
+                                        <div
+                                            class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
+                                            {{ selectedRole || 'Select Role' }}</div>
 
-                                    <InputError class="mt-2" :message="form.errors.description" />
-                                </div>
+                                    </template>
+                                    <template #content>
+                                        <ul>
+                                            <li v-for="role in roles" :key="role"
+                                                @click="selectRole(role.id, role.name)"
+                                                class="cursor-pointer hover:bg-gray-200">{{ role.name }}</li>
+                                        </ul>
+                                    </template>
+                                </Dropdown>
 
 
                             </div>
 
+                            <div>
+                                <InputLabel for="availability" value="Availabile vacancy count" />
+
+                                <TextInput id="availability" type="number" class="mt-1 block w-full"
+                                    v-model="form.availability" />
+
+                                <InputError class="mt-2" :message="form.errors.availability" />
+                            </div>
+
+                            <div>
+                                <InputLabel for="description" value="Vacancy description" />
+
+                                <TextInput id="description" type="text" class="mt-1 block w-full"
+                                    v-model="form.description" />
+
+                                <InputError class="mt-2" :message="form.errors.description" />
+                            </div>
+                            <div>
+                                <InputLabel for="requirement" value="Vacancy requirements" />
+
+                                <TextInput id="requirement" type="text" class="mt-1 block w-full"
+                                    v-model="form.requirements" />
+
+                                <InputError class="mt-2" :message="form.errors.requirements" />
+                            </div>
 
                             <div class="flex justify-center">
                                 <PrimaryButton class="my-5" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
-                                    Create New Role
+                                    Create New Vacancy
                                 </PrimaryButton>
                             </div>
 
 
                         </form>
-                        <h1 class="text-xl font-bold text-center">Vacancies</h1>
                     </div>
 
-                    <div class="flex justify-center">
-                        <table class="table-auto border border-gray-500 w-1/2 bg-slate-300">
-                            <thead>
-                                <tr>
-                                    <th class="border border-slate-700">Vessel</th>
-                                    <th class="border border-slate-700">Role</th>
-                                    <th class="border border-slate-700">Description</th>
-                                    <th class="border border-slate-700">Availabilty</th>
-                                    <th class="border border-slate-700">Status</th>
-                                    <th class="border border-slate-700">Actions</th>
-                                </tr>
 
-                            </thead>
-                            <tbody>
-                                <tr v-for="vacancy in vacancies" :key="vacancy.id">
-                                    <TableCell>{{ vacancy.role.name }}</TableCell>
-                                    <TableCell>{{ vacancy.vessel.name }}</TableCell>
-                                    <TableCell>{{ vacancy.description }}</TableCell>
-                                    <TableCell>{{ vacancy.availability }}</TableCell>
-                                    <TableCell>{{ vacancy.status }}</TableCell>
 
-                                    <TableCell>
-                                        <div class="flex flex-row justify-start">
-                                            <Link href="#" class="me-2 text-blue-400 font-bold hover:text-blue-700">View
-                                            </Link>
-                                            <Link href="#" class="me-3 text-red-400 font-bold hover:text-red-700">
-                                            Deactivate</Link>
-
-                                        </div>
-                                    </TableCell>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
 
 
 
+
             </div>
+            <div class="mt-3" v-show="vacancies.data.length <= 0">
+                <h1 class="text-center text-red-500 font-bold text-2xl">There is no available vacancies!
+                </h1>
+            </div>
+            <div v-show="vacancies.data.length > 0" class="max-w-3xl mx-auto">
+
+                <div class="w-full flex flex-row justify-between">
+                    <h1 class="text-xl font-bold text-center">Vacancies</h1>
+                    <input class="rounded-md" placeholder="search...." type="text" name="" id="">
+                </div>
+
+                <table class="w-full divide-y-2 divide-gray-200 bg-white text-sm">
+                    <thead class="ltr:text-left rtl:text-right">
+                        <tr>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessle Name</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Availability</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Requirements</th>
+
+                            <th class="px-4 py-2"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-200">
+                        <tr v-for="vacancy in vacancies.data" :key="vacancy.id">
+                            <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
+                            vacancy.vessel.name }}
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.role.name }}</td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.availability }}
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.description }}</td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.requirements }}
+                            </td>
+
+                            <td class="whitespace-nowrap px-4 py-2">
+                                <a href="#"
+                                    class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+                <div class="w-full flex flex-row justify-end" v-if="vacancies.links.length > 0">
+                    <ul class="flex">
+                        <li class="mr-2" v-for="link in vacancies.links" :key="link.label">
+                            <a :href="link.url" v-html="link.label"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
 
 
 
