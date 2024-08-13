@@ -28,20 +28,22 @@ class ExperiencesController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'ship_name' => 'required|string|max:30',
-            'flag' => 'required|string|max:30',
-            'ship_type' => 'required|string|max:30',
-            'rank' => 'required|string|max:30',
-            'GRT' => 'required|string|max:30',
-            'engine_make' => 'required|string|max:30',
-            'trade' => 'required|string|max:30',
-            'sign_on_date' => 'required',
-            'sign_off_date' => 'required',
+        $request->validate([
+            'experiences' => 'required|array',
+            'experiences.*.ship_name' => 'required|string|max:30',
+            'experiences.*.flag' => 'required|string|max:30',
+            'experiences.*.ship_type' => 'required|string|max:30',
+            'experiences.*.rank' => 'required|string|max:30',
+            'experiences.*.GRT' => 'required|string|max:30',
+            'experiences.*.trade' => 'required|string|max:30',
+            'experiences.*.sign_on_date' => 'required',
+            'experiences.*.sign_off_date' => 'required',
 
         ]);
-        $validated['user_id'] = auth()->user()->id;
-        Experiences::create($validated);
+        foreach ($request->experiences as $experience) {
+            $experience['user_id'] = auth()->user()->id;
+            Experiences::create($experience);
+        }
         return redirect(route('cvforms.index'));
     }
 

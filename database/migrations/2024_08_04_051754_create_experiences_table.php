@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('ship_type');
             $table->string('rank');
             $table->string('GRT');
-            $table->string('engine_make');
             $table->string('trade');
             $table->string('sign_on_date');
             $table->string('sign_off_date');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Certificates;
 use App\Models\User;
+use App\Models\Vacancies;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,10 @@ class UserController extends Controller
 
     public function index()
     {
-        return Inertia::render('User/Home');
+        $vacancies = Vacancies::with(['role', 'vessel'])->get();
+        return Inertia::render('User/Home', [
+            'vacancies' => $vacancies
+        ]);
     }
     public function user_list()
     {

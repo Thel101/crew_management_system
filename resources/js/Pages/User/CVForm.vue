@@ -35,7 +35,37 @@ const step_1 = ref(true);
 const step_2 = ref(false);
 const step_3 = ref(false);
 
+const src = ref('');
+
+const change = (e) => {
+    const file = e.target.files[0];
+    form.profile_pic = file;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        src.value = event.target.result;
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+};
+const cert_img = ref('');
+const certificateImage = (e, index) => {
+    const cert_file = e.target.files[0];
+    form1.certificates[index].cert_image = cert_file;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        form1.certificates[index].cert_img = event.target.result;
+    };
+
+    if (cert_file) {
+        reader.readAsDataURL(cert_file);
+    }
+}
 const form = useForm({
+    profile_pic: null,
     fullname: '',
     rank: '',
     expected_salary: '',
@@ -76,6 +106,7 @@ const form1 = useForm({
             issue_date: '',
             expiry_date: '',
             issuing_authority: '',
+            cert_image: ''
         }
     ]
 })
@@ -151,7 +182,11 @@ const submit = () => {
                 onFinish: () => {
                     seaman.post(route('seaman.store'), {
                         onFinish: () => {
-                            form1.post(route('certificates.store'));
+                            form1.post(route('certificates.store'), {
+                                onFinish: () => {
+                                    form2.post(route('experiences.store'))
+                                }
+                            })
                         }
                     });
                 }
@@ -174,11 +209,13 @@ const submit = () => {
                 <!--Personal Details-->
                 <div v-if="step_1">
                     <h1 class="my-2 text-xl">Personal Details</h1>
+                    <input type="file" @input="change" />
+                    <img v-if="src" :src="src" alt="" class="w-24 h-24">
                     <div class="flex flex-row gap-2 my-2">
                         <div class="w-1/3">
 
                             <InputLabel for="name">Full Name</InputLabel>
-                            <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.fullname" required
+                            <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.fullname"
                                 autofocus />
 
                             <InputError class="mt-2" :message="form.errors.fullname" />
@@ -203,7 +240,7 @@ const submit = () => {
                         <div class="w-1/3">
                             <InputLabel for="salary">Expected Salary</InputLabel>
                             <TextInput id="salary" type="number" class="mt-1 block w-full"
-                                v-model="form.expected_salary" required />
+                                v-model="form.expected_salary" />
 
                             <InputError class="mt-2" :message="form.errors.expected_salary" />
                         </div>
@@ -211,8 +248,8 @@ const submit = () => {
                     <div class="flex flex-row gap-2 my-2">
                         <div class="w-1/2">
                             <InputLabel for="nationality">Nationality</InputLabel>
-                            <TextInput id="nationality" type="text" class="mt-1 block w-full" v-model="form.nationality"
-                                required />
+                            <TextInput id="nationality" type="text" class="mt-1 block w-full"
+                                v-model="form.nationality" />
 
                             <InputError class="mt-2" :message="form.errors.nationality" />
                         </div>
@@ -240,14 +277,14 @@ const submit = () => {
                         <div class="mt-1 w-1/2">
                             <InputLabel for="dob">Date of Birth</InputLabel>
                             <TextInput id="dob" :max="maxDate" type="text" class="mt-1 block w-full" v-model="form.dob"
-                                @focus="changeDate" @blur="checkEmpty" required placeholder="Date of Birth" />
+                                @focus="changeDate" @blur="checkEmpty" placeholder="Date of Birth" />
 
                             <InputError class="mt-2" :message="form.errors.dob" />
                         </div>
                         <div class="w-1/2">
                             <InputLabel for="place_birth">Place of Birth</InputLabel>
                             <TextInput id="place_birth" type="text" class="mt-1 block w-full"
-                                v-model="form.place_of_birth" required placeholder="Place of Birth" />
+                                v-model="form.place_of_birth" placeholder="Place of Birth" />
 
                             <InputError class="mt-2" :message="form.errors.place_of_birth" />
                         </div>
@@ -256,21 +293,21 @@ const submit = () => {
                     <div class="flex flex-row gap-2 my-2">
                         <div class="w-1/4">
                             <InputLabel for="height">Height</InputLabel>
-                            <TextInput id="height" type="text" class="mt-1 block w-full" v-model="form.height" required
+                            <TextInput id="height" type="text" class="mt-1 block w-full" v-model="form.height"
                                 placeholder="e.g. 5 ft 12 in" />
 
                             <InputError class="mt-2" :message="form.errors.height" />
                         </div>
                         <div class="w-1/4">
                             <InputLabel for="weight">Weight</InputLabel>
-                            <TextInput id="weight" type="text" class="mt-1 block w-full" v-model="form.weight" required
+                            <TextInput id="weight" type="text" class="mt-1 block w-full" v-model="form.weight"
                                 placeholder="in kg, e.g. 56" />
                             <InputError class="mt-2" :message="form.errors.weight" />
                         </div>
                         <div class="w-1/4">
                             <InputLabel for="overall_size">Overall_size</InputLabel>
                             <TextInput id="overall_size" type="number" min="30" max="50" class="mt-1 block w-full"
-                                v-model="form.overall_size" required placeholder="in EU, e.g.46" />
+                                v-model="form.overall_size" placeholder="in EU, e.g.46" />
 
                             <InputError class="mt-2" :message="form.errors.overall_size" />
                         </div>
@@ -278,7 +315,7 @@ const submit = () => {
                         <div class="w-48">
                             <InputLabel for="safety_shoe_size">Safety Shoe Size</InputLabel>
                             <TextInput id="safety_shoe_size" type="number" min="30" max="40" class="mt-1 block w-full"
-                                v-model="form.safety_shoe_size" required placeholder="in EU, e.g. 46" />
+                                v-model="form.safety_shoe_size" placeholder="in EU, e.g. 46" />
 
                             <InputError class="mt-2" :message="form.errors.safety_shoe_size" />
                         </div>
@@ -287,15 +324,13 @@ const submit = () => {
                     <div class="flex flex-row gap-2 my-2">
                         <div class="w-1/2">
                             <InputLabel for="mobile">Mobile Number</InputLabel>
-                            <TextInput id="mobile" type="text" class="mt-1 block w-full" v-model="form.mobile_no"
-                                required />
+                            <TextInput id="mobile" type="text" class="mt-1 block w-full" v-model="form.mobile_no" />
 
                             <InputError class="mt-2" :message="form.errors.mobile_no" />
                         </div>
                         <div class="w-1/2">
                             <InputLabel for="email">Email Address</InputLabel>
-                            <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email"
-                                required />
+                            <TextInput id="email" type="email" class="mt-1 block w-full" v-model="form.email" />
 
                             <InputError class="mt-2" :message="form.errors.email" />
                         </div>
@@ -304,22 +339,22 @@ const submit = () => {
                     <div class="flex flex-row gap-2 my-2">
                         <div>
                             <InputLabel for="next_of_kin">Next of Kin Name</InputLabel>
-                            <TextInput id="next_of_kin" type="text" class="mt-1 block w-full" v-model="form.next_of_kin"
-                                required />
+                            <TextInput id="next_of_kin" type="text" class="mt-1 block w-full"
+                                v-model="form.next_of_kin" />
 
                             <InputError class="mt-2" :message="form.errors.next_of_kin" />
                         </div>
                         <div>
                             <InputLabel for="relationship">Relationship</InputLabel>
                             <TextInput id="relationship" type="text" class="mt-1 block w-full"
-                                v-model="form.relationship" required />
+                                v-model="form.relationship" />
 
                             <InputError class="mt-2" :message="form.errors.relationship" />
                         </div>
                         <div>
                             <InputLabel for="next_of_kin_mobile">Next of Kin Mobile</InputLabel>
                             <TextInput id="next_of_kin_mobile" type="text" class="mt-1 block w-full"
-                                v-model="form.next_of_kin_phone" required />
+                                v-model="form.next_of_kin_phone" />
 
                             <InputError class="mt-2" :message="form.errors.next_of_kin_phone" />
                         </div>
@@ -328,15 +363,14 @@ const submit = () => {
                         <div class="w-1/3">
                             <InputLabel for="next_of_kin_email">Next of Kin Email</InputLabel>
                             <TextInput id="next_of_kin_email" type="text" class="mt-1 block w-full"
-                                v-model="form.next_of_kin_email" required />
+                                v-model="form.next_of_kin_email" />
 
                             <InputError class="mt-2" :message="form.errors.next_of_kin_email" />
                         </div>
                         <div class="w-2/3">
                             <InputLabel for="next_of_kin_address">Next of Kin Address</InputLabel>
                             <TextInput id="next_of_kin_address" type="text" class="mt-1 block w-full"
-                                v-model="form.next_of_kin_address" required
-                                placeholder="(House No, Road, Township, City)" />
+                                v-model="form.next_of_kin_address" placeholder="(House No, Road, Township, City)" />
 
                             <InputError class="mt-2" :message="form.errors.next_of_kin_address" />
                         </div>
@@ -355,14 +389,14 @@ const submit = () => {
 
                                 <InputLabel for="passport_no">Passport No:</InputLabel>
                                 <TextInput id="passport_no" type="text" class="mt-1 block w-full"
-                                    v-model="passport.passport_no" required />
+                                    v-model="passport.passport_no" />
 
                                 <InputError class="mt-2" :message="passport.errors.passport_no" />
                             </div>
                             <div class="w-1/4">
                                 <InputLabel for="place_of_issue">Place of issue</InputLabel>
                                 <TextInput id="place_of_issue" type="text" class="mt-1 block w-full"
-                                    v-model="passport.place_of_issue" required />
+                                    v-model="passport.place_of_issue" />
 
                                 <InputError class="mt-2" :message="passport.errors.place_of_issue" />
 
@@ -370,14 +404,14 @@ const submit = () => {
                             <div class="w-1/4">
                                 <InputLabel for="issue_date">Issue date</InputLabel>
                                 <TextInput id="issue_date" type="date" class="mt-1 block w-full"
-                                    v-model="passport.issue_date" required />
+                                    v-model="passport.issue_date" />
 
                                 <InputError class="mt-2" :message="passport.errors.issue_date" />
                             </div>
                             <div>
                                 <InputLabel for="expiry_date">Expiry Date</InputLabel>
                                 <TextInput id="expiry_date" type="date" class="mt-1 block w-full"
-                                    v-model="passport.expiry_date" required />
+                                    v-model="passport.expiry_date" />
 
                                 <InputError class="mt-2" :message="passport.errors.expiry_date" />
                             </div>
@@ -394,14 +428,14 @@ const submit = () => {
 
                                 <InputLabel for="seaman_book">Seaman Book No:</InputLabel>
                                 <TextInput id="seaman_book" type="text" class="mt-1 block w-full"
-                                    v-model="seaman.seaman_book" required />
+                                    v-model="seaman.seaman_book" />
 
                                 <InputError class="mt-2" :message="seaman.errors.seaman_book" />
                             </div>
                             <div class="w-1/4">
                                 <InputLabel for="place_of_issue_seaman">Place of issue</InputLabel>
                                 <TextInput id="place_of_issue_seaman" type="text" class="mt-1 block w-full"
-                                    v-model="seaman.place_of_issue" required />
+                                    v-model="seaman.place_of_issue" />
 
                                 <InputError class="mt-2" :message="seaman.errors.place_of_issue" />
 
@@ -409,14 +443,14 @@ const submit = () => {
                             <div class="w-1/4">
                                 <InputLabel for="issue_date_seaman">Issue date</InputLabel>
                                 <TextInput id="issue_date_seaman" type="date" class="mt-1 block w-full"
-                                    v-model="seaman.issue_date" required />
+                                    v-model="seaman.issue_date" />
 
                                 <InputError class="mt-2" :message="seaman.errors.issue_date" />
                             </div>
                             <div>
                                 <InputLabel for="expiry_date_seaman">Expiry Date</InputLabel>
                                 <TextInput id="expiry_date_seaman" type="date" class="mt-1 block w-full"
-                                    v-model="seaman.expiry_date" required />
+                                    v-model="seaman.expiry_date" />
 
                                 <InputError class="mt-2" :message="seaman.errors.expiry_date" />
                             </div>
@@ -431,18 +465,20 @@ const submit = () => {
                             <InputLabel class="ms-14">Issue Date</InputLabel>
                             <InputLabel class="ms-16">Expiry Date</InputLabel>
                             <InputLabel class="ms-20">Issuing Authority</InputLabel>
+                            <InputLabel class="ms-20">Certificate Image</InputLabel>
                         </div>
 
 
                         <div v-for="(certificate, index) in form1.certificates" :key="index" class="flex gap-2 mt-2">
-                            <TextInput type="text" v-model="certificate.name" placeholder="Certificate Name" required />
-                            <TextInput type="text" v-model="certificate.certificate_no" placeholder="Certificate Number"
-                                required />
-                            <TextInput type="date" v-model="certificate.issue_date" placeholder="Issue Date" required />
-                            <TextInput type="date" v-model="certificate.expiry_date" placeholder="Expiry Date"
-                                required />
+                            <TextInput type="text" v-model="certificate.name" placeholder="Certificate Name" />
+                            <TextInput type="text" v-model="certificate.certificate_no"
+                                placeholder="Certificate Number" />
+                            <TextInput type="date" v-model="certificate.issue_date" placeholder="Issue Date" />
+                            <TextInput type="date" v-model="certificate.expiry_date" placeholder="Expiry Date" />
                             <TextInput type="text" v-model="certificate.issuing_authority"
-                                placeholder="Issuing Authority" required />
+                                placeholder="Issuing Authority" />
+                            <input type="file" @input="certificateImage($event, index)">
+                            <img v-if="cert_img[index]" :src="cert_img[index]" alt="Certificate" class="w-24 h-24">
                             <button type="button" @click="removeCertificate(index)">Remove</button>
                             <button type="button" @click="addCertificate(index)">Add</button>
                         </div>
@@ -474,30 +510,28 @@ const submit = () => {
                             <tr v-for="(experience, index) in form2.experiences" :key="index">
 
                                 <td>
-                                    <TextInput for="ship_name" type="text" v-model="experience.ship_name" required />
+                                    <TextInput for="ship_name" type="text" v-model="experience.ship_name" />
                                 </td>
                                 <td>
-                                    <TextInput for="flag" type="text" v-model="experience.flag" required />
+                                    <TextInput for="flag" type="text" v-model="experience.flag" />
                                 </td>
                                 <td>
-                                    <TextInput for="ship_type" type="text" v-model="experience.ship_type" required />
+                                    <TextInput for="ship_type" type="text" v-model="experience.ship_type" />
                                 </td>
                                 <td>
-                                    <TextInput for="trade" type="text" v-model="experience.trade" required />
+                                    <TextInput for="trade" type="text" v-model="experience.trade" />
                                 </td>
                                 <td>
-                                    <TextInput class="w-28" for="grt" type="text" v-model="experience.GRT" required />
+                                    <TextInput class="w-28" for="grt" type="text" v-model="experience.GRT" />
                                 </td>
                                 <td>
-                                    <TextInput class="w-28" for="rank" type="text" v-model="experience.rank" required />
+                                    <TextInput class="w-28" for="rank" type="text" v-model="experience.rank" />
                                 </td>
                                 <td>
-                                    <TextInput for="sign_on_date" type="date" v-model="experience.sign_on_date"
-                                        required />
+                                    <TextInput for="sign_on_date" type="date" v-model="experience.sign_on_date" />
                                 </td>
                                 <td>
-                                    <TextInput for="sign_off_date" type="date" v-model="experience.sign_off_date"
-                                        required />
+                                    <TextInput for="sign_off_date" type="date" v-model="experience.sign_off_date" />
                                 </td>
 
                                 <td>

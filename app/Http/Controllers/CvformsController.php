@@ -30,8 +30,8 @@ class CvformsController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-
         $validated = $request->validate([
+            'profile_pic' => 'required|file|mimes:png,jpg,jpeg,webp',
             'fullname' => 'required|string|max:30',
             'rank' => 'required',
             'expected_salary' => 'required',
@@ -52,8 +52,15 @@ class CvformsController extends Controller
             'next_of_kin_address' => 'required|string|max:80'
         ]);
         $validated['user_id'] = auth()->user()->id;
+
+        if ($request->file('profile_pic')) {
+            $file = uniqid() . $request->file('profile_pic')->getClientOriginalName();
+            $request->file('profile_pic')->storeAs('public/images', $file);
+            $validated['profile_pic'] = $file;
+        }
         cvforms::create($validated);
         dd('success');
+
         return redirect(route('cvforms.index'));
     }
 

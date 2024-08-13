@@ -16,7 +16,6 @@ class Experiences extends Model
         'ship_type',
         'rank',
         'GRT',
-        'engine_make',
         'trade',
         'sign_on_date',
         'sign_off_date',

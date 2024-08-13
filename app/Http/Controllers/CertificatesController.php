@@ -36,11 +36,17 @@ class CertificatesController extends Controller
             'certificates.*.issue_date' => 'required|string',
             'certificates.*.expiry_date' => 'required|string',
             'certificates.*.issuing_authority' => 'required|string',
+            'certificates.*.cert_image' => 'required',
         ]);
 
         foreach ($request->certificates as $certificate) {
             // Save each certificate record to the database
             $certificate['user_id'] = auth()->user()->id;
+            if (isset($certificate['cert_image'])) {
+                $file = uniqid() . '_' . $certificate['cert_image']->getClientOriginalName();
+                $certificate['cert_image']->storeAs('public/images', $file);
+                $certificate['cert_image'] = $file;
+            }
             Certificates::create($certificate);
         }
 

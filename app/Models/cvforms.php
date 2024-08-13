@@ -11,6 +11,7 @@ class cvforms extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'profile_pic',
         'fullname',
         'rank',
         'nationality',

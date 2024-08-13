@@ -16,6 +16,7 @@ class Certificates extends Model
         'issue_date',
         'expiry_date',
         'issuing_authority',
+        'cert_image',
         'status'
     ];
     public function user(): BelongsTo

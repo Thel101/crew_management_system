@@ -64,7 +64,7 @@ const submit = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
-                    <div class="max-w-lg mx-auto shadow-sm sm:rounded-lg bg-slate-200 p-2 px-5">
+                    <div class="max-w-2xl mx-auto shadow-sm sm:rounded-lg bg-slate-200 p-2 px-5">
                         <h1 class="text-xl font-bold text-center mb-5 mt-3">Create New Vacancy</h1>
                         <form @submit.prevent="submit">
 
@@ -151,66 +151,69 @@ const submit = () => {
 
 
                 </div>
-
-
-
-
-            </div>
-            <div class="mt-3" v-show="vacancies.data.length <= 0">
-                <h1 class="text-center text-red-500 font-bold text-2xl">There is no available vacancies!
-                </h1>
-            </div>
-            <div v-show="vacancies.data.length > 0" class="max-w-3xl mx-auto">
-
-                <div class="w-full flex flex-row justify-between">
-                    <h1 class="text-xl font-bold text-center">Vacancies</h1>
-                    <input class="rounded-md" placeholder="search...." type="text" name="" id="">
+                <div class="mt-3" v-show="vacancies.data.length <= 0">
+                    <h1 class="text-center text-red-500 font-bold text-2xl">There is no available vacancies!
+                    </h1>
                 </div>
+                <div v-show="vacancies.data.length > 0">
+                    <div class="overflow-x-auto">
+                        <div class="flex flex-row justify-between min-w-xl w-lg my-5">
+                            <h1 class="text-xl text-center lg:ms-28 md:ms-4"> Vacancies </h1>
+                            <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-28 md:me-4"
+                                name="search" placeholder="search.....">
+                        </div>
 
-                <table class="w-full divide-y-2 divide-gray-200 bg-white text-sm">
-                    <thead class="ltr:text-left rtl:text-right">
-                        <tr>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessle Name</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Availability</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Requirements</th>
+                        <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                            <thead class="ltr:text-left rtl:text-right">
+                                <tr>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessle Name</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Availability</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Requirements</th>
 
-                            <th class="px-4 py-2"></th>
-                        </tr>
-                    </thead>
+                                    <th class="px-4 py-2"></th>
+                                </tr>
+                            </thead>
 
-                    <tbody class="divide-y divide-gray-200">
-                        <tr v-for="vacancy in vacancies.data" :key="vacancy.id">
-                            <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
+                            <tbody class="divide-y divide-gray-200">
+                                <tr v-for="vacancy in vacancies.data" :key="vacancy.id">
+                                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
                             vacancy.vessel.name }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.role.name }}</td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.availability }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.description }}</td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.requirements }}
-                            </td>
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.role.name }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.availability }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.description }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.requirements }}
+                                    </td>
 
-                            <td class="whitespace-nowrap px-4 py-2">
-                                <a href="#"
-                                    class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                                    View
-                                </a>
-                            </td>
-                        </tr>
+                                    <td class="whitespace-nowrap px-4 py-2">
+                                        <a href="#"
+                                            class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
 
 
-                    </tbody>
-                </table>
-                <div class="w-full flex flex-row justify-end" v-if="vacancies.links.length > 0">
-                    <ul class="flex">
-                        <li class="mr-2" v-for="link in vacancies.links" :key="link.label">
-                            <a :href="link.url" v-html="link.label"></a>
-                        </li>
-                    </ul>
+                            </tbody>
+                        </table>
+                        <div class="flex justify-end lg:me-24" v-if="vacancies.links.length > 0">
+                            <ul class="flex">
+                                <li class="mr-2" v-for="link in vacancies.links" :key="link.label">
+                                    <a :href="link.url" v-html="link.label"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
+
+
+
             </div>
+
 
 
 
