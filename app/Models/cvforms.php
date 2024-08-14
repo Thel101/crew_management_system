@@ -11,6 +11,7 @@ class cvforms extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'vacancy_id',
         'profile_pic',
         'fullname',
         'rank',
@@ -35,5 +36,9 @@ class cvforms extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    public function vacancy(): BelongsTo
+    {
+        return $this->belongsTo(Vacancies::class);
     }
 }

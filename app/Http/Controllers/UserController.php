@@ -21,19 +21,25 @@ class UserController extends Controller
     public function user_list()
     {
         return Inertia::render('Admin/UserList', [
-            'users' => User::all()
+            'users' => User::paginate()
         ]);
     }
     public function view($userid)
     {
         $user = User::find($userid);
-
+        $cvforms = $user->cvforms;
+        $vacancies = [];
+        foreach ($cvforms as $cvform) {
+            $vacancies[] = $cvform->vacancy->load('role');
+        }
         return Inertia::render('Admin/UserDetail', [
             'user' => $user,
-            'cvform' => $user->cvforms()->first(),
+            'cvform' => $user->cvforms->first(),
             'passport' => $user->passport->first(),
             'seaman_book' => $user->seamanbooks->first(),
-            'certificates' => $user->certificates
+            'certificates' => $user->certificates,
+            'experiences' => $user->experiences,
+            'vacancies' => $vacancies
         ]);
     }
 }

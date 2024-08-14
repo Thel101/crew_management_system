@@ -12,9 +12,14 @@ class CvformsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($vacancy_id)
     {
-        return Inertia::render('User/CVForm');
+        return Inertia::render(
+            'User/CVForm',
+            [
+                'vacancy_id' => $vacancy_id
+            ]
+        );
     }
 
     /**
@@ -31,6 +36,7 @@ class CvformsController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'vacancy_id' => 'required',
             'profile_pic' => 'required|file|mimes:png,jpg,jpeg,webp',
             'fullname' => 'required|string|max:30',
             'rank' => 'required',

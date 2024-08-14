@@ -31,7 +31,7 @@ const props = defineProps({
                         }}
                     </div>
                     <div class="absolute top-12 right-2 left-2">
-                        <Link :href="route('cvforms.index')"><button
+                        <Link :href="route('cvforms.index', vacancy.id)"><button
                             class="bg-blue-300 rounded-full px-4 py-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Apply
                             Now</button>
                         </Link>

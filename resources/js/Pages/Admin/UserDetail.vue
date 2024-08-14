@@ -20,6 +20,12 @@ const props = defineProps({
     },
     certificates: {
         type: Array
+    },
+    experiences: {
+        type: Array
+    },
+    vacancies: {
+        type: Array
     }
 })
 
@@ -36,195 +42,201 @@ const props = defineProps({
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="overflow-hidden">
+                    <div class="flex flex-row">
+                        <img :src="`/storage/images/${cvform.profile_pic}`" class="w-48 h-48 rounded-md" />
+                        <div class="ml-10">
+                            <h1>Personal Details</h1>
+                            <ul>
+                                <li v-for="vacancy in vacancies" :key="vacancy.id">
+                                    Applied Position: {{ vacancy.description }} , {{ vacancy.role.name }}
+                                </li>
+                            </ul>
+                            <div class="flex flex-row">
+                                <div>
+                                    Name <span>{{ cvform.fullname }}</span>
+                                </div>
+
+                                <div>
+                                    Rank <span>{{ cvform.rank }}</span>
+                                </div>
+                                <div>
+                                    Expected Salary <span>{{ cvform.expected_salary }}</span>
+                                </div>
+
+                                <div>
+                                    Nationality <span>{{ cvform.nationality }}</span>
+                                </div>
+                                <div>
+                                    Religion <span>{{ cvform.religion }}</span>
+                                </div>
 
 
-                    <div class="flex justify-center">
-                        <div class="bg-blue-200 me-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 w-16 h-16">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            </svg>
+                            </div>
+                            <div class="flex flex-row">
+                                <div>
+                                    Date of birth <span>{{ cvform.dob }}</span>
+                                </div>
 
+                                <div>
+                                    Place of brith <span>{{ cvform.place_of_birth }}</span>
+                                </div>
+                                <div>
+                                    Height <span>{{ cvform.height }}</span>
+                                </div>
+
+                                <div>
+                                    Weight <span>{{ cvform.weight }}</span>
+                                </div>
+                                <div>
+                                    Overall size <span>{{ cvform.overall_size }}</span>
+                                </div>
+                                <div>
+                                    Safety shoe size <span>{{ cvform.safety_shoe_size }}</span>
+                                </div>
+
+
+                            </div>
+                            <div class="flex flex-row">
+                                <div>
+                                    Mobile Number <span>{{ cvform.mobile_no }}</span>
+                                </div>
+
+                                <div>
+                                    Email <span>{{ cvform.email }}</span>
+                                </div>
+
+                            </div>
+                            <div class="flex flex-row">
+                                <div>
+                                    Next of Kin <span>{{ cvform.next_of_kin }}</span>
+                                </div>
+
+                                <div>
+                                    Relationship <span>{{ cvform.relationship }}</span>
+                                </div>
+                                <div>
+                                    Next of Kin Phone <span>{{ cvform.next_of_kin_phone }}</span>
+                                </div>
+                                <div>
+                                    Email <span>{{ cvform.next_of_kin_email }}</span>
+                                </div>
+                                <div>
+                                    Address <span>{{ cvform.next_of_kin_address }}</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="h-8">
+                    <div class="flex flex-row justify-between">
+                        <div>
+                            <h1>Passport</h1>
+                            <div>Passport No: {{ passport.passport_no }}</div>
+                            <div>Place of issue: {{ passport.place_of_issue }}</div>
+                            <div>Issue Date {{ passport.issue_date }}</div>
+                            <div>Expiry Date: {{ passport.expiry_date }}</div>
                         </div>
                         <div>
-                            <h1 class="my-2 text-xl">Personal Details</h1>
-                            <div class="flex flex-row gap-2 my-2">
-                                <div class="w-1/3">
-
-                                    <div>
-                                        <span class="mr-2 font-bold">Full Name</span>
-                                        <span>{{ user.name }}</span>
-                                    </div>
-                                </div>
-                                <div class="w-1/3">
-                                    <span class="mr-2 font-bold">Applied Rank</span>
-                                    <span>{{ cvform.rank }}</span>
-
-                                </div>
-                                <div class="w-1/3">
-                                    <span class="mr-2 font-bold">Expected Salary</span>
-                                    <span>{{ cvform.expected_salary }}</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-row gap-2 my-2">
-                                <div class="w-1/2">
-                                    <span class="mr-2 font-bold">Nationality</span>
-                                    <span>{{ cvform.nationality }}</span>
-                                </div>
-                                <div class="w-1/2">
-                                    <span class="mr-2 font-bold">Religion</span>
-                                    <span>{{ cvform.religion }}</span>
-
-                                </div>
-                            </div>
-                            <div class="flex flex-row gap-2 my-2">
-
-                                <div class="mt-1 w-1/2">
-                                    <span class="mr-2 font-bold">Date Of Birth</span>
-                                    <span>{{ cvform.dob }}</span>
-                                </div>
-                                <div class="w-1/2">
-                                    <span class="mr-2 font-bold">Place of Birth</span>
-                                    <span>{{ cvform.place_of_birth }}</span>
-
-                                </div>
-
-                            </div>
-                            <div class="flex flex-row gap-2 my-2">
-                                <div class="w-1/4">
-                                    <span class="mr-2 font-bold">Height</span>
-                                    <span>{{ cvform.height }}</span>
-                                </div>
-                                <div class="w-1/4">
-                                    <span class="mr-2 font-bold">Weight</span>
-                                    <span>{{ cvform.weight }}</span>
-
-                                </div>
-                                <div class="w-1/4">
-                                    <span class="mr-2 font-bold">Overall size</span>
-                                    <span>{{ cvform.overall_size }}</span>
-                                </div>
-
-                                <div class="w-48">
-                                    <span class="mr-2 font-bold">Safety Shoe Size</span>
-                                    <span>{{ cvform.safety_shoe_size }}</span>
-
-                                </div>
-
-                            </div>
-                            <div class="flex flex-row gap-2 my-2">
-                                <div class="w-1/2">
-                                    <span class="mr-2 font-bold">Mobile Number</span>
-                                    <span>{{ cvform.mobile_no }}</span>
-                                </div>
-                                <div>
-                                    <span class="mr-2 font-bold">Email Address</span>
-                                    <span>{{ cvform.email }}</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-row gap-2 my-2">
-                                <div>
-                                    <span class="mr-2 font-bold">Next Of Kin</span>
-                                    <span>{{ cvform.next_of_kin }}</span>
-
-                                </div>
-                                <div>
-                                    <span class="mr-2 font-bold">Relationship</span>
-                                    <span>{{ cvform.relationship }}</span>
-
-                                </div>
-                                <div>
-                                    <span class="mr-2 font-bold">Next of Kin Mobile</span>
-                                    <span>{{ cvform.next_of_kin_mobile }}</span>
-                                </div>
-                            </div>
-                            <div class="flex flex-row gap-2 my-2">
-                                <div class="w-1/3">
-                                    <span class="mr-2 font-bold">Next of Kin Email</span>
-                                    <span>{{ cvform.next_of_kin_email }}</span>
-
-                                </div>
-                                <div class="w-2/3">
-                                    <span class="mr-2 font-bold">Next of Kin Address</span>
-                                    <span>{{ cvform.next_of_kin_address }}</span>
-
-                                </div>
-
-                            </div>
+                            <h1>Seaman Book</h1>
+                            <div>Seaman book No: {{ seaman_book.seaman_book }}</div>
+                            <div>Place of issue: {{ seaman_book.place_of_issue }}</div>
+                            <div>Issue Date {{ seaman_book.issue_date }}</div>
+                            <div>Expriy Date {{ seaman_book.expiry_date }}</div>
                         </div>
 
                     </div>
-                    <div class="flex justify-center">
+                    <hr>
+                    <div>
+                        <h1>Certificates</h1>
+                        <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                            <thead class="ltr:text-left rtl:text-right">
+                                <tr>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Certificate</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Certificate Number
+                                    </th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Issue Date</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Expiry Date</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Issuing Authority
+                                    </th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
 
-                        <div class="me-80">
-                            <h1 class="text-xl font-bold">Passport</h1>
-                            <div>
-                                <span class="mr-2 font-bold">Passport No</span>
-                                <span>{{ passport.passport_no }}</span>
-                            </div>
-                            <div>
-                                <span class="mr-2 font-bold">Place of Issue</span>
-                                <span>{{ passport.place_of_issue }}</span>
-                            </div>
-
-                            <div>
-                                <span class="mr-2 font-bold">Issue Date</span>
-                                <span>{{ passport.issue_date }}</span>
-                            </div>
-                            <div>
-                                <span class="mr-2 font-bold">Expiry Date</span>
-                                <span>{{ passport.expiry_date }}</span>
-                            </div>
-
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold">Seaman Book</h1>
-                            <div>
-                                <span class="mr-2 font-bold">Seaman book no:</span>
-                                <span>{{ seaman_book.seaman_book }}</span>
-                            </div>
-                            <div>
-                                <span class="mr-2 font-bold">Place of Issue</span>
-                                <span>{{ seaman_book.place_of_issue }}</span>
-                            </div>
-
-                            <div>
-                                <span class="mr-2 font-bold">Issue Date</span>
-                                <span>{{ seaman_book.issue_date }}</span>
-                            </div>
-                            <div>
-                                <span class="mr-2 font-bold">Expiry Date</span>
-                                <span>{{ seaman_book.expiry_date }}</span>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col items-center">
-                        <h1 class="text-xl font-bold mx-auto align-self-start">Certificates</h1>
-                        <table class="table-auto">
-                            <thead class="border-0 border-b-2 border-slate-500">
-                                <th class="px-2">Certificate Name</th>
-                                <th class="px-4 text-center">Certificate Number</th>
-                                <th class="px-4 text-center">Issuing Authority</th>
-                                <th class="px-4 text-center">Issue date</th>
-                                <th class="px-4 text-center">Expiry date</th>
-                            </thead>
-                            <tbody>
-                                <tr v-for="certificate in certificates" :key="certificate.id">
-                                    <td class="text-center">{{ certificate.name }}</td>
-                                    <td class="text-center">{{ certificate.certificate_no }}</td>
-                                    <td class="text-center">{{ certificate.issue_date }}</td>
-                                    <td class="text-center">{{ certificate.expiry_date }}</td>
-                                    <td class="text-center">{{ certificate.issuing_authority }}</td>
+                                    <th class="px-4 py-2"></th>
                                 </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-gray-200">
+                                <tr v-for="certificate in certificates" :key="certificate.id">
+                                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
+                            certificate.name }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.certificate_no
+                                        }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.issue_date }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.expiry_date
+                                        }}</td>
+
+
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{
+                            certificate.issuing_authority }}
+
+                                    </td>
+                                </tr>
+
+
                             </tbody>
                         </table>
                     </div>
+                    <div>
+                        <h1>Experiences</h1>
+                        <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                            <thead class="ltr:text-left rtl:text-right">
+                                <tr>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Ship Name</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Flag</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Ship Type</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Rank</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">GRT
+                                    </th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Trade</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Sign-on</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Sign-off</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-gray-200">
+                                <tr v-for="experience in experiences" :key="experience.id">
+                                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
+                            experience.ship_name }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ experience.flag
+                                        }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ experience.ship_type }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ experience.rank
+                                        }}</td>
 
 
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.GRT }}
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.Trade }}
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.sign_on_date }}
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.sign_off_date
+                                        }}
+
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

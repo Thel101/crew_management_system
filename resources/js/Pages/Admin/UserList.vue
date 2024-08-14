@@ -25,39 +25,51 @@ const props = defineProps({
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden shadow-sm sm:rounded-lg">
 
-                    <div class="flex justify-center">
-                        <table class="table-auto border border-gray-500 w-1/2 bg-slate-300">
-                            <thead>
+                    <div class="overflow-x-auto">
+                        <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                            <thead class="ltr:text-left rtl:text-right">
                                 <tr>
-                                    <th class="border border-slate-700">User Name</th>
-                                    <th class="border border-slate-700">Email</th>
-                                    <th class="border border-slate-700">Role</th>
-                                    <th class="border border-slate-700">Actions</th>
-                                </tr>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Applied Date</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
 
+                                    <th class="px-4 py-2"></th>
+                                </tr>
                             </thead>
-                            <tbody>
-                                <tr v-for="user in users" :key="user.id">
-                                    <TableCell>{{ user.name }}</TableCell>
-                                    <TableCell>{{ user.email }}</TableCell>
-                                    <TableCell>{{ user.role }}</TableCell>
-                                    <TableCell>
-                                        <div class="flex flex-row justify-start">
-                                            <Link :href="route('user.detail', user.id)"
-                                                class="me-2 text-blue-400 font-bold hover:text-blue-700">View
-                                            </Link>
-                                            <Link href="#" class="me-3 text-red-400 font-bold hover:text-red-700">
-                                            Deactivate</Link>
 
-                                        </div>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr v-for="user in users.data" :key="user.id">
+                                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
+                                    user.name }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.email }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.role }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new
+                                    Date(user.created_at).toDateString()
+                                        }}</td>
 
 
-
-
-                                    </TableCell>
+                                    <td class="whitespace-nowrap px-4 py-2">
+                                        <a :href="route('user.detail', user.id)"
+                                            class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                            View
+                                        </a>
+                                    </td>
                                 </tr>
+
+
                             </tbody>
                         </table>
+                        <div class="flex justify-end lg:me-24" v-if="users.links.length > 0">
+                            <ul class="flex">
+                                <li class="mr-2" v-for="link in users.links" :key="link.label">
+                                    <a :href="link.url" v-html="link.label"></a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
                 </div>

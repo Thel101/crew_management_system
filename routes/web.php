@@ -47,7 +47,8 @@ Route::middleware(['auth', 'user'])->group(function () {
 
     Route::get('/users/home', [UserController::class, 'index'])->name('form');
     Route::resource('cvforms', CvformsController::class)
-        ->only('index', 'store');
+        ->only('store');
+    Route::get('cvforms/{vacancy_id}', [CvformsController::class, 'index'])->name('cvforms.index');
     Route::resource('passport', PassportController::class)
         ->only('index', 'store');
     Route::resource('seaman', SeamanbookController::class)

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Vacancies extends Model
 {
@@ -25,5 +26,9 @@ class Vacancies extends Model
     public function vessel(): BelongsTo
     {
         return $this->belongsTo(Vessels::class);
+    }
+    public function cvforms(): HasMany
+    {
+        return $this->hasMany(cvforms::class);
     }
 }

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('cvforms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('vacancy_id')->constrained()->cascadeOnDelete();
             $table->string('profile_pic');
             $table->string('fullname');
             $table->string('rank');

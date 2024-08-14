@@ -17,6 +17,9 @@ const props = defineProps({
         type: Array,
         default: () => ['Buddhism', 'Christian', 'Muslim', 'Hinduism', 'Atheist']
     },
+    vacancy_id: {
+        type: String
+    }
 
 });
 const selectedRank = ref('');
@@ -65,6 +68,7 @@ const certificateImage = (e, index) => {
     }
 }
 const form = useForm({
+    vacancy_id: props.vacancy_id,
     profile_pic: null,
     fullname: '',
     rank: '',
