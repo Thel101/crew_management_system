@@ -36,8 +36,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+    Route::get('/applicants', [UserController::class, 'applicant_list'])->name('applicants.list');
     Route::get('/users', [UserController::class, 'user_list'])->name('users.list');
     Route::get('/user/{id}', [UserController::class, 'view'])->name('user.detail');
+    Route::patch('/user/update', [UserController::class, 'update'])->name('user.update');
+    Route::get('/seafarers', [UserController::class, 'seafarer_list'])->name('seafarer.list');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'update');
     Route::resource('vacancies', VacanciesController::class)->only('index', 'store', 'update');
