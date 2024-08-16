@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Certificates;
 use App\Models\User;
 use App\Models\Vacancies;
 use Carbon\Carbon;
@@ -22,14 +21,14 @@ class UserController extends Controller
     }
     public function user_list()
     {
-        $users = User::whereIn('role', ['admin', 'user'])->paginate();
+        $users = User::whereIn('role', ['admin', 'staff'])->paginate();
         return Inertia::render('Admin/UserList', [
             'users' => $users
         ]);
     }
     public function applicant_list()
     {
-        $applicants = User::whereIn('role', ['user'])->with('passport', 'seamanbooks')->paginate();
+        $applicants = User::where('role', 'user')->with('passport', 'seamanbooks')->paginate();
         return Inertia::render('Admin/ApplicantList', [
             'users' => $applicants,
         ]);
@@ -38,7 +37,10 @@ class UserController extends Controller
     {
         $user = User::find($userid);
         $cvforms = $user->cvforms;
-        $vacancies = [];
+        if ($cvforms->isEmpty()) {
+            return redirect()->route('applicants.list')->with('message', 'The user has not applied for any vacancy!');
+        }
+
         foreach ($cvforms as $cvform) {
             $vacancies[] = $cvform->vacancy->load('role');
         }
