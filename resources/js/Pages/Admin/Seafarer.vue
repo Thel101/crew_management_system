@@ -27,7 +27,7 @@ const props = defineProps({
                     <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
+                                <th></th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Passport</th>
@@ -44,7 +44,6 @@ const props = defineProps({
 
                         <tbody class="divide-y divide-gray-200">
                             <tr v-for="seafarer in seafarers" :key="seafarer.id">
-                                <td></td>
                                 <td v-show="seafarer.passport_status === 'warning'"><svg
                                         v-show="seafarer.passport_status === 'warning'"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

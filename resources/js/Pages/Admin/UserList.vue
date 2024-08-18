@@ -3,10 +3,6 @@ import TableCellVue from '@/Components/TableCell.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const props = defineProps({
-    flash: {
-        type: Object
-    },
-
     users:
     {
         type: Array
@@ -29,7 +25,6 @@ const props = defineProps({
                 <div class="overflow-hidden">
                     <div v-show="users.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There is no
                         applicants!</div>
-
                     <div v-show="users.data.length > 0" class="overflow-x-auto">
                         <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                             <thead class="ltr:text-left rtl:text-right">
