@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('medical_documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('seafarer_id')->constrained()->cascadeOnDelete();
             $table->enum('type', ['d_c', 'vaccination', 'general']);
             $table->string('clinic');
             $table->string('document_date');
