@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Seamanbook;
+use App\Models\Seafarer;
 use Illuminate\Http\Request;
 
-class SeamanbookController extends Controller
+class SeafarerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,22 +28,13 @@ class SeamanbookController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'seaman_book' => 'required|string|max:10',
-            'place_of_issue' => 'required|string|max:15',
-            'issue_date' => 'required',
-            'expiry_date' => 'required',
-        ]);
-        $validated['status'] = 'active';
-        $validated['user_id'] = auth()->user()->id;
-        Seamanbook::create($validated);
-        return redirect(route('cvforms.index'));
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Seamanbook $seamanbook)
+    public function show(Seafarer $seafarer)
     {
         //
     }
@@ -51,7 +42,7 @@ class SeamanbookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Seamanbook $seamanbook)
+    public function edit(Seafarer $seafarer)
     {
         //
     }
@@ -59,7 +50,7 @@ class SeamanbookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Seamanbook $seamanbook)
+    public function update(Request $request, Seafarer $seafarer)
     {
         //
     }
@@ -67,7 +58,7 @@ class SeamanbookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Seamanbook $seamanbook)
+    public function destroy(Seafarer $seafarer)
     {
         //
     }

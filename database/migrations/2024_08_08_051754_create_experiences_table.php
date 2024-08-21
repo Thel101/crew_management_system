@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('experiences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('seafarer_id')->constrained()->cascadeOnDelete();
             $table->string('ship_name');
             $table->string('flag');
             $table->string('ship_type');

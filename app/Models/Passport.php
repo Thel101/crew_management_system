@@ -10,15 +10,15 @@ class Passport extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
+        'seafarer_id',
         'passport_no',
         'place_of_issue',
         'issue_date',
         'expiry_date',
         'status'
     ];
-    public function user(): BelongsTo
+    public function seafarer(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Seafarer::class);
     }
 }

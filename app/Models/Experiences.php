@@ -10,7 +10,7 @@ class Experiences extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
+        'seafarer_id',
         'ship_name',
         'flag',
         'ship_type',
@@ -22,6 +22,6 @@ class Experiences extends Model
     ];
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Seafarer::class);
     }
 }

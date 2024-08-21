@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Vacancies extends Model
+class Jobs extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -27,7 +27,7 @@ class Vacancies extends Model
     {
         return $this->belongsTo(Vessels::class);
     }
-    public function cvforms(): HasMany
+    public function seafarers(): HasMany
     {
         return $this->hasMany(cvforms::class);
     }

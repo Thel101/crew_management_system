@@ -23,6 +23,6 @@ class Vessels extends Model
     ];
     public function vacancies(): HasMany
     {
-        return $this->hasMany(Vacancies::class);
+        return $this->hasMany(Jobs::class);
     }
 }

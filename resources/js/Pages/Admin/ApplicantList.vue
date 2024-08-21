@@ -4,12 +4,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import TableCell from '@/Components/TableCell.vue';
 const props = defineProps({
-    flash: {
-        type: Object
-    },
-    users:
+    applicants:
     {
-        type: Object
+        type: Array
     }
 })
 
@@ -27,12 +24,8 @@ const props = defineProps({
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
-                    <div v-show="users.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There is no
-                        applicants!</div>
-                    <div v-if="flash.message" class="mx-auto bg-red-400 max-w-xl p-3 text-md my-3">
-                        {{ flash.message }}
-                    </div>
-                    <div v-show="users.data.length > 0" class="overflow-x-auto">
+                    <div class="text-center text-red-400 font-bold text-2xl">There is no applicants!</div>
+                    <div v-show="applicants.length > 0" class="overflow-x-auto">
                         <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                             <thead class="ltr:text-left rtl:text-right">
                                 <tr>
@@ -47,7 +40,7 @@ const props = defineProps({
                             </thead>
 
                             <tbody class="divide-y divide-gray-200">
-                                <tr v-for="user in users.data" :key="user.id">
+                                <tr v-for="user in applicants.data" :key="user.id">
                                     <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
                         user.name }}
                                     </td>
@@ -70,13 +63,13 @@ const props = defineProps({
 
                             </tbody>
                         </table>
-                        <!-- <div class="flex justify-end lg:me-24" v-if="users.links.length > 0">
+                        <div class="flex justify-end lg:me-24" v-if="applicants.links.length > 0">
                             <ul class="flex">
-                                <li class="mr-2" v-for="link in users.links" :key="link.label">
+                                <li class="mr-2" v-for="link in applicants.links" :key="link.label">
                                     <a :href="link.url" v-html="link.label"></a>
                                 </li>
                             </ul>
-                        </div> -->
+                        </div>
                     </div>
 
                 </div>

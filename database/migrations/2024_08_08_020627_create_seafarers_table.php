@@ -11,29 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cvforms', function (Blueprint $table) {
+        Schema::create('seafarers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('vacancy_id')->constrained()->cascadeOnDelete();
-            $table->string('profile_pic');
+            $table->foreignId('job_id')->constrained()->cascadeOnDelete();
+            $table->string('formatted_id')->unique();
+            $table->enum('status', ['new', 'on_boarding', 'active', 'inactive']);
             $table->string('fullname');
-            $table->string('rank');
+            $table->string('seaman_book');
+            $table->string('seaman_book_place');
+            $table->string('issue_date');
             $table->string('nationality');
-            $table->integer('expected_salary');
             $table->string('religion');
             $table->string('dob');
-            $table->string('place_of_birth');
-            $table->string('height');
             $table->float('weight');
+            $table->string('height');
             $table->integer('overall_size');
-            $table->string('safety_shoe_size');
             $table->string('mobile_no');
             $table->string('email');
             $table->string('next_of_kin');
             $table->string('relationship');
-            $table->string('next_of_kin_phone');
-            $table->string('next_of_kin_email');
-            $table->string('next_of_kin_address');
+            $table->string('next_of_kin_mobile');
             $table->timestamps();
         });
     }
@@ -43,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cvforms');
+        Schema::dropIfExists('seafarers');
     }
 };

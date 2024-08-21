@@ -10,7 +10,7 @@ class Certificates extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
+        'seafarer_id',
         'name',
         'certificate_no',
         'issue_date',
@@ -21,6 +21,6 @@ class Certificates extends Model
     ];
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Seafarer::class);
     }
 }

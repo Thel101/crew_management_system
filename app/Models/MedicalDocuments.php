@@ -11,7 +11,7 @@ class MedicalDocuments extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'seafarer_id',
         'type',
         'clinic',
         'document_date',
@@ -22,6 +22,6 @@ class MedicalDocuments extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Seafarer::class);
     }
 }
