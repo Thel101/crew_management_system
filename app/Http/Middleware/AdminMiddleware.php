@@ -17,7 +17,7 @@ class AdminMiddleware
     {
 
         if (auth()->check() && auth()->user()->role != 'admin') {
-            return redirect(route('form'));
+            return redirect(route('user.home'));
         }
 
         return $next($request);

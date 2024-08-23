@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificates;
+use App\Models\Jobs;
+use App\Models\Seafarer;
 use App\Models\User;
 use App\Models\Vacancies;
 use Carbon\Carbon;
@@ -15,25 +17,19 @@ class UserController extends Controller
 
     public function index()
     {
-        $vacancies = Vacancies::with(['role', 'vessel'])->get();
+        $jobs = Jobs::with(['role', 'vessel'])->get();
         return Inertia::render('User/Home', [
-            'vacancies' => $vacancies
+            'jobs' => $jobs
         ]);
     }
     public function user_list()
     {
-        $users = User::whereIn('role', ['admin', 'user'])->paginate();
+        $users = User::whereIn('role', ['admin', 'staff'])->paginate();
         return Inertia::render('Admin/UserList', [
             'users' => $users
         ]);
     }
-    public function applicant_list()
-    {
-        $applicants = User::whereIn('role', ['user'])->with('passport', 'seamanbooks')->paginate();
-        return Inertia::render('Admin/ApplicantList', [
-            'users' => $applicants,
-        ]);
-    }
+
     public function view($userid)
     {
         $user = User::find($userid);
@@ -60,23 +56,5 @@ class UserController extends Controller
         ]);
         return redirect(route('seafarer.list'));
     }
-    public function seafarer_list()
-    {
-        $seafarers = User::where('role', 'seafarer')->with('passport', 'seamanbooks')->get();
-        $seafarersData = $seafarers->map(function ($seafarer) {
-            $passport = $seafarer->passport->first();
-            $passport_status = $passport->status;
-            return [
-                'id' => $seafarer->id,
-                'name' => $seafarer->name,
-                'email' => $seafarer->email,
-                'passport' => $passport, // Assuming passport is a related model
-                'passport_status' => $passport_status,
-                'seaman_book' => $seafarer->seamanbooks->first(), // Assuming seamanbooks is a related collection
-            ];
-        });
-        return Inertia::render('Admin/Seafarer', [
-            'seafarers' => $seafarersData,
-        ]);
-    }
+
 }

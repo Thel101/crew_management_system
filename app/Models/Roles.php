@@ -13,8 +13,12 @@ class Roles extends Model
         'name',
         'description'
     ];
-    public function vacancies(): HasMany
+    public function jobs(): HasMany
     {
         return $this->hasMany(Jobs::class);
     }
+    public function seafarers(): HasMany{
+        return $this->hasMany(Seafarer::class);
+    }
 }
+

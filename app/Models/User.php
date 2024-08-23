@@ -44,28 +44,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function cvforms(): HasMany
-    {
-        return $this->hasMany(cvforms::class);
-    }
-    public function passport(): HasMany
-    {
-        return $this->hasMany(Passport::class);
-    }
-    public function seamanbooks(): HasMany
-    {
-        return $this->hasMany(Seamanbook::class);
-    }
-    public function certificates(): HasMany
-    {
-        return $this->hasMany(Certificates::class);
-    }
-    public function experiences(): HasMany
-    {
-        return $this->hasMany(Experiences::class);
-    }
-    public function medical_documents(): HasMany
-    {
-        return $this->hasMany(MedicalDocuments::class);
-    }
+
+
 }

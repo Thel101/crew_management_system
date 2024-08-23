@@ -27,14 +27,13 @@ const props = defineProps({
                     <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
-                                <th></th>
+
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Passport</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Passport Expiry Date
                                 </th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman book</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Expiry date</th>
 
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
 
@@ -43,7 +42,7 @@ const props = defineProps({
                         </thead>
 
                         <tbody class="divide-y divide-gray-200">
-                            <tr v-for="seafarer in seafarers" :key="seafarer.id">
+                            <tr v-for="seafarer in seafarers" :key="seafarer.formatted_id">
                                 <td v-show="seafarer.passport_status === 'warning'"><svg
                                         v-show="seafarer.passport_status === 'warning'"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -52,7 +51,7 @@ const props = defineProps({
                                             d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
                                     </svg></td>
                                 <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                                    {{ seafarer.name }}
+                                    {{ seafarer.fullname }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.email }}</td>
 
@@ -63,12 +62,8 @@ const props = defineProps({
                                     }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{
-                                seafarer.seaman_book.seaman_book
+                                seafarer.seaman_book
                             }}
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{
-                                    seafarer.seaman_book.expiry_date
-                                }}
                                 </td>
 
 

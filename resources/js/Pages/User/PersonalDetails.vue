@@ -17,9 +17,20 @@ const props = defineProps({
         type: Array,
         default: () => ['Buddhism', 'Christian', 'Muslim', 'Hinduism', 'Atheist']
     },
-    vacancy_id: {
+    role_id: {
+        type: String
+    },
+    vessel_id: {
+        type: String
+    },
+
+    user_name:{
+        type: String
+    },
+    user_email:{
         type: String
     }
+
 
 });
 const selectedRank = ref('');
@@ -42,7 +53,7 @@ const src = ref('');
 
 const change = (e) => {
     const file = e.target.files[0];
-    form.profile_pic = file;
+    form.profile = file;
 
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -53,41 +64,41 @@ const change = (e) => {
         reader.readAsDataURL(file);
     }
 };
-const cert_img = ref('');
+const cert_img = ref([]);
 const certificateImage = (e, index) => {
     const cert_file = e.target.files[0];
-    form1.certificates[index].cert_image = cert_file;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        form1.certificates[index].cert_img = event.target.result;
-    };
-
     if (cert_file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            // Update the image URL in cert_img
+            cert_img.value[index] = event.target.result;
+            // Also update form1 if needed
+            certificates.certificates[index].cert_image = cert_file;
+        };
         reader.readAsDataURL(cert_file);
     }
-}
+};
 const form = useForm({
-    vacancy_id: props.vacancy_id,
-    profile_pic: null,
-    fullname: '',
-    rank: '',
+    role_id: props.role_id,
+    vessel_id: props.vessel_id,
+    profile: null,
+    fullname: props.user_name,
+    seaman_book: '',
+    seaman_book_place: '',
+    issue_date: '',
     expected_salary: '',
     nationality: '',
     religion: '',
     dob: '',
-    place_of_birth: '',
     height: '',
     weight: '',
     overall_size: '',
-    safety_shoe_size: '',
     mobile_no: '',
-    email: '',
+    email: props.user_email,
     next_of_kin: '',
     relationship: '',
-    next_of_kin_phone: '',
-    next_of_kin_email: '',
-    next_of_kin_address: ''
+    next_of_kin_mobile: '',
+
 });
 const passport = useForm({
     passport_no: '',
@@ -95,14 +106,8 @@ const passport = useForm({
     issue_date: '',
     expiry_date: ''
 });
-const seaman = useForm({
-    seaman_book: '',
-    place_of_issue: '',
-    issue_date: '',
-    expiry_date: ''
 
-})
-const form1 = useForm({
+const certificates = useForm({
     certificates: [
         {
             name: '',
@@ -115,7 +120,7 @@ const form1 = useForm({
     ]
 })
 const addCertificate = () => {
-    form1.certificates.push({
+    certificates.certificates.push({
         name: '',
         certificate_no: '',
         issue_date: '',
@@ -125,10 +130,10 @@ const addCertificate = () => {
 };
 
 const removeCertificate = (index) => {
-    form1.certificates.splice(index, 1);
+    certificates.certificates.splice(index, 1);
 };
 
-const form2 = useForm({
+const experiences = useForm({
     experiences: [
         {
             ship_name: '',
@@ -145,7 +150,7 @@ const form2 = useForm({
     ]
 })
 const addExperience = () => {
-    form2.experiences.push({
+    experiences.experiences.push({
         ship_name: '',
         flag: '',
         ship_type: '',
@@ -159,7 +164,7 @@ const addExperience = () => {
 };
 
 const removeExperience = (index) => {
-    form2.experiences.splice(index, 1);
+    experiences.experiences.splice(index, 1);
 };
 watch(() => form.dob, (newValue) => {
     showPlaceholder.value = !newValue;
@@ -180,25 +185,8 @@ const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
 
 const submit = () => {
-    form.post(route('cvforms.store'), {
-        onFinish: () => {
-            passport.post(route('passport.store'), {
-                onFinish: () => {
-                    seaman.post(route('seaman.store'), {
-                        onFinish: () => {
-                            form1.post(route('certificates.store'), {
-                                onFinish: () => {
-                                    form2.post(route('experiences.store'))
-                                }
-                            })
-                        }
-                    });
-                }
-            });
-        }
-    });
-};
-
+    form.post(route('seafarers.store'));
+}
 </script>
 
 <template>
@@ -220,33 +208,24 @@ const submit = () => {
 
                             <InputLabel for="name">Full Name</InputLabel>
                             <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.fullname"
-                                autofocus />
+                                autofocus/>
 
                             <InputError class="mt-2" :message="form.errors.fullname" />
                         </div>
-                        <div class="w-1/3">
-                            <InputLabel for="">Applied Rank</InputLabel>
-                            <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
-                                <template #trigger>
-                                    <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                        {{ selectedRank || 'Select Rank' }}</div>
 
-                                </template>
-                                <template #content>
-                                    <ul>
-                                        <li v-for="rank in Ranks" :key="rank" @click="selectRank(rank)"
-                                            class="cursor-pointer hover:bg-gray-200">{{ rank }}</li>
-                                    </ul>
-                                </template>
-                            </Dropdown>
-
-                        </div>
                         <div class="w-1/3">
                             <InputLabel for="salary">Expected Salary</InputLabel>
                             <TextInput id="salary" type="number" class="mt-1 block w-full"
                                 v-model="form.expected_salary" />
 
                             <InputError class="mt-2" :message="form.errors.expected_salary" />
+                        </div>
+                        <div class="mt-1 w-1/2">
+                            <InputLabel for="dob">Date of Birth</InputLabel>
+                            <TextInput id="dob" :max="maxDate" type="text" class="mt-1 block w-full" v-model="form.dob"
+                                @focus="changeDate" @blur="checkEmpty" placeholder="Date of Birth" />
+
+                            <InputError class="mt-2" :message="form.errors.dob" />
                         </div>
                     </div>
                     <div class="flex flex-row gap-2 my-2">
@@ -266,7 +245,7 @@ const submit = () => {
 
                                 </template>
                                 <template #content>
-                                    <ul>
+                                    <ul class="px-2">
                                         <li v-for="religion in Religions" :key="religion"
                                             @click="selectReligion(religion)" class="cursor-pointer hover:bg-gray-200">
                                             {{ religion }}</li>
@@ -276,52 +255,27 @@ const submit = () => {
 
                         </div>
                     </div>
+
                     <div class="flex flex-row gap-2 my-2">
-
-                        <div class="mt-1 w-1/2">
-                            <InputLabel for="dob">Date of Birth</InputLabel>
-                            <TextInput id="dob" :max="maxDate" type="text" class="mt-1 block w-full" v-model="form.dob"
-                                @focus="changeDate" @blur="checkEmpty" placeholder="Date of Birth" />
-
-                            <InputError class="mt-2" :message="form.errors.dob" />
-                        </div>
-                        <div class="w-1/2">
-                            <InputLabel for="place_birth">Place of Birth</InputLabel>
-                            <TextInput id="place_birth" type="text" class="mt-1 block w-full"
-                                v-model="form.place_of_birth" placeholder="Place of Birth" />
-
-                            <InputError class="mt-2" :message="form.errors.place_of_birth" />
-                        </div>
-
-                    </div>
-                    <div class="flex flex-row gap-2 my-2">
-                        <div class="w-1/4">
+                        <div class="w-1/3">
                             <InputLabel for="height">Height</InputLabel>
                             <TextInput id="height" type="text" class="mt-1 block w-full" v-model="form.height"
                                 placeholder="e.g. 5 ft 12 in" />
 
                             <InputError class="mt-2" :message="form.errors.height" />
                         </div>
-                        <div class="w-1/4">
+                        <div class="w-1/3">
                             <InputLabel for="weight">Weight</InputLabel>
                             <TextInput id="weight" type="text" class="mt-1 block w-full" v-model="form.weight"
                                 placeholder="in kg, e.g. 56" />
                             <InputError class="mt-2" :message="form.errors.weight" />
                         </div>
-                        <div class="w-1/4">
+                        <div class="w-1/3">
                             <InputLabel for="overall_size">Overall_size</InputLabel>
                             <TextInput id="overall_size" type="number" min="30" max="50" class="mt-1 block w-full"
                                 v-model="form.overall_size" placeholder="in EU, e.g.46" />
 
                             <InputError class="mt-2" :message="form.errors.overall_size" />
-                        </div>
-
-                        <div class="w-48">
-                            <InputLabel for="safety_shoe_size">Safety Shoe Size</InputLabel>
-                            <TextInput id="safety_shoe_size" type="number" min="30" max="40" class="mt-1 block w-full"
-                                v-model="form.safety_shoe_size" placeholder="in EU, e.g. 46" />
-
-                            <InputError class="mt-2" :message="form.errors.safety_shoe_size" />
                         </div>
 
                     </div>
@@ -358,35 +312,49 @@ const submit = () => {
                         <div>
                             <InputLabel for="next_of_kin_mobile">Next of Kin Mobile</InputLabel>
                             <TextInput id="next_of_kin_mobile" type="text" class="mt-1 block w-full"
-                                v-model="form.next_of_kin_phone" />
+                                v-model="form.next_of_kin_mobile" />
 
-                            <InputError class="mt-2" :message="form.errors.next_of_kin_phone" />
+                            <InputError class="mt-2" :message="form.errors.next_of_kin_mobile" />
                         </div>
                     </div>
                     <div class="flex flex-row gap-2 my-2">
-                        <div class="w-1/3">
-                            <InputLabel for="next_of_kin_email">Next of Kin Email</InputLabel>
-                            <TextInput id="next_of_kin_email" type="text" class="mt-1 block w-full"
-                                v-model="form.next_of_kin_email" />
+                        <div>
+                            <InputLabel for="next_of_kin">Seaman Book Number</InputLabel>
+                            <TextInput id="next_of_kin" type="text" class="mt-1 block w-full"
+                                v-model="form.seaman_book" />
 
-                            <InputError class="mt-2" :message="form.errors.next_of_kin_email" />
+                            <InputError class="mt-2" :message="form.errors.seaman_book" />
                         </div>
-                        <div class="w-2/3">
-                            <InputLabel for="next_of_kin_address">Next of Kin Address</InputLabel>
-                            <TextInput id="next_of_kin_address" type="text" class="mt-1 block w-full"
-                                v-model="form.next_of_kin_address" placeholder="(House No, Road, Township, City)" />
+                        <div>
+                            <InputLabel for="relationship">Book Issue Date</InputLabel>
+                            <TextInput id="relationship" type="date" class="mt-1 block w-full"
+                                v-model="form.issue_date" />
 
-                            <InputError class="mt-2" :message="form.errors.next_of_kin_address" />
+                            <InputError class="mt-2" :message="form.errors.issue_date" />
+                        </div>
+                        <div>
+                            <InputLabel for="next_of_kin_mobile">Book Issue Place</InputLabel>
+                            <TextInput id="next_of_kin_mobile" type="text" class="mt-1 block w-full"
+                                v-model="form.seaman_book_place" />
+
+                            <InputError class="mt-2" :message="form.errors.place_of_issue" />
                         </div>
                     </div>
-                    <div type="button" class="flex flex-row justify-end" @click="step_1 = !step_1; step_2 = !step_2">
-                        <button type="button">Continue</button>
+                    <div class="flex flex-row justify-center mt-3">
+                        <PrimaryButton class=" bg-blue-500 rounded-full p-3" :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing">
+                        Upload Personal Details
+                        </PrimaryButton>
                     </div>
+
+
                 </div>
+            </form>
                 <!--Personal Details-->
                 <div v-if="step_2">
                     <!---Passport-->
-                    <div>
+                    <form>
+                        <div>
                         <h1 class="my-2 text-xl">Passport Info</h1>
                         <div class="flex flex-row gap-2 my-2">
                             <div class="w-1/4">
@@ -421,46 +389,11 @@ const submit = () => {
                             </div>
                         </div>
                     </div>
+                    </form>
+
                     <!---Passport-->
 
-                    <!---Seaman-->
-                    <div>
-                        <h1 class="my-2 text-xl">Seaman Book Info</h1>
-                        <div class="flex flex-row gap-2 my-2">
 
-                            <div class="w-1/4">
-
-                                <InputLabel for="seaman_book">Seaman Book No:</InputLabel>
-                                <TextInput id="seaman_book" type="text" class="mt-1 block w-full"
-                                    v-model="seaman.seaman_book" />
-
-                                <InputError class="mt-2" :message="seaman.errors.seaman_book" />
-                            </div>
-                            <div class="w-1/4">
-                                <InputLabel for="place_of_issue_seaman">Place of issue</InputLabel>
-                                <TextInput id="place_of_issue_seaman" type="text" class="mt-1 block w-full"
-                                    v-model="seaman.place_of_issue" />
-
-                                <InputError class="mt-2" :message="seaman.errors.place_of_issue" />
-
-                            </div>
-                            <div class="w-1/4">
-                                <InputLabel for="issue_date_seaman">Issue date</InputLabel>
-                                <TextInput id="issue_date_seaman" type="date" class="mt-1 block w-full"
-                                    v-model="seaman.issue_date" />
-
-                                <InputError class="mt-2" :message="seaman.errors.issue_date" />
-                            </div>
-                            <div>
-                                <InputLabel for="expiry_date_seaman">Expiry Date</InputLabel>
-                                <TextInput id="expiry_date_seaman" type="date" class="mt-1 block w-full"
-                                    v-model="seaman.expiry_date" />
-
-                                <InputError class="mt-2" :message="seaman.errors.expiry_date" />
-                            </div>
-                        </div>
-                    </div>
-                    <!---Seaman-->
                     <div>
                         <!-- Labels displayed only once -->
                         <div class="flex gap-5">
@@ -469,23 +402,33 @@ const submit = () => {
                             <InputLabel class="ms-14">Issue Date</InputLabel>
                             <InputLabel class="ms-16">Expiry Date</InputLabel>
                             <InputLabel class="ms-20">Issuing Authority</InputLabel>
-                            <InputLabel class="ms-20">Certificate Image</InputLabel>
+
                         </div>
 
 
-                        <div v-for="(certificate, index) in form1.certificates" :key="index" class="flex gap-2 mt-2">
-                            <TextInput type="text" v-model="certificate.name" placeholder="Certificate Name" />
-                            <TextInput type="text" v-model="certificate.certificate_no"
-                                placeholder="Certificate Number" />
-                            <TextInput type="date" v-model="certificate.issue_date" placeholder="Issue Date" />
-                            <TextInput type="date" v-model="certificate.expiry_date" placeholder="Expiry Date" />
-                            <TextInput type="text" v-model="certificate.issuing_authority"
-                                placeholder="Issuing Authority" />
-                            <input type="file" @input="certificateImage($event, index)">
-                            <img v-if="cert_img[index]" :src="cert_img[index]" alt="Certificate" class="w-24 h-24">
-                            <button type="button" @click="removeCertificate(index)">Remove</button>
-                            <button type="button" @click="addCertificate(index)">Add</button>
+                        <div v-for="(certificate, index) in certificates.certificates" :key="index" class="flex flex-col gap-2 mt-2">
+                            <div>
+                                <TextInput type="text" v-model="certificate.name" placeholder="Certificate Name" />
+                                <TextInput type="text" v-model="certificate.certificate_no"
+                                    placeholder="Certificate Number" />
+                                <TextInput type="date" v-model="certificate.issue_date" placeholder="Issue Date" />
+                                <TextInput type="date" v-model="certificate.expiry_date" placeholder="Expiry Date" />
+                                <TextInput type="text" v-model="certificate.issuing_authority"
+                                    placeholder="Issuing Authority" />
+
+                            </div>
+
+                            <div class="flex">
+                                <input type="file" @input="certificateImage($event, index)">
+                                <img v-show="cert_img[index]" :src="cert_img[index]" alt="Certificate" class="w-24 h-24">
+                            </div>
+                            <div class="flex flex-row gap-2">
+                                <button class="bg-red-300 p-2 rounded-md" type="button" @click="removeCertificate(index)">Remove</button>
+                                <button class="bg-green-300 p-2 rounded-md" type="button" @click="addCertificate(index)">Add</button>
+                            </div>
+                        <hr style="border: 1px solid #ccc; margin: 20px 0;">
                         </div>
+                        <br>
                         <button class="bg-green-200 p-3" type="button"
                             @click="step_1 = !step_1; step_2 = !step_2">1</button>
                         <button class="bg-green-200 p-3" @click="step_2 = !step_2; step_3 = !step_3"
@@ -511,7 +454,7 @@ const submit = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(experience, index) in form2.experiences" :key="index">
+                            <tr v-for="(experience, index) in experiences.experiences" :key="index">
 
                                 <td>
                                     <TextInput for="ship_name" type="text" v-model="experience.ship_name" />
@@ -573,14 +516,12 @@ const submit = () => {
                             type="button">Prev</button>
                     </div>
 
+
                 </div>
 
 
-                <PrimaryButton class="ms-4 bg-blue-500 rounded-full p-3" :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing">
-                    Submit
-                </PrimaryButton>
-            </form>
+
+
 
         </div>
 

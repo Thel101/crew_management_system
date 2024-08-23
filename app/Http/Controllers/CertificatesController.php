@@ -31,6 +31,7 @@ class CertificatesController extends Controller
 
         $request->validate([
             'certificates' => 'required|array',
+            'certificates.*.seafarer_id' => 'required',
             'certificates.*.name' => 'required|string',
             'certificates.*.certificate_no' => 'required|string',
             'certificates.*.issue_date' => 'required|string',
@@ -41,7 +42,6 @@ class CertificatesController extends Controller
 
         foreach ($request->certificates as $certificate) {
             // Save each certificate record to the database
-            $certificate['user_id'] = auth()->user()->id;
             if (isset($certificate['cert_image'])) {
                 $file = uniqid() . '_' . $certificate['cert_image']->getClientOriginalName();
                 $certificate['cert_image']->storeAs('public/images', $file);
@@ -50,7 +50,7 @@ class CertificatesController extends Controller
             Certificates::create($certificate);
         }
 
-        return redirect(route('cvforms.index'));
+        return redirect(route('user.home'));
     }
 
     /**

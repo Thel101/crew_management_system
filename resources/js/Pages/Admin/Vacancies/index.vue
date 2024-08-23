@@ -18,7 +18,7 @@ defineProps
         roles: {
             type: Array
         },
-        vacancies: {
+        jobs: {
             type: Object
         }
     })
@@ -36,12 +36,12 @@ const form = useForm({
     role_id: '',
     vessel_id: '',
     description: '',
-    requirements: '',
-    availability: '',
+    count: 0
+
 });
 
 const submit = () => {
-    form.post(route('vacancies.store'), {
+    form.post(route('jobs.store'), {
         onSuccess: () => {
             form.reset();
             selectedVessel.value = '',
@@ -65,7 +65,7 @@ const submit = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
                     <div class="max-w-2xl mx-auto shadow-sm sm:rounded-lg bg-slate-200 p-2 px-5">
-                        <h1 class="text-xl font-bold text-center mb-5 mt-3">Create New Vacancy</h1>
+                        <h1 class="text-xl font-bold text-center mb-5 mt-3">Create New Job</h1>
                         <form @submit.prevent="submit">
 
                             <div>
@@ -112,35 +112,18 @@ const submit = () => {
                             </div>
 
                             <div>
-                                <InputLabel for="availability" value="Availabile vacancy count" />
-
-                                <TextInput id="availability" type="number" class="mt-1 block w-full"
-                                    v-model="form.availability" />
-
-                                <InputError class="mt-2" :message="form.errors.availability" />
-                            </div>
-
-                            <div>
-                                <InputLabel for="description" value="Vacancy description" />
+                                <InputLabel for="description" value="Job description" />
 
                                 <TextInput id="description" type="text" class="mt-1 block w-full"
                                     v-model="form.description" />
 
                                 <InputError class="mt-2" :message="form.errors.description" />
                             </div>
-                            <div>
-                                <InputLabel for="requirement" value="Vacancy requirements" />
-
-                                <TextInput id="requirement" type="text" class="mt-1 block w-full"
-                                    v-model="form.requirements" />
-
-                                <InputError class="mt-2" :message="form.errors.requirements" />
-                            </div>
 
                             <div class="flex justify-center">
                                 <PrimaryButton class="my-5" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
-                                    Create New Vacancy
+                                    Create New Job
                                 </PrimaryButton>
                             </div>
 
@@ -151,14 +134,14 @@ const submit = () => {
 
 
                 </div>
-                <div class="mt-3" v-show="vacancies.data.length <= 0">
-                    <h1 class="text-center text-red-500 font-bold text-2xl">There is no available vacancies!
+                <div class="mt-3" v-show="jobs.data.length <= 0">
+                    <h1 class="text-center text-red-500 font-bold text-2xl">There is no available jobs!
                     </h1>
                 </div>
-                <div v-show="vacancies.data.length > 0">
+                <div v-show="jobs.data.length > 0">
                     <div class="overflow-x-auto">
                         <div class="flex flex-row justify-between min-w-xl w-lg my-5">
-                            <h1 class="text-xl text-center lg:ms-28 md:ms-4"> Vacancies </h1>
+                            <h1 class="text-xl text-center lg:ms-28 md:ms-4"> Jobs </h1>
                             <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-28 md:me-4"
                                 name="search" placeholder="search.....">
                         </div>
@@ -168,28 +151,22 @@ const submit = () => {
                                 <tr>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessle Name</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
-                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Availability</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
-                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Requirements</th>
 
                                     <th class="px-4 py-2"></th>
                                 </tr>
                             </thead>
 
                             <tbody class="divide-y divide-gray-200">
-                                <tr v-for="vacancy in vacancies.data" :key="vacancy.id">
+                                <tr v-for="job in jobs.data" :key="job.id">
                                     <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
-                            vacancy.vessel.name }}
+                            job.vessel.name }}
                                     </td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.role.name }}</td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.availability }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.description }}</td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vacancy.requirements }}
-                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.role.name }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.description }}</td>
 
                                     <td class="whitespace-nowrap px-4 py-2">
-                                        <a href="#"
+                                        <a :href="route('assign.seafarers', job.role_id)"
                                             class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                             View
                                         </a>
@@ -199,9 +176,9 @@ const submit = () => {
 
                             </tbody>
                         </table>
-                        <div class="flex justify-end lg:me-24" v-if="vacancies.links.length > 0">
+                        <div class="flex justify-end lg:me-24" v-if="jobs.links.length > 0">
                             <ul class="flex">
-                                <li class="mr-2" v-for="link in vacancies.links" :key="link.label">
+                                <li class="mr-2" v-for="link in jobs.links" :key="link.label">
                                     <a :href="link.url" v-html="link.label"></a>
                                 </li>
                             </ul>
