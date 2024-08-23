@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('seafarers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('job_id')->constrained()->cascadeOnDelete();
-            $table->string('formatted_id')->unique();
+            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('vessel_id')->constrained()->cascadeOnDelete()->nullable();
+            $table->string('formatted_id')->default('');
             $table->enum('status', ['new', 'on_boarding', 'active', 'inactive']);
             $table->string('fullname');
-            $table->string('seaman_book');
+            $table->string('profile');
+            $table->string('seaman_book')->unique();
             $table->string('seaman_book_place');
             $table->string('issue_date');
             $table->string('nationality');

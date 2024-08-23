@@ -14,9 +14,7 @@ class Jobs extends Model
         'role_id',
         'vessel_id',
         'description',
-        'requirements',
-        'availability',
-        'status'
+        'count'
     ];
 
     public function role(): BelongsTo
@@ -29,6 +27,6 @@ class Jobs extends Model
     }
     public function seafarers(): HasMany
     {
-        return $this->hasMany(cvforms::class);
+        return $this->hasMany(Seafarer::class);
     }
 }

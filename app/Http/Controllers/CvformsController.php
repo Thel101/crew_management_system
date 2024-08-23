@@ -14,12 +14,7 @@ class CvformsController extends Controller
      */
     public function index($vacancy_id)
     {
-        return Inertia::render(
-            'User/CVForm',
-            [
-                'vacancy_id' => $vacancy_id
-            ]
-        );
+
     }
 
     /**

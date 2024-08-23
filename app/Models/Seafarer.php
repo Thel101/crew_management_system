@@ -23,10 +23,12 @@ class Seafarer extends Model
     }
     protected $fillable = [
         'user_id',
-        'job_id',
+        'role_id',
+        'vessel_id',
         'status',
         'formatted_id',
         'fullname',
+        'profile',
         'seaman_book',
         'seaman_book_place',
         'issue_date',
@@ -42,10 +44,11 @@ class Seafarer extends Model
         'relationship',
         'next_of_kin_mobile'
     ];
-
-    public function job(): BelongsTo
-    {
-        return $this->belongsTo(Jobs::class);
+    public function role(): BelongsTo{
+        return $this->belongsTo(Roles::class);
+    }
+    public function vessel(): BelongsTo{
+        return $this->belongsTo(Vessels::class);
     }
     public function passport(): HasMany
     {

@@ -5,7 +5,7 @@ const props = defineProps({
     canLogin: {
         type: Boolean,
     },
-    vacancies: {
+    jobs: {
         type: Object
     }
 });
@@ -23,15 +23,15 @@ const props = defineProps({
             Log out
             </Link>
             <div class="grid grid-cols-2 gap-4 w-4/5 mt-10">
-                <div v-for="vacancy in vacancies" :key="vacancy.id"
+                <div v-for="job in jobs" :key="job.id"
                     class="relative bg-white rounded-md text-center px-3 py-7 text-lg group min-w-3xl">
-                    <div class="group-hover:opacity-20 transition-opacity duration-300">{{ vacancy.role.name }}</div>
-                    <div class="group-hover:opacity-20 transition-opacity duration-300">{{ vacancy.description }}</div>
-                    <div class="group-hover:opacity-20 transition-opacity duration-300 font-bold">{{ vacancy.vessel.name
+                    <div class="group-hover:opacity-20 transition-opacity duration-300">{{ job.role.name }}</div>
+                    <div class="group-hover:opacity-20 transition-opacity duration-300">{{ job.description }}</div>
+                    <div class="group-hover:opacity-20 transition-opacity duration-300 font-bold">{{ job.vessel.name
                         }}
                     </div>
                     <div class="absolute top-12 right-2 left-2">
-                        <Link :href="route('cvforms.index', vacancy.id)"><button
+                        <Link :href="route('cvforms.index', job.role.id)"><button
                             class="bg-blue-300 rounded-full px-4 py-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Apply
                             Now</button>
                         </Link>

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jobs;
 use App\Models\Roles;
+use App\Models\Seafarer;
 use Inertia\Inertia;
 use App\Models\Vacancies;
 use App\Models\Vessels;
 use Illuminate\Http\Request;
 
-class VacanciesController extends Controller
+class JobsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +19,7 @@ class VacanciesController extends Controller
     {
 
         return Inertia::render('Admin/Vacancies/index', [
-            'vacancies' => Vacancies::with(['role', 'vessel'])->paginate(5),
+            'jobs' => Jobs::with(['role', 'vessel'])->paginate(5),
             'roles' => Roles::all(),
             'vessels' => Vessels::all(),
         ]);
@@ -40,26 +42,31 @@ class VacanciesController extends Controller
             'role_id' => 'required',
             'vessel_id' => 'required',
             'description' => 'required|string',
-            'requirements' => 'required',
-            'availability' => 'required',
-
         ]);
-        Vacancies::create($validated);
-        return redirect(route('vacancies.index'));
+        Jobs::create($validated);
+        return redirect(route('jobs.index'));
     }
-
+    public function assignSeafarers($role_id){
+        $applicants = Seafarer::
+        with('passport', 'certificates','job.role','job.vessel')
+        ->whereHas('job', function($query) use ($role_id) {
+            $query->where('id', $role_id);
+        })
+        ->get();
+        dd($applicants);
+    }
     /**
      * Display the specified resource.
      */
-    public function show(Vacancies $vacancies)
+    public function show(Request $request)
     {
-        //
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Vacancies $vacancies)
+    public function edit(Jobs $jobs)
     {
         //
     }
@@ -67,7 +74,7 @@ class VacanciesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Vacancies $vacancies)
+    public function update(Request $request, Jobs $jobs)
     {
         //
     }
@@ -75,7 +82,7 @@ class VacanciesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Vacancies $vacancies)
+    public function destroy(Jobs $jobs)
     {
         //
     }

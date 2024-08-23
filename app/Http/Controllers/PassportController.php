@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Passport;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PassportController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($seafarer_id)
     {
-        //
+        return Inertia::render('User/PassportForm',[
+            'seafarer_id' => $seafarer_id
+        ]);
     }
 
     /**
@@ -29,15 +32,15 @@ class PassportController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'passport_no' => 'required|string|max:10',
+            'seafarer_id' => 'required',
+            'passport_no' => 'required|string|max:10|unique:passports,passport_no,except,id',
             'place_of_issue' => 'required|string|max:15',
             'issue_date' => 'required',
             'expiry_date' => 'required',
         ]);
         $validated['status'] = 'active';
-        $validated['user_id'] = auth()->user()->id;
         Passport::create($validated);
-        return redirect(route('cvforms.index'));
+        return redirect(route('user.home'));
     }
 
     /**

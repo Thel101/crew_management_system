@@ -1,7 +1,7 @@
 <script setup>
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, Link } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
@@ -10,17 +10,15 @@ import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } fro
 const open = ref(false)
 
 const props = defineProps({
-    user:
+    applicant:
     {
         type: Object
     },
-    cvform: {
+    jobs:{
         type: Object
     },
+
     passport: {
-        type: Object
-    },
-    seaman_book: {
         type: Object
     },
     certificates: {
@@ -28,18 +26,8 @@ const props = defineProps({
     },
     experiences: {
         type: Array
-    },
-    vacancies: {
-        type: Array
     }
 })
-const form = useForm({
-    user_id: props.user.id,
-});
-const changeUserRole = () => {
-    open.value = false
-    form.patch('/user/update')
-};
 
 </script>
 
@@ -56,7 +44,7 @@ const changeUserRole = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
                     <div class="flex flex-row">
-                        <img :src="`/storage/images/${cvform.profile_pic}`" class="w-48 h-48 rounded-md" />
+                        <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
                         <div class="ml-10">
                             <TransitionRoot as="template" :show="open">
                                 <Dialog class="relative z-10" @close="open = false">
@@ -118,83 +106,63 @@ const changeUserRole = () => {
                             </TransitionRoot>
                             <h1>Personal Details</h1>
 
-                            <ul>
-                                <li v-for="vacancy in vacancies" :key="vacancy.id">
-                                    Applied Position: {{ vacancy.description }} , {{ vacancy.role.name }}
-                                    <PrimaryButton @click="open = true">Accept</PrimaryButton>
-                                </li>
-                            </ul>
+
                             <div class="flex flex-row">
                                 <div>
-                                    Name <span>{{ cvform.fullname }}</span>
+                                    Name <span>{{ applicant.fullname }}</span>
                                 </div>
 
                                 <div>
-                                    Rank <span>{{ cvform.rank }}</span>
+                                    Rank <span>{{ applicant.rank }}</span>
                                 </div>
                                 <div>
-                                    Expected Salary <span>{{ cvform.expected_salary }}</span>
+                                    Expected Salary <span>{{ applicant.expected_salary }}</span>
                                 </div>
 
                                 <div>
-                                    Nationality <span>{{ cvform.nationality }}</span>
+                                    Nationality <span>{{ applicant.nationality }}</span>
                                 </div>
                                 <div>
-                                    Religion <span>{{ cvform.religion }}</span>
+                                    Religion <span>{{ applicant.religion }}</span>
                                 </div>
 
 
                             </div>
                             <div class="flex flex-row">
                                 <div>
-                                    Date of birth <span>{{ cvform.dob }}</span>
-                                </div>
-
-                                <div>
-                                    Place of brith <span>{{ cvform.place_of_birth }}</span>
-                                </div>
-                                <div>
-                                    Height <span>{{ cvform.height }}</span>
-                                </div>
-
-                                <div>
-                                    Weight <span>{{ cvform.weight }}</span>
-                                </div>
-                                <div>
-                                    Overall size <span>{{ cvform.overall_size }}</span>
-                                </div>
-                                <div>
-                                    Safety shoe size <span>{{ cvform.safety_shoe_size }}</span>
+                                    Date of birth <span>{{ applicant.dob }}</span>
                                 </div>
 
 
-                            </div>
-                            <div class="flex flex-row">
                                 <div>
-                                    Mobile Number <span>{{ cvform.mobile_no }}</span>
+                                    Height <span>{{ applicant.height }}</span>
                                 </div>
 
                                 <div>
-                                    Email <span>{{ cvform.email }}</span>
+                                    Weight <span>{{ applicant.weight }}</span>
                                 </div>
 
                             </div>
                             <div class="flex flex-row">
                                 <div>
-                                    Next of Kin <span>{{ cvform.next_of_kin }}</span>
+                                    Mobile Number <span>{{ applicant.mobile_no }}</span>
                                 </div>
 
                                 <div>
-                                    Relationship <span>{{ cvform.relationship }}</span>
+                                    Email <span>{{ applicant.email }}</span>
+                                </div>
+
+                            </div>
+                            <div class="flex flex-row">
+                                <div>
+                                    Next of Kin <span>{{ applicant.next_of_kin }}</span>
+                                </div>
+
+                                <div>
+                                    Relationship <span>{{ applicant.relationship }}</span>
                                 </div>
                                 <div>
-                                    Next of Kin Phone <span>{{ cvform.next_of_kin_phone }}</span>
-                                </div>
-                                <div>
-                                    Email <span>{{ cvform.next_of_kin_email }}</span>
-                                </div>
-                                <div>
-                                    Address <span>{{ cvform.next_of_kin_address }}</span>
+                                    Next of Kin Phone <span>{{ applicant.next_of_kin_phone }}</span>
                                 </div>
 
                             </div>
@@ -211,10 +179,10 @@ const changeUserRole = () => {
                         </div>
                         <div>
                             <h1>Seaman Book</h1>
-                            <div>Seaman book No: {{ seaman_book.seaman_book }}</div>
-                            <div>Place of issue: {{ seaman_book.place_of_issue }}</div>
-                            <div>Issue Date {{ seaman_book.issue_date }}</div>
-                            <div>Expriy Date {{ seaman_book.expiry_date }}</div>
+                            <div>Seaman book No: {{ applicant.applicant }}</div>
+                            <div>Place of issue: {{ applicant.place_of_issue }}</div>
+                            <div>Issue Date {{ applicant.issue_date }}</div>
+
                         </div>
 
                     </div>
@@ -309,6 +277,10 @@ const changeUserRole = () => {
                             </tbody>
                         </table>
                     </div>
+                    <!-- <Link method="patch" as="button" :href="route('applicant.status', applicant.id)">
+                        <PrimaryButton>Accept</PrimaryButton>
+                    </Link> -->
+
                 </div>
             </div>
         </div>

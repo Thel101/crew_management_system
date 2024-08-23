@@ -1,6 +1,8 @@
 <script setup>
-import TableCellVue from '@/Components/TableCell.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 
 const props = defineProps({
     users:
@@ -8,7 +10,15 @@ const props = defineProps({
         type: Array
     }
 })
+const form = useForm({
+    name: '',
+    email: '',
+    password: ''
+})
 
+const submit =()=>{
+
+}
 </script>
 
 <template>
@@ -21,6 +31,38 @@ const props = defineProps({
         </template>
 
         <div class="py-12">
+
+            <div class="max-w-lg mx-auto bg-slate-200 rounded-md p-3 mb-5">
+                <h1 class="text-center text-xl font-semibold mb-5 mt-3">Create New User</h1>
+                <form @submit.prevent="submit">
+                    <div>
+                        <InputLabel for="name" value="Role Name" />
+
+                        <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name"
+                            autofocus />
+
+                        <InputError class="mt-2" :message="form.errors.name" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="description" value="Role Brief Description" />
+
+                        <TextInput id="description" type="text" class="mt-1 block w-full"
+                            v-model="form.description" />
+
+                        <InputError class="mt-2" :message="form.errors.description" />
+                    </div>
+                    <div class="flex justify-center">
+                        <PrimaryButton class="mt-5 mb-3" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">
+                            Create New Role
+                        </PrimaryButton>
+                    </div>
+
+
+                </form>
+            </div>
+
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
                     <div v-show="users.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There is no
@@ -49,7 +91,7 @@ const props = defineProps({
                                     </td>
 
                                     <td class="whitespace-nowrap px-4 py-2">
-                                        <a :href="route('user.detail', user.id)"
+                                        <a href="#"
                                             class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                             View
                                         </a>
