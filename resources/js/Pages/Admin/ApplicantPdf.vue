@@ -6,7 +6,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { Inertia } from '@inertiajs/inertia';
-import axios from 'axios';
 
 const open = ref(false)
 
@@ -30,17 +29,16 @@ const props = defineProps({
     }
 })
 
+const printme = () => {
+  window.print()
+};
 
 </script>
 
 <template>
 
-    <Head title="Dashboard" />
+    <Head title="Applicant CV" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Users</h2>
-        </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -48,68 +46,11 @@ const props = defineProps({
                     <div class="flex flex-row">
                         <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
                         <div class="ml-10">
-                            <TransitionRoot as="template" :show="open">
-                                <Dialog class="relative z-10" @close="open = false">
-                                    <TransitionChild as="template" enter="ease-out" enter-from="opacity-0"
-                                        enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100"
-                                        leave-to="opacity-0">
-                                        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                                    </TransitionChild>
 
-                                    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                                        <div
-                                            class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                                            <TransitionChild as="template" enter="ease-out duration-300"
-                                                enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                enter-to="opacity-100 translate-y-0 sm:scale-100"
-                                                leave="ease-in duration-200"
-                                                leave-from="opacity-100 translate-y-0 sm:scale-100"
-                                                leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-                                                <DialogPanel
-                                                    class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                                                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                                                        <div class="sm:flex sm:items-start">
-                                                            <div
-                                                                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                    viewBox="0 0 24 24" stroke-width="1.5"
-                                                                    stroke="currentColor" class="size-6">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                        d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-                                                                </svg>
-
-                                                            </div>
-                                                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                                                <DialogTitle as="h3"
-                                                                    class="text-base font-semibold leading-6 text-gray-900">
-                                                                    Accept Application</DialogTitle>
-                                                                <div class="mt-2">
-                                                                    <p class="text-sm text-gray-500">Are you sure you
-                                                                        want to accept the application from this user?.
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                                        <button type="button"
-                                                            class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                                                            @click="changeUserRole">Accept</button>
-                                                        <button type="button"
-                                                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                                            @click="open = false" ref="cancelButtonRef">Cancel</button>
-                                                    </div>
-                                                </DialogPanel>
-                                            </TransitionChild>
-                                        </div>
-                                    </div>
-                                </Dialog>
-                            </TransitionRoot>
                             <h1>Personal Details</h1>
 
-
-                            <div class="flex flex-row" id="pdf-content">
+                            <div>
+                                <div class="flex flex-row" id="pdf-content">
                                 <div>
                                     Name <span>{{ applicant.fullname }}</span>
                                 </div>
@@ -168,9 +109,8 @@ const props = defineProps({
                                 </div>
 
                             </div>
-                        </div>
-                    </div>
-                    <hr class="h-8">
+                            </div>
+                            <hr class="h-8">
                     <div class="flex flex-row justify-between">
                         <div>
                             <h1>Passport</h1>
@@ -279,14 +219,17 @@ const props = defineProps({
                             </tbody>
                         </table>
                     </div>
-                    <a target="__blank" :href="route('applicant.pdf', applicant.id)">
-                        Save as PDF
-                    </a>
+
+
+                        </div>
+                    </div>
+
+                    <a href="" target="__blank" @click.prevent="printme">Print</a>
 
                 </div>
             </div>
         </div>
 
 
-    </AuthenticatedLayout>
+
 </template>
