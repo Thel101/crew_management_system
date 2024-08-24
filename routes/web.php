@@ -42,6 +42,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/users', [UserController::class, 'user_list'])->name('users.list');
     Route::get('/applicant/{id}', [SeafarerController::class, 'show'])->name('applicant.detail');
     Route::patch('/applicant', [SeafarerController::class, 'changeStatus'])->name('applicant.status');
+    Route::get('/pdf/applicant/{id}',[SeafarerController::class,'viewpdf'])->name('applicant.pdf');
     Route::get('/seafarers', [SeafarerController::class, 'seafarer_list'])->name('seafarer.list');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'update');

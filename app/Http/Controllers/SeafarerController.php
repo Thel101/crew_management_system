@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jobs;
+use Dompdf\Dompdf;
 use Inertia\Inertia;
 use App\Models\Seafarer;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-
 class SeafarerController extends Controller
 {
 
@@ -146,7 +146,21 @@ class SeafarerController extends Controller
             'seafarers' => $seafarersData,
         ]);
     }
+    /**
+     * View pdf
+     */
+    public function viewpdf($seafarer_id)
+    {
+        $seafarer = Seafarer::find($seafarer_id);
 
+        return Inertia('Admin/ApplicantPdf', [
+            'applicant' => $seafarer,
+            'passport' => $seafarer->passport->first(),
+            'certificates' => $seafarer->certificates,
+            'experiences' => $seafarer->experiences,
+
+        ]);
+    }
     /**
      * Update the specified resource in storage.
      */
