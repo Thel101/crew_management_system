@@ -38,16 +38,21 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-    Route::get('/applicants', [SeafarerController::class, 'applicant_list'])->name('applicants.list');
+    Route::controller(SeafarerController::class)->group(function () {
+        Route::get('/applicants', 'applicant_list')->name('applicants.list');
+        Route::get('/applicant/{id}', 'show')->name('applicant.detail');
+        Route::patch('/applicant', 'changeStatus')->name('applicant.status');
+        Route::get('/pdf/applicant/{id}', 'viewpdf')->name('applicant.pdf');
+        Route::get('/seafarers', 'seafarer_list')->name('seafarer.list');
+        Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
+        Route::get('/applicants', 'applicant_list')->name('applicants.list');
+        Route::post('/seafarer/upload/medical','uploadMedicalDocuments')->name('seafarer.medical');
+    });
     Route::get('/users', [UserController::class, 'user_list'])->name('users.list');
-    Route::get('/applicant/{id}', [SeafarerController::class, 'show'])->name('applicant.detail');
-    Route::patch('/applicant', [SeafarerController::class, 'changeStatus'])->name('applicant.status');
-    Route::get('/pdf/applicant/{id}',[SeafarerController::class,'viewpdf'])->name('applicant.pdf');
-    Route::get('/seafarers', [SeafarerController::class, 'seafarer_list'])->name('seafarer.list');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'update');
     Route::resource('jobs', JobsController::class)->only('index', 'store', 'update');
-    Route::get('/assign/seafarers/{role_id}',[JobsController::class,'assignSeafarers'])->name('assign.seafarers');
+    Route::get('/assign/seafarers/{role_id}', [JobsController::class, 'assignSeafarers'])->name('assign.seafarers');
 });
 
 Route::middleware(['auth', 'user'])->group(function () {
@@ -58,7 +63,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('cvforms/{role_id}', [SeafarerController::class, 'index'])->name('cvforms.index');
     Route::get('passport/{seafarer_id}', [PassportController::class, 'index'])->name('passport.index');
     Route::resource('passport', PassportController::class)
-        ->only( 'store');
+        ->only('store');
     Route::resource('certificates', CertificatesController::class)
         ->only('index', 'store');
     Route::resource('experiences', ExperiencesController::class)
