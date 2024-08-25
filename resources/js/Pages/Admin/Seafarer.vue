@@ -1,8 +1,7 @@
 <script setup>
-import TableCellVue from '@/Components/TableCell.vue';
+
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import TableCell from '@/Components/TableCell.vue';
+import { Head } from '@inertiajs/vue3';
 const props = defineProps({
     seafarers: {
         type: Array
@@ -68,7 +67,7 @@ const props = defineProps({
 
 
                                 <td class="whitespace-nowrap px-4 py-2">
-                                    <a href="#"
+                                    <a :href="route('seafarer.detail', seafarer.id)"
                                         class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         View
                                     </a>

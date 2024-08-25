@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jobs;
+use App\Models\MedicalDocuments;
 use Dompdf\Dompdf;
 use Inertia\Inertia;
 use App\Models\Seafarer;
@@ -134,7 +135,8 @@ class SeafarerController extends Controller
             $passport = $seafarer->passport->first();
             $passport_status = $passport->status;
             return [
-                'id' => $seafarer->formatted_id,
+                'id' => $seafarer->id,
+                'formatted_id' => $seafarer->formatted_id,
                 'fullname' => $seafarer->fullname,
                 'email' => $seafarer->email,
                 'seaman_book' => $seafarer->seaman_book,
@@ -146,6 +148,23 @@ class SeafarerController extends Controller
             'seafarers' => $seafarersData,
         ]);
     }
+    /**
+     * show seafarer detail with medical documents and bank account
+     */
+    public function showSeafarer($seafarer_id)
+    {
+        $seafarer = Seafarer::find($seafarer_id);
+
+        return Inertia::render('Admin/SeafarerDetail', [
+            'applicant' => $seafarer,
+            'passport' => $seafarer->passport->first(),
+            'certificates' => $seafarer->certificates,
+            'experiences' => $seafarer->experiences,
+
+        ]);
+
+    }
+
     /**
      * View pdf
      */

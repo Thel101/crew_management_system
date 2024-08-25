@@ -7,7 +7,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-
 const props = defineProps({
     Ranks: {
         type: Array,
@@ -185,7 +184,11 @@ const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
 
 const submit = () => {
-    form.post(route('seafarers.store'));
+    form.post(route('seafarers.store'),{
+        onFinish:()=>{
+            form.reset()
+        }
+    });
 }
 </script>
 
