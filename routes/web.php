@@ -1,20 +1,24 @@
 <?php
 
-use App\Http\Controllers\CertificatesController;
-use App\Http\Controllers\CvformsController;
-use App\Http\Controllers\ExperiencesController;
-use App\Http\Controllers\JobsController;
-use App\Http\Controllers\PassportController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RolesController;
-use App\Http\Controllers\SeafarerController;
-use App\Http\Controllers\SeamanbookController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\VacanciesController;
-use App\Http\Controllers\VesselsController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Mail\TestEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\JobsController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\CvformsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VesselsController;
+use App\Http\Controllers\PassportController;
+use App\Http\Controllers\SeafarerController;
+use App\Http\Controllers\VacanciesController;
+use App\Http\Controllers\SeamanbookController;
+use App\Http\Controllers\ExperiencesController;
+use App\Http\Controllers\BankAccountsController;
+use App\Http\Controllers\CertificatesController;
+use App\Http\Controllers\MedicalDocumentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +38,10 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/send/email', function(){
+    $name= "Phyu Thet";
+    Mail::to('bunnyyoon1@gmail.com')->send(new TestEmail($name));
+});
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
@@ -46,8 +54,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/seafarers', 'seafarer_list')->name('seafarer.list');
         Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
         Route::get('/applicants', 'applicant_list')->name('applicants.list');
-        Route::post('/seafarer/upload/medical','uploadMedicalDocuments')->name('seafarer.medical');
+
     });
+    Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index','store','update');
+    Route::resource('bankAccounts', BankAccountsController::class)->only('index','store','update');
     Route::get('/users', [UserController::class, 'user_list'])->name('users.list');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'update');

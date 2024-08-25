@@ -66,4 +66,7 @@ class Seafarer extends Model
     {
         return $this->hasMany(MedicalDocuments::class);
     }
+    public function bank_accounts(): HasMany{
+        return $this->hasMany(BankAccounts::class);
+    }
 }

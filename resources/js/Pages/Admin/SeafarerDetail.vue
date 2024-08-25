@@ -36,6 +36,10 @@ const showForm = ref(false);
 const toggleForm = () => {
     showForm.value = !showForm.value
 }
+const showBankForm = ref(false);
+const toggleBankForm = () => {
+    showBankForm.value = !showBankForm.value
+}
 const change = (e)=>{
     const result_file = e.target.files[0];
     form.file = result_file
@@ -60,7 +64,7 @@ const form = useForm({
     file: null
 })
 const submitMedicalDocuments = () => {
-    form.post(route('seafarer.medical'),{
+    form.post(route('medicalDocuments.store'),{
         onFinish: () => {
             showForm.value = false();
             form.seafared_id = '';
@@ -70,6 +74,18 @@ const submitMedicalDocuments = () => {
             form.result = '';
             form.file = null;
         }
+    })
+}
+const bank = useForm({
+    seafarer_id: props.applicant.id,
+    account_no: '',
+    bank_branch: '',
+    account_holder: '',
+    holder_phone: ''
+})
+const uploadBankAccount = () => {
+    bank.post(route('bankAccounts.store'),{
+
     })
 }
 </script>
@@ -279,66 +295,38 @@ const submitMedicalDocuments = () => {
                     </form>
                 </div>
                  <!--Bank Account-->
-                 <div @click="toggleForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3">
-                    <h1>Medical Documents</h1>
+                 <div @click="toggleBankForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                    <h1>Bank Accounts</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
 
                 </div>
-                <div v-show="showForm">
-                    <form @submit.prevent="submitMedicalDocuments">
+                <div v-show="showBankForm">
+                    <form @submit.prevent="uploadBankAccount">
                         <div>
-                            <InputLabel>Clinic Name, Address</InputLabel>
-                            <TextInput v-model="form.clinic"></TextInput>
-                            <InputError class="mt-2" :message="form.errors.clinic" />
+                            <InputLabel>Bank Account Number</InputLabel>
+                            <TextInput v-model="bank.account_no"></TextInput>
+                            <InputError class="mt-2" :message="bank.errors.account_no" />
                         </div>
                         <div>
-                            <InputLabel>Document Type</InputLabel>
-                            <Dropdown align="left">
-                                <template #trigger >
-                                    <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                    {{selectedType || 'Select document type'}}</div>
-                                </template>
-                                <template #content >
-                                    <ul>
-                                       <li @click="selectType('general')">Medical Check Up</li>
-                                       <li @click="selectType('d_c')">Drug & Alcohol Result</li>
-                                       <li @click="selectType('vaccination')">Vaccination Record</li>
-                                    </ul>
-                                </template>
-                            </Dropdown>
-                            <InputError class="mt-2" :message="form.errors.type" />
+                            <InputLabel>Bank Branch</InputLabel>
+                            <TextInput v-model="bank.bank_branch"></TextInput>
+                            <InputError class="mt-2" :message="bank.errors.bank_branch" />
                         </div>
                         <div>
-                            <InputLabel>Document Date</InputLabel>
-                            <input type="date" v-model="form.document_date"/>
-                            <InputError class="mt-2" :message="form.errors.document_date" />
+                            <InputLabel>Account Holder Name</InputLabel>
+                            <TextInput v-model="bank.account_holder"></TextInput>
+                            <InputError class="mt-2" :message="bank.errors.account_holder" />
                         </div>
                         <div>
-                            <InputLabel>Result</InputLabel>
-                            <Dropdown align="left">
-                                <template #trigger >
-                                    <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                    {{selectedResult || 'Select Result'}}</div>
-                                </template>
-                                <template #content >
-                                    <ul>
-                                       <li @click="selectResult('pass')">Pass</li>
-                                       <li @click="selectResult('fail')">Fail</li>
-                                       <li @click="selectResult('pending')">Pending</li>
-                                    </ul>
-                                </template>
-                            </Dropdown>
-                            <InputError class="mt-2" :message="form.errors.result" />
+                            <InputLabel>Account Phone Number</InputLabel>
+                            <TextInput v-model="bank.holder_phone"></TextInput>
+                            <InputError class="mt-2" :message="bank.errors.holder_phone" />
                         </div>
-                        <div>
-                            <InputLabel>Document File</InputLabel>
-                            <input type="file" @input="change"/>
-                            <InputError class="mt-2" :message="form.errors.file" />
-                        </div>
-                        <PrimaryButton>Upload Documents</PrimaryButton>
+
+                        <PrimaryButton>Add Bank Account </PrimaryButton>
                     </form>
                 </div>
             </div>

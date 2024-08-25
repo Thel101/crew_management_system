@@ -28,7 +28,20 @@ class MedicalDocumentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'seafarer_id'=> 'required',
+            'type'=> 'required',
+            'clinic'=> 'required|string|max:50',
+            'document_date'=> 'required',
+            'result'=> 'required',
+        ]);
+        if ($request->file('file')) {
+            $file = uniqid() . $request->file('file')->getClientOriginalName();
+            $request->file('file')->storeAs('public/documents', $file);
+            $validated['file'] = $file;
+        }
+        $document = MedicalDocuments::create($validated);
+        return redirect()->route('seafarer.detail', $document->seafarer_id)->with('message','Document Uploaded successfully!');
     }
 
     /**
