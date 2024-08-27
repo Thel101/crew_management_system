@@ -1,16 +1,28 @@
 <script setup>
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+<<<<<<< HEAD
 import { ref, watch } from 'vue'
+=======
+import { computed, ref, watch } from 'vue'
+>>>>>>> master
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+<<<<<<< HEAD
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/vue/20/solid'
 import { Inertia } from '@inertiajs/inertia';
+=======
+import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
+import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/vue/20/solid'
+
+>>>>>>> master
 
 
 const props = defineProps({
@@ -22,7 +34,11 @@ const props = defineProps({
         type: Array
     }
 })
+<<<<<<< HEAD
 const sortOptions = props.roles
+=======
+// const sortOptions = props.jobs.role
+>>>>>>> master
 
 const sorting = ref(false);
 
@@ -38,7 +54,29 @@ const seaman_book = ref('');
 const seafarer_role = ref('');
 const role_id = ref(0)
 const seafarer_id = ref('');
+<<<<<<< HEAD
 
+=======
+const email_id = ref('');
+const search = ref(''), pageNumber = ref(0)
+
+let applicantUrl = computed(()=>{
+    let url = new URL(route("applicants.list"))
+    url.searchParams.append("pageNumber", pageNumber.value)
+    if(search.value){
+        url.searchParams.append("search", search.value)
+    }
+    return url;
+});
+
+watch( applicantUrl , newUrl=>{
+    router.visit(newUrl,{
+        preserveState : true,
+        preserveScroll: true,
+        replace: true
+    })
+})
+>>>>>>> master
 const AssignSeafarer = (id,name, book, role_name, roleId)=>{
    showAssignForm.value = true;
    seafarer_id.value = id;
@@ -46,6 +84,7 @@ const AssignSeafarer = (id,name, book, role_name, roleId)=>{
    seaman_book.value = book;
    seafarer_role.value = role_name;
    role_id.value = roleId;
+<<<<<<< HEAD
 
    form.user_id = id;
    form.role_id = roleId;
@@ -58,6 +97,22 @@ const AssignSeafarer = (id,name, book, role_name, roleId)=>{
 })
 
 }
+=======
+   email_id.value = id;
+   form.user_id = id;
+   form.role_id = roleId;
+}
+
+watch(role_id, value =>{
+    Inertia.get('/applicants', {role_id: value });
+});
+
+// watch(search, value =>{
+//    router.visit(route('applicants.list', {search : value}))
+// })
+
+
+>>>>>>> master
 const selectedVessel = ref('');
 const selectVessel = (vessel_id, vessel_name) => {
     selectedVessel.value = vessel_name;
@@ -69,6 +124,10 @@ const assign = ()=>{
         onSuccess:()=>{
             form.reset();
             showAssignForm.value = false
+<<<<<<< HEAD
+=======
+            Inertia.get(route('assign.email', email_id))
+>>>>>>> master
         }
     })
 }
@@ -87,9 +146,15 @@ const assign = ()=>{
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
+<<<<<<< HEAD
                     <div v-show="applicants.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There is no applicants!</div>
 
                     <div v-show="applicants.data.length > 0" class="overflow-x-auto">
+=======
+                    <div v-show="props.applicants.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There is no applicants!</div>
+
+                    <div v-show="props.applicants.data.length > 0" class="overflow-x-auto">
+>>>>>>> master
 
                         <div class="flex flex-row justify-end me-14 mb-10">
                         <Menu as="div" class="inline-block text-left">
@@ -111,7 +176,11 @@ const assign = ()=>{
                             </transition>
                         </Menu>
                     </div>
+<<<<<<< HEAD
 
+=======
+                        <input type="text" v-model="search" placeholder="Search...">
+>>>>>>> master
                         <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                             <thead class="ltr:text-left rtl:text-right">
                                 <tr>
@@ -122,12 +191,22 @@ const assign = ()=>{
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Phone Number</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+<<<<<<< HEAD
                                     <th class="px-4 py-2"></th>
                                 </tr>
                             </thead>
 
                             <tbody class="divide-y divide-gray-200">
                                 <tr v-for="applicant in applicants.data" :key="applicant.id">
+=======
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Applied Date</th>
+                                    <th class="px-4 py-2"></th>
+                                </tr>
+                            </thead>
+                            <!-- {{ search }} {{ pageNumber }} -->
+                            <tbody class="divide-y divide-gray-200">
+                                <tr v-for="applicant in props.applicants.data" :key="applicant.id">
+>>>>>>> master
 
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.fullname }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.formatted_id }}
@@ -137,6 +216,11 @@ const assign = ()=>{
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.mobile_no}}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.email}}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.role.name}}</td>
+<<<<<<< HEAD
+=======
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new Date(applicant.created_at).toLocaleDateString('en-US')}}</td>
+
+>>>>>>> master
 
                                     <td class="whitespace-nowrap px-4 py-2">
                                         <a :href="route('applicant.detail', applicant.id)"

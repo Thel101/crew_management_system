@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Seafarer;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+
 class SeafarerController extends Controller
 {
 
@@ -30,7 +31,7 @@ class SeafarerController extends Controller
     /**
      * seafarer creation
      */
-    public function store(Request $request) : RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'role_id' => 'required',
@@ -62,7 +63,7 @@ class SeafarerController extends Controller
         }
 
         $seafarer = Seafarer::create($validated);
-        return redirect(route('passport.index',$seafarer->id));
+        return redirect(route('passport.index', $seafarer->id));
     }
 
 
@@ -80,25 +81,23 @@ class SeafarerController extends Controller
             'experiences' => $seafarer->experiences,
 
         ]);
-
     }
 
     /**
      * Summary of applicant_list
      * @return \Inertia\Response
      */
-    public function applicant_list(Request $request)
+    public function applicantList(Request $request)
     {
-        $applicants = Seafarer::
-        with('passport', 'certificates','role','vessel')
-        ->where('status','new')
-        ->paginate();
+        $emailQuery = Seafarer::query();
+        $this->searchEmail($emailQuery, $request->search);
+        $applicants = $emailQuery->with('passport', 'certificates', 'role', 'vessel')
+            ->where('status', 'new')
+            ->paginate(10);
 
-        $jobsQuery = Jobs::query()
-        ->with('role', 'vessel');
-
+        $jobsQuery = Jobs::query()->with('role', 'vessel');
         if ($request->role_id) {
-            $jobsQuery->whereHas('role', function($query) use ($request) {
+            $jobsQuery->whereHas('role', function ($query) use ($request) {
                 $query->where('id', $request->role_id);
             });
         }
@@ -106,25 +105,21 @@ class SeafarerController extends Controller
         return Inertia::render('Admin/ApplicantList', [
             'applicants' => $applicants,
             'jobs' => $jobs
+
         ]);
 
     }
-     //change to 'on_boarding' status and
-     public function changeStatus(Request $request){
-        $seafarer = Seafarer::find($request->user_id);
-        $job = Jobs::where('role_id',$request->role_id)
-        ->where('vessel_id', $request->vessel_id)
-        ->first();
-
-       if ($job && $seafarer && $seafarer->status == 'new') {
-        // Update the seafarer's status and job_id if conditions are met
-        $seafarer->update([
-            'status' => 'on_boarding'
-        ]);
-            return redirect(route('applicants.list'));
-        }
-
+    protected function searchEmail($query, $search){
+        return $query->when($search, function($query, $search){
+            $query->whereAny([
+                'fullname',
+                'formatted_id',
+                'email',
+                'seaman_book'
+            ], 'like', '%' . $search . '%');
+        });
     }
+
     /**
      * Show the seafare list data
      */
@@ -162,7 +157,6 @@ class SeafarerController extends Controller
             'experiences' => $seafarer->experiences,
 
         ]);
-
     }
 
     /**
@@ -180,7 +174,33 @@ class SeafarerController extends Controller
 
         ]);
     }
+    /*change to 'on_boarding' status
+     **/
+    public function changeStatus(Request $request)
+    {
+        $seafarer = Seafarer::find($request->user_id);
+        $job = Jobs::where('role_id', $request->role_id)
+            ->where('vessel_id', $request->vessel_id)
+            ->first();
+
+        if ($job && $seafarer && $seafarer->status == 'new') {
+            // Update the seafarer's status and job_id if conditions are met
+            $seafarer->update([
+                'status' => 'on_boarding'
+            ]);
+            return redirect(route('applicants.list'));
+        }
+    }
     /**
+     * Sending Email for being seafarer
+     */
+    public function send_email($email_id)
+    {
+        $seafarer = Seafarer::find($email_id);
+        $email = $seafarer->email;
+    }
+    /**
+     *
      * Update the specified resource in storage.
      */
     public function update(Request $request, Seafarer $seafarer)

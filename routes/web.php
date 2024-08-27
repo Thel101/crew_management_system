@@ -38,22 +38,33 @@ Route::get('/', function () {
     ]);
 });
 
+<<<<<<< HEAD
 Route::get('/send/email', function(){
     $name= "Phyu Thet";
     Mail::to('bunnyyoon1@gmail.com')->send(new TestEmail($name));
 });
+=======
+>>>>>>> master
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::controller(SeafarerController::class)->group(function () {
+<<<<<<< HEAD
         Route::get('/applicants', 'applicant_list')->name('applicants.list');
+=======
+        Route::get('/applicants', 'applicantList')->name('applicants.list');
+>>>>>>> master
         Route::get('/applicant/{id}', 'show')->name('applicant.detail');
         Route::patch('/applicant', 'changeStatus')->name('applicant.status');
         Route::get('/pdf/applicant/{id}', 'viewpdf')->name('applicant.pdf');
         Route::get('/seafarers', 'seafarer_list')->name('seafarer.list');
         Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
+<<<<<<< HEAD
         Route::get('/applicants', 'applicant_list')->name('applicants.list');
+=======
+        Route::get('/send/email/{id}','send_email')->name('assign.email');
+>>>>>>> master
 
     });
     Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index','store','update');
