@@ -124,10 +124,7 @@ const assign = ()=>{
         onSuccess:()=>{
             form.reset();
             showAssignForm.value = false
-<<<<<<< HEAD
-=======
             Inertia.get(route('assign.email', email_id))
->>>>>>> master
         }
     })
 }
@@ -146,15 +143,9 @@ const assign = ()=>{
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
-<<<<<<< HEAD
-                    <div v-show="applicants.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There is no applicants!</div>
-
-                    <div v-show="applicants.data.length > 0" class="overflow-x-auto">
-=======
                     <div v-show="props.applicants.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There is no applicants!</div>
 
                     <div v-show="props.applicants.data.length > 0" class="overflow-x-auto">
->>>>>>> master
 
                         <div class="flex flex-row justify-end me-14 mb-10">
                         <Menu as="div" class="inline-block text-left">

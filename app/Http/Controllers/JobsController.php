@@ -53,11 +53,7 @@ class JobsController extends Controller
             $query->where('id', $role_id);
         })
         ->get();
-<<<<<<< HEAD
-        dd($applicants);
-=======
         
->>>>>>> master
     }
     /**
      * Display the specified resource.
