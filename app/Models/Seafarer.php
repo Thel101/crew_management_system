@@ -69,4 +69,7 @@ class Seafarer extends Model
     public function bank_accounts(): HasMany{
         return $this->hasMany(BankAccounts::class);
     }
+    public function leaves(): HasMany{
+        return $this->hasMany(Leave::class);
+    }
 }

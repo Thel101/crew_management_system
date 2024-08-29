@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('leaves', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('seafarer_id')->constrained()->cascadeOnDelete();
+            $table->string('leave_start');
+            $table->string('leave_end');
+            $table->string('reason');
+            $table->integer('count');
+            $table->enum('status',['pending','approved','cancelled']);
             $table->timestamps();
         });
     }
