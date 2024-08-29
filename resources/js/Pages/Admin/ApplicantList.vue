@@ -1,29 +1,15 @@
 <script setup>
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-<<<<<<< HEAD
-import { ref, watch } from 'vue'
-=======
 import { computed, ref, watch } from 'vue'
->>>>>>> master
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-<<<<<<< HEAD
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/vue/20/solid'
-import { Inertia } from '@inertiajs/inertia';
-=======
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/vue/20/solid'
-
->>>>>>> master
-
 
 const props = defineProps({
     applicants:
@@ -34,11 +20,7 @@ const props = defineProps({
         type: Array
     }
 })
-<<<<<<< HEAD
 const sortOptions = props.roles
-=======
-// const sortOptions = props.jobs.role
->>>>>>> master
 
 const sorting = ref(false);
 

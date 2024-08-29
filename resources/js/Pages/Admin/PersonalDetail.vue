@@ -14,7 +14,15 @@ const props = defineProps([
     'email',
     'next_of_kin',
     'relationship',
-    'next_of_kin_phone'
+    'next_of_kin_phone',
+    'passport_no',
+    'place_of_issue',
+    'issue_date',
+    'expiry_date',
+    'seaman_book',
+    'book_place_of_issue',
+    'book_issue_date'
+
 ])
 
 </script>
@@ -89,6 +97,24 @@ const props = defineProps([
                     </div>
                     </div>
                 </div>
+                <hr class="h-8">
+                    <div class="flex flex-row justify-between">
+                        <div>
+                            <h1>Passport</h1>
+                            <div>Passport No: {{ passport_no }}</div>
+                            <div>Place of issue: {{ place_of_issue }}</div>
+                            <div>Issue Date {{ issue_date }}</div>
+                            <div>Expiry Date: {{ expiry_date }}</div>
+                        </div>
+                        <div>
+                            <h1>Seaman Book</h1>
+                            <div>Seaman book No: {{ seaman_book }}</div>
+                            <div>Place of issue: {{ place_of_issue }}</div>
+                            <div>Issue Date {{ issue_date }}</div>
+
+                        </div>
+
+                    </div>
 
                 <!-- <a target="__blank" :href="route('applicant.pdf', applicant.id)">
                     Save as PDF

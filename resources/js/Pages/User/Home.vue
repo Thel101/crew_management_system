@@ -22,6 +22,9 @@ const props = defineProps({
             <Link :href="route('logout')" as="button" method="post">
             Log out
             </Link>
+            <Link :href="route('seafarer.profile', $page.props.auth.user.id)">
+            Profile
+            </Link>
             <div class="grid grid-cols-2 gap-4 w-4/5 mt-10">
                 <div v-for="job in jobs" :key="job.id"
                     class="relative bg-white rounded-md text-center px-3 py-7 text-lg group min-w-3xl">

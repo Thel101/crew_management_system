@@ -148,13 +148,13 @@ class SeafarerController extends Controller
      */
     public function showSeafarer($seafarer_id)
     {
-        $seafarer = Seafarer::find($seafarer_id);
+        $data = $this->retrieveSeafarer($seafarer_id);
 
         return Inertia::render('Admin/SeafarerDetail', [
-            'applicant' => $seafarer,
-            'passport' => $seafarer->passport->first(),
-            'certificates' => $seafarer->certificates,
-            'experiences' => $seafarer->experiences,
+            'applicant' => $data['seafarer'],
+            'passport' => $data['passport'],
+            'certificates' => $data['certificates'],
+            'experiences' => $data['experiences'],
 
         ]);
     }
@@ -174,8 +174,34 @@ class SeafarerController extends Controller
 
         ]);
     }
+    /**
+     * Display profile on user page
+     */
+    public function profile($id){
+        $data = $this->retrieveSeafarer($id);
+        return Inertia::render('User/Profile',[
+            'applicant' => $data['seafarer'],
+            'passport' => $data['passport'],
+            'vessel' => $data['vessel']
+
+        ]);
+
+    }
     /*change to 'on_boarding' status
      **/
+    /**
+     * retrieve a particular seafarer info
+     */
+    protected function retrieveSeafarer($id){
+        $seafarer = Seafarer::with('passport','certificates','experiences','vessel')->find($id);
+        return [
+            'seafarer' => $seafarer,
+            'passport' => $seafarer->passport->first(),
+            'certificates' => $seafarer->certificates,
+            'experiences' => $seafarer->experiences,
+            'vessel' => $seafarer->vessel,
+        ];
+    }
     public function changeStatus(Request $request)
     {
         $seafarer = Seafarer::find($request->user_id);

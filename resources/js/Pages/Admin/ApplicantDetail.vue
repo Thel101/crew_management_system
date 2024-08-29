@@ -4,7 +4,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
-import { Inertia } from '@inertiajs/inertia';
 import PersonalDetails from '../Admin/PersonalDetail.vue';
 const open = ref(false)
 
@@ -13,7 +12,7 @@ const props = defineProps({
     {
         type: Object
     },
-    jobs:{
+    jobs: {
         type: Object
     },
 
@@ -46,36 +45,21 @@ const props = defineProps({
                     <div class="flex flex-row">
                         <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
                         <PersonalDetails :fullname="props.applicant.fullname"
-                        :expected_salary="props.applicant.expected_salary"
-                        :nationality="props.applicant.nationality"
-                        :religion="props.applicant.religion"
-                        :dob="props.applicant.dob"
-                        :height="props.applicant.height"
-                        :weight="props.applicant.weight"
-                        :mobile_no="props.applicant.mobile_no"
-                        :email="props.applicant.email"
-                        :next_of_kin="props.applicant.next_of_kin"
-                        :relationship="props.applicant.relationship"
-                        :next_of_kin_phone="props.applicant.next_of_kin_mobile"></PersonalDetails>
+                            :expected_salary="props.applicant.expected_salary"
+                            :nationality="props.applicant.nationality" :religion="props.applicant.religion"
+                            :dob="props.applicant.dob" :height="props.applicant.height" :weight="props.applicant.weight"
+                            :mobile_no="props.applicant.mobile_no" :email="props.applicant.email"
+                            :next_of_kin="props.applicant.next_of_kin" :relationship="props.applicant.relationship"
+                            :next_of_kin_phone="props.applicant.next_of_kin_mobile"
+                            :passport_no ="props.passport.passport_no"
+                            :place_of_issue ="props.passport.place_of_issue"
+                            :issue_date="props.passport.issue_date"
+                            :expiry_date="props.passport.expiry_date"
+                            :seaman_book="props.applicant.seaman_book"
+                            :book_place_of_issue="props.applicant.place_of_issue"
+                            :book_issue_date="props.applicant.issue_date "></PersonalDetails>
                     </div>
-                    <hr class="h-8">
-                    <div class="flex flex-row justify-between">
-                        <div>
-                            <h1>Passport</h1>
-                            <div>Passport No: {{ passport.passport_no }}</div>
-                            <div>Place of issue: {{ passport.place_of_issue }}</div>
-                            <div>Issue Date {{ passport.issue_date }}</div>
-                            <div>Expiry Date: {{ passport.expiry_date }}</div>
-                        </div>
-                        <div>
-                            <h1>Seaman Book</h1>
-                            <div>Seaman book No: {{ applicant.applicant }}</div>
-                            <div>Place of issue: {{ applicant.place_of_issue }}</div>
-                            <div>Issue Date {{ applicant.issue_date }}</div>
 
-                        </div>
-
-                    </div>
                     <hr>
                     <div>
                         <h1>Certificates</h1>
@@ -96,7 +80,7 @@ const props = defineProps({
                             </thead>
 
                             <tbody class="divide-y divide-gray-200">
-                                <tr v-for="certificate in certificates" :key="certificate.id">
+                                <tr v-for=" certificate  in  certificates " :key=" certificate.id ">
                                     <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
                             certificate.name }}
                                     </td>
@@ -136,7 +120,7 @@ const props = defineProps({
                             </thead>
 
                             <tbody class="divide-y divide-gray-200">
-                                <tr v-for="experience in experiences" :key="experience.id">
+                                <tr v-for=" experience  in  experiences " :key=" experience.id ">
                                     <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
                             experience.ship_name }}
                                     </td>
@@ -167,13 +151,13 @@ const props = defineProps({
                             </tbody>
                         </table>
                     </div>
-                    <a target="__blank" :href="route('applicant.pdf', applicant.id)">
-                        Save as PDF
-                    </a>
+                    <a target="__blank" :href=" route('applicant.pdf', applicant.id) ">
+                            Save as PDF
+                            </a>
 
+                    </div>
                 </div>
             </div>
-        </div>
 
 
     </AuthenticatedLayout>
