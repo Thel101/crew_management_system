@@ -1,10 +1,9 @@
 <script setup>
 
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import PersonalText from '@/Components/PersonalText.vue'
 
 const props = defineProps([
     'fullname',
-    'expected_salary',
     'nationality',
     'religion',
     'dob',
@@ -32,90 +31,58 @@ const props = defineProps([
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden">
-                <div class="flex flex-row">
+                <div>
 
                     <div class="ml-10">
 
-                    <h1>Personal Details</h1>
+                        <h1 class="text-2xl font-semi-bold my-2">Personal Details</h1>
 
 
-                    <div class="flex flex-row" id="pdf-content">
-                        <div>
-                            Name <span>{{ fullname }}</span>
+                        <div id="pdf-content" class="max-w-7xl">
+                            <div class="flex flex-row">
+                                <PersonalText :label="'Name'" :text="props.fullname"></PersonalText>
+                            </div>
+                            <div class="flex flex-row">
+                                <PersonalText class="w-1/2" :label="'Nationality'" :text="props.nationality"></PersonalText>
+                                <PersonalText class="w-1/3" :label="'Religion'" :text="props.religion"></PersonalText>
+                            </div>
+
+                            <div class="flex flex-row">
+                                <PersonalText class="w-1/2" :label="'Height'" :text="props.height"></PersonalText>
+                                <PersonalText class="w-1/2" :label="'Weight'" :text="props.height"></PersonalText>
+
+                            </div>
+                            <div class="flex flex-row max-w-7xl">
+                                <PersonalText class="w-1/2" :label="'Mobile Number'" :text="props.mobile_no"></PersonalText>
+                                <PersonalText class="w-1/2" :label="'Email'" :text="props.email"></PersonalText>
+
+                            </div>
+                            <div class="flex flex-row">
+                                <PersonalText class="w-1/2" :label="'Contact Person'" :text="`${props.next_of_kin} (${props.relationship})`"></PersonalText>
+                                <PersonalText class="w-1/2" :label="'Contact Person Mobile'" :text="props.next_of_kin_phone"></PersonalText>
+
+                            </div>
                         </div>
-
-                        <div>
-                            Expected Salary <span>{{ expected_salary }}</span>
-                        </div>
-
-                        <div>
-                            Nationality <span>{{ nationality }}</span>
-                        </div>
-                        <div>
-                            Religion <span>{{ religion }}</span>
-                        </div>
-
-
                     </div>
-                    <div class="flex flex-row">
-                        <div>
-                            Date of birth <span>{{ dob }}</span>
-                        </div>
-
-
-                        <div>
-                            Height <span>{{ height }}</span>
-                        </div>
-
-                        <div>
-                            Weight <span>{{ weight }}</span>
-                        </div>
-
-                    </div>
-                    <div class="flex flex-row">
-                        <div>
-                            Mobile Number <span>{{ mobile_no }}</span>
-                        </div>
-
-                        <div>
-                            Email <span>{{ email }}</span>
-                        </div>
-
-                    </div>
-                    <div class="flex flex-row">
-                        <div>
-                            Next of Kin <span>{{ next_of_kin }}</span>
-                        </div>
-
-                        <div>
-                            Relationship <span>{{ relationship }}</span>
-                        </div>
-                        <div>
-                            Next of Kin Phone <span>{{ next_of_kin_phone }}</span>
-                        </div>
-
-                    </div>
-                    </div>
-                </div>
-                <hr class="h-8">
+                    <hr class="h-8">
                     <div class="flex flex-row justify-between">
                         <div>
-                            <h1>Passport</h1>
-                            <div>Passport No: {{ passport_no }}</div>
-                            <div>Place of issue: {{ place_of_issue }}</div>
-                            <div>Issue Date {{ issue_date }}</div>
-                            <div>Expiry Date: {{ expiry_date }}</div>
+                            <h1 class="text-2xl font-semi-bold my-2">Passport</h1>
+                            <PersonalText :label="'Passport Number'" :text="props.passport_no"></PersonalText>
+                            <PersonalText :label="'Place of issue'" :text="props.place_of_issue"></PersonalText>
+                            <PersonalText :label="'Issue Date'" :text="props.issue_date"></PersonalText>
+                            <PersonalText :label="'Expiry Date'" :text="props.expiry_date"></PersonalText>
                         </div>
                         <div>
-                            <h1>Seaman Book</h1>
-                            <div>Seaman book No: {{ seaman_book }}</div>
-                            <div>Place of issue: {{ place_of_issue }}</div>
-                            <div>Issue Date {{ issue_date }}</div>
+                            <h1 class="text-2xl font-semi-bold my-2">Seaman Book</h1>
+                            <PersonalText :label="'Seaman book No'" :text="props.seaman_book"></PersonalText>
+                            <PersonalText :label="'Place of issue'" :text="props.place_of_issue"></PersonalText>
+                            <PersonalText :label="'Issue Date'" :text="props.issue_date"></PersonalText>
 
                         </div>
 
                     </div>
-
+                </div>
                 <!-- <a target="__blank" :href="route('applicant.pdf', applicant.id)">
                     Save as PDF
                 </a> -->

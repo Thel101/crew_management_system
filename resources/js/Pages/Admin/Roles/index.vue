@@ -103,7 +103,7 @@ const submit = () => {
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Description</th>
+                                <th class="whitespace-no`wrap px-4 py-2 font-medium text-gray-900">Description</th>
 
                                 <th class="px-4 py-2"></th>
                             </tr>

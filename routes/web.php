@@ -52,7 +52,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('bankAccounts', BankAccountsController::class)->only('index','store','update');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'show','edit','update');
-    Route::resource('jobs', JobsController::class)->only('index', 'store', 'update');
+    Route::resource('jobs', JobsController::class)->only('index', 'store', 'update','edit');
     Route::get('/assign/seafarers/{role_id}', [JobsController::class, 'assignSeafarers'])->name('assign.seafarers');
     Route::resource('leave', LeaveController::class)->only('index');
 });

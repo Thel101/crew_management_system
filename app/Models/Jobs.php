@@ -14,7 +14,11 @@ class Jobs extends Model
         'role_id',
         'vessel_id',
         'description',
-        'count'
+        'count',
+        'joining_date',
+        'port',
+        'basic_salary',
+        'requirements'
     ];
 
     public function role(): BelongsTo

@@ -113,34 +113,18 @@ const uploadBankAccount = () => {
                             :dob="props.applicant.dob" :height="props.applicant.height" :weight="props.applicant.weight"
                             :mobile_no="props.applicant.mobile_no" :email="props.applicant.email"
                             :next_of_kin="props.applicant.next_of_kin" :relationship="props.applicant.relationship"
-                            :next_of_kin_phone="props.applicant.next_of_kin_mobile"></PersonalDetails>
+                            :next_of_kin_phone="props.applicant.next_of_kin_mobile" :passport_no="props.passport.passport_no" :place_of_issue="props.passport.place_of_issue"
+        :issue_date="props.passport.issue_date" :expiry_date="props.passport.expiry_date"
+        :seaman_book="props.applicant.seaman_book" :book_place_of_issue="props.applicant.place_of_issue"
+        :book_issue_date="props.applicant.issue_date"></PersonalDetails>
                     </div>
                 </div>
-                <!---Passport---->
-                <hr class="h-8">
-                <div class="flex flex-row justify-between">
-                    <div>
-                        <h1>Passport</h1>
-                        <div>Passport No: {{ passport.passport_no }}</div>
-                        <div>Place of issue: {{ passport.place_of_issue }}</div>
-                        <div>Issue Date {{ passport.issue_date }}</div>
-                        <div>Expiry Date: {{ passport.expiry_date }}</div>
-                    </div>
-                    <div>
-                        <h1>Seaman Book</h1>
-                        <div>Seaman book No: {{ applicant.applicant }}</div>
-                        <div>Place of issue: {{ applicant.place_of_issue }}</div>
-                        <div>Issue Date {{ applicant.issue_date }}</div>
 
-                    </div>
-
-                </div>
-                <!---Passport---->
                 <hr>
                 <!--Certificates-->
                 <div>
-                    <h1>Certificates</h1>
-                    <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                    <h1 class="text-lg font-bold">Certificates</h1>
+                    <table class="divide-y-2 divide-gray-200 bg-white text-sm">
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Certificate</th>
@@ -182,8 +166,8 @@ const uploadBankAccount = () => {
                 <!--Certificates-->
                 <!--Experiences-->
                 <div>
-                    <h1>Experiences</h1>
-                    <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                    <h1 class="text-lg font-bold">Experiences</h1>
+                    <table class="divide-y-2 divide-gray-200 bg-white text-sm">
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Ship Name</th>

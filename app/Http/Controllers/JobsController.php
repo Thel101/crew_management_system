@@ -8,6 +8,7 @@ use App\Models\Seafarer;
 use Inertia\Inertia;
 use App\Models\Vacancies;
 use App\Models\Vessels;
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Http\Request;
 
 class JobsController extends Controller
@@ -38,45 +39,43 @@ class JobsController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'role_id' => 'required',
-            'vessel_id' => 'required',
-            'description' => 'required|string',
-        ]);
+        $validated = $request->validate($this->validateJobs());
         Jobs::create($validated);
         return redirect(route('jobs.index'));
     }
-    public function assignSeafarers($role_id){
-        $applicants = Seafarer::
-        with('passport', 'certificates','job.role','job.vessel')
-        ->whereHas('job', function($query) use ($role_id) {
-            $query->where('id', $role_id);
-        })
-        ->get();
-        
+    public function assignSeafarers($role_id)
+    {
+        $applicants = Seafarer::with('passport', 'certificates', 'job.role', 'job.vessel')
+            ->whereHas('job', function ($query) use ($role_id) {
+                $query->where('id', $role_id);
+            })
+            ->get();
     }
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
-    {
-
-    }
+    public function show(Request $request) {}
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Jobs $jobs)
+    public function edit(Jobs $job)
     {
-        //
+        $job->load('vessel','role');
+        return Inertia::render('Admin/Vacancies/edit',[
+            'job' => $job
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Jobs $jobs)
+    public function update(Request $request, Jobs $job)
     {
-        //
+        $job = Jobs::find($job->id);
+        $updatedJob = $request->validate($this->validateJobs());
+        $job->update($updatedJob);
+        return redirect(route('jobs.index'))->with(['message'=>'Job has been been modified!']);
     }
 
     /**
@@ -85,5 +84,18 @@ class JobsController extends Controller
     public function destroy(Jobs $jobs)
     {
         //
+    }
+    protected function validateJobs()
+    {
+        return [
+            'role_id' => 'required',
+            'vessel_id' => 'required',
+            'description' => 'required|string',
+            'count' => 'required|numeric',
+            'joining_date' => 'required',
+            'port' => 'required|numeric',
+            'basic_salary' => 'required|numeric',
+            'requirements' => 'required|string'
+        ];
     }
 }
