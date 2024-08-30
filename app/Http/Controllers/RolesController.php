@@ -15,7 +15,7 @@ class RolesController extends Controller
     {
 
         return Inertia::render('Admin/Roles/index', [
-            'roles' => Roles::paginate(10),
+            'roles' => Roles::paginate(6),
         ]);
     }
 
@@ -32,13 +32,9 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:30',
-            'description' => 'required'
-        ]);
-
+        $validated = $request->validate($this->validateRole());
         Roles::create($validated);
-        return redirect(route('roles.index'));
+        return redirect(route('roles.index'))->with(['message'=>'New Role has been created!']);
     }
 
     /**
@@ -46,25 +42,41 @@ class RolesController extends Controller
      */
     public function show(Roles $roles)
     {
-        //
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Roles $roles)
+    public function edit(Roles $role)
     {
-        //
+        $role = Roles::find($role->id);
+        return Inertia::render('Admin/Roles/edit',[
+            'role' => $role
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Roles $roles)
+    public function update(Request $request, Roles $role)
     {
-        //
-    }
+        $updateRole = Roles::find($role->id);
+        $validated = $request->validate($this->validateRole());
+        $updateRole->update($validated);
+        return redirect(route('roles.index'))->with(['message'=>'Role has been been modified!']);
 
+    }
+    /**
+     * validation
+     */
+
+     protected function validateRole(){
+        return[
+            'name' => 'required|string|max:30|unique:roles,name,except,id',
+            'description' => 'required|max:100'
+        ];
+     }
     /**
      * Remove the specified resource from storage.
      */

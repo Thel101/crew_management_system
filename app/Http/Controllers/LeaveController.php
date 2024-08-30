@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Leave;
+use App\Models\Seafarer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class LeaveController extends Controller
 {
@@ -12,7 +15,12 @@ class LeaveController extends Controller
      */
     public function index()
     {
-        //
+        $leaves = Leave::with('seafarer.vessel')->paginate();
+
+        return Inertia::render('Admin/Leaves/index',[
+            'leaves' => $leaves
+
+        ]);
     }
 
     /**
@@ -28,7 +36,17 @@ class LeaveController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'seafarer_id' => 'required',
+            'leave_start' => 'required',
+            'leave_end' => 'required',
+            'reason' => 'required'
+        ]);
+        $start = Carbon::parse($validated['leave_start']);
+        $end = Carbon::parse($validated['leave_end']);
+        $validated['count'] = $start->diffInDays($end);
+        Leave::create($validated);
+        return response()->json(['message'=> 'leave submitted']);
     }
 
     /**
@@ -50,9 +68,12 @@ class LeaveController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Leave $leave)
+    public function update(Request $request, $id)
     {
-        //
+        $leave = Leave::find($id);
+        $leave->status ='approved';
+        $leave->save();
+        return redirect(route('leave.index'));
     }
 
     /**

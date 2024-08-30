@@ -24,6 +24,13 @@ const form = useForm({
     leave_end: '',
     reason: ''
 })
+const submitLeave = ()=>{
+    form.post(route('leave.store'),{
+        onFinish:()=>{
+            form.reset();
+        }
+    })
+}
 console.log(today);
 </script>
 <template>
@@ -43,6 +50,7 @@ console.log(today);
         <span>Salary: 40000$</span>
     </div>
     <div>
+        <form @submit.prevent="submitLeave">
         <div>
             <InputLabel>Leave Start Date</InputLabel>
             <TextInput type="date" :max="today" v-model="form.leave_start"></TextInput>
@@ -56,5 +64,6 @@ console.log(today);
             <TextInput  v-model="form.reason"></TextInput>
         </div>
         <PrimaryButton>Submit Leave Request</PrimaryButton>
+        </form>
     </div>
 </template>

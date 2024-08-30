@@ -11,50 +11,40 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
 
+    // public function index()
+    // {
+    //     $jobs = Jobs::with(['role', 'vessel'])->get();
+    //     return Inertia::render('User/Home', [
+    //         'jobs' => $jobs
+    //     ]);
+    // }
     public function index()
     {
-        $jobs = Jobs::with(['role', 'vessel'])->get();
-        return Inertia::render('User/Home', [
-            'jobs' => $jobs
-        ]);
-    }
-    public function user_list()
-    {
-        $users = User::whereIn('role', ['admin', 'staff'])->paginate();
+        $users = User::whereIn('role', ['admin', 'staff'])->paginate(5);
         return Inertia::render('Admin/UserList', [
             'users' => $users
         ]);
     }
-
-    public function view($userid)
-    {
-        $user = User::find($userid);
-        $cvforms = $user->cvforms;
-        $vacancies = [];
-        foreach ($cvforms as $cvform) {
-            $vacancies[] = $cvform->vacancy->load('role');
+    /**
+     * user creation
+     */
+    public function store(Request $request){
+        $validated = $request->validate([
+            'name' => 'required',
+            'email' => 'required|unique:users,email,except,id'
+        ]);
+        $validated['password'] = Hash::make('password');
+        $validated['role'] = 'admin';
+        $user = User::create($validated);
+        if($user){
+            return redirect(route('users.index'))->with(['message'=>'New User has been created!']);
         }
-        return Inertia::render('Admin/UserDetail', [
-            'user' => $user,
-            'cvform' => $user->cvforms->first(),
-            'passport' => $user->passport->first(),
-            'seaman_book' => $user->seamanbooks->first(),
-            'certificates' => $user->certificates,
-            'experiences' => $user->experiences,
-            'vacancies' => $vacancies
-        ]);
     }
-    public function update(Request $request)
-    {
-        $user = User::find($request->user_id);
-        $user->update([
-            'role' => 'seafarer'
-        ]);
-        return redirect(route('seafarer.list'));
-    }
+
 
 }

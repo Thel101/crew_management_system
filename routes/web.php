@@ -1,23 +1,18 @@
 <?php
 
 use Inertia\Inertia;
-use App\Mail\TestEmail;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Application;
 use App\Http\Controllers\JobsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RolesController;
-use App\Http\Controllers\CvformsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VesselsController;
 use App\Http\Controllers\PassportController;
 use App\Http\Controllers\SeafarerController;
-use App\Http\Controllers\VacanciesController;
-use App\Http\Controllers\SeamanbookController;
 use App\Http\Controllers\ExperiencesController;
 use App\Http\Controllers\BankAccountsController;
 use App\Http\Controllers\CertificatesController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\MedicalDocumentsController;
 
 /*
@@ -42,6 +37,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+    Route::resource('users', UserController::class)->only('index','store','update');
     Route::controller(SeafarerController::class)->group(function () {
         Route::get('/applicants', 'applicantList')->name('applicants.list');
         Route::get('/applicant/{id}', 'show')->name('applicant.detail');
@@ -54,11 +50,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
     Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index','store','update');
     Route::resource('bankAccounts', BankAccountsController::class)->only('index','store','update');
-    Route::get('/users', [UserController::class, 'user_list'])->name('users.list');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
-    Route::resource('roles', RolesController::class)->only('index', 'store', 'update');
+    Route::resource('roles', RolesController::class)->only('index', 'store', 'show','edit','update');
     Route::resource('jobs', JobsController::class)->only('index', 'store', 'update');
     Route::get('/assign/seafarers/{role_id}', [JobsController::class, 'assignSeafarers'])->name('assign.seafarers');
+    Route::resource('leave', LeaveController::class)->only('index');
 });
 
 Route::middleware(['auth', 'user'])->group(function () {
@@ -70,6 +66,7 @@ Route::middleware(['auth', 'user'])->group(function () {
         Route::get('cvforms/{role_id}', 'index')->name('cvforms.index');
         Route::get('/profile/{id}','profile')->name('seafarer.profile');
     });
+    Route::resource('leave', LeaveController::class)->only('store');
 
     Route::get('passport/{seafarer_id}', [PassportController::class, 'index'])->name('passport.index');
     Route::resource('passport', PassportController::class)
@@ -79,7 +76,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::resource('experiences', ExperiencesController::class)
         ->only('index', 'store');
 });
-
+Route::resource('leave', LeaveController::class)->only('update');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

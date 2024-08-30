@@ -16,7 +16,7 @@ class UserMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check() && auth()->user()->role != 'user') {
-            return redirect(route('form'));
+            return redirect(route('dashboard'));
         }
         return $next($request);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Leave;
+use App\Models\Seafarer;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -36,6 +38,12 @@ class HandleInertiaRequests extends Middleware
             'flash'=>[
                 'message'=> fn()=> $request->session()->get('message')
             ],
+            'applicant' =>[
+                'count' => Seafarer::where('status','new')->count()
+            ],
+            'leave' =>[
+                'count' => Leave::where('status','pending')->count()
+            ]
         ]);
     }
 }

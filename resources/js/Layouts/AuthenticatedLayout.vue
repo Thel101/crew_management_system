@@ -8,6 +8,8 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+
+
 </script>
 
 <template>
@@ -34,12 +36,18 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('users.list')" :active="route().current('users.list')">
+                                <NavLink :href="route('users.index')" :active="route().current('users.index')">
                                     Users
                                 </NavLink>
-                                <NavLink :href="route('applicants.list')" :active="route().current('applicants.list')">
-                                    Applicants
-                                </NavLink>
+                                <div class="flex flex-row">
+                                    <NavLink :href="route('applicants.list')"
+                                        :active="route().current('applicants.list')">
+                                        Applicants
+                                    </NavLink>
+                                    <span class="ms-2 bg-green-500 px-3 rounded-full m-5">{{ $page.props.applicant.count
+                                        }}</span>
+                                </div>
+
                                 <NavLink :href="route('seafarer.list')" :active="route().current('seafarer.list')">
                                     Seafarers
                                 </NavLink>
@@ -52,6 +60,14 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('jobs.index')" :active="route().current('jobs.index')">
                                     Vacancy
                                 </NavLink>
+                                <div class="flex flex-row">
+                                    <NavLink :href="route('leave.index')" :active="route().current('leave.index')">
+                                        Leave Request
+                                    </NavLink>
+                                    <span class="ms-2 bg-green-500 px-3 rounded-full m-5">{{ $page.props.leave.count
+                                        }}</span>
+                                </div>
+
 
                             </div>
                         </div>
