@@ -26,12 +26,7 @@ use App\Http\Controllers\MedicalDocumentsController;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register')
-    ]);
-});
+Route::get('/', [UserController::class, 'welcome'] )->name('user.welcome');
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
@@ -45,7 +40,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/pdf/applicant/{id}', 'viewpdf')->name('applicant.pdf');
         Route::get('/seafarers', 'seafarer_list')->name('seafarer.list');
         Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
+        Route::get('/form/seafarer', 'seafarerForm')->name('seafarer.form');
+        Route::post('/create/seafarer', 'createSeafarer')->name('seafarer.create');
         Route::get('/send/email/{id}','send_email')->name('assign.email');
+
 
     });
     Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index','store','update');

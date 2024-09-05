@@ -2,27 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Certificates;
-use App\Models\Jobs;
-use App\Models\Seafarer;
-use App\Models\User;
-use App\Models\Vacancies;
 use Carbon\Carbon;
+use App\Models\Jobs;
+use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Seafarer;
+use App\Models\Vacancies;
+use App\Models\Certificates;
+use App\Models\Vessels;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
 
-    // public function index()
-    // {
-    //     $jobs = Jobs::with(['role', 'vessel'])->get();
-    //     return Inertia::render('User/Home', [
-    //         'jobs' => $jobs
-    //     ]);
-    // }
+    public function welcome()
+    {
+        $vessels = Vessels::latest()->take(3)->get();
+        $jobs = Jobs::latest()->take(3)->get();
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'vessels' => $vessels,
+            'jobs' => $jobs
+        ]);
+    }
     public function index()
     {
         $users = User::whereIn('role', ['admin', 'staff'])->paginate(5);

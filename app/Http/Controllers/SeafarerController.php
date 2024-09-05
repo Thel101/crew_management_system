@@ -33,27 +33,7 @@ class SeafarerController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'role_id' => 'required',
-            'profile' => 'required|file|mimes:png,jpg,jpeg,webp',
-            'fullname' => 'required|string|max:30',
-            'seaman_book' => 'required|string|max:10',
-            'seaman_book_place' => 'required|string|max:30',
-            'issue_date' => 'required',
-            'expected_salary' => 'required',
-            'nationality' => 'required',
-            'religion' => 'required',
-            'dob' => 'required',
-            'height' => 'required|string|max:10',
-            'weight' => 'required|integer',
-            'overall_size' => 'required',
-            'mobile_no' => 'required|starts_with:09',
-            'email' => 'required',
-            'next_of_kin' => 'required|string|max:30',
-            'relationship' => 'required|string|max:20',
-            'next_of_kin_mobile' => 'required|starts_with:09',
-
-        ]);
+        $validated = $request->validate($this->validateSeafarer());
         $validated['user_id'] = auth()->user()->id;
         $validated['vessel_id'] = $request->vessel_id;
         if ($request->file('profile')) {
@@ -139,7 +119,7 @@ class SeafarerController extends Controller
                 'passport_status' => $passport_status,
             ];
         });
-        return Inertia::render('Admin/Seafarer', [
+        return Inertia::render('Admin/Seafarer/SeafarerList', [
             'seafarers' => $seafarersData,
         ]);
     }
@@ -150,7 +130,7 @@ class SeafarerController extends Controller
     {
         $data = $this->retrieveSeafarer($seafarer_id);
 
-        return Inertia::render('Admin/SeafarerDetail', [
+        return Inertia::render('Admin/Seafarer/SeafarerDetail', [
             'applicant' => $data['seafarer'],
             'passport' => $data['passport'],
             'certificates' => $data['certificates'],
@@ -187,8 +167,7 @@ class SeafarerController extends Controller
         ]);
 
     }
-    /*change to 'on_boarding' status
-     **/
+
     /**
      * retrieve a particular seafarer info
      */
@@ -202,6 +181,8 @@ class SeafarerController extends Controller
             'vessel' => $seafarer->vessel,
         ];
     }
+    /*change to 'on_boarding' status
+     **/
     public function changeStatus(Request $request)
     {
         $seafarer = Seafarer::find($request->user_id);
@@ -226,9 +207,42 @@ class SeafarerController extends Controller
         $email = $seafarer->email;
     }
     /**
+     * directs to seafarer create form
+     */
+    public function seafarerForm()
+    {
+        return Inertia::render('Admin/Seafarer/SeafarerCreateForm');
+    }
+    /**
+     * Validation
+     */
+    protected function validateSeafarer(){
+        return[
+            'role_id' => 'required',
+            'profile' => 'required|file|mimes:png,jpg,jpeg,webp',
+            'fullname' => 'required|string|max:30',
+            'seaman_book' => 'required|string|max:10',
+            'seaman_book_place' => 'required|string|max:30',
+            'issue_date' => 'required',
+            'expected_salary' => 'required',
+            'nationality' => 'required',
+            'religion' => 'required',
+            'dob' => 'required',
+            'height' => 'required|string|max:10',
+            'weight' => 'required|integer',
+            'overall_size' => 'required',
+            'mobile_no' => 'required|starts_with:09',
+            'email' => 'required',
+            'next_of_kin' => 'required|string|max:30',
+            'relationship' => 'required|string|max:20',
+            'next_of_kin_mobile' => 'required|starts_with:09',
+        ];
+    }
+    /**
      *
      * Update the specified resource in storage.
      */
+
     public function update(Request $request, Seafarer $seafarer)
     {
         //
