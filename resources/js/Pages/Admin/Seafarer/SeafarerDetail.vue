@@ -32,6 +32,7 @@ const props = defineProps({
         type: Array
     }
 })
+
 const showForm = ref(false);
 const toggleForm = () => {
     showForm.value = !showForm.value
@@ -106,7 +107,9 @@ const uploadBankAccount = () => {
                 </div>
                 <div class="overflow-hidden">
                     <div class="flex flex-row">
-                        <img :src="`storage/images/${props.applicant.profile}`" class="w-48 h-48 rounded-md" />
+                        <!-- storag//app/public/images/66dacae161fb0vietnam.jpg -->
+                        <img :src="`/storage/images/${props.applicant.profile}`" class="w-48 h-48 rounded-md" :alt="props.applicant.profile" />
+
                         <PersonalDetails :fullname="props.applicant.fullname"
                             :expected_salary="props.applicant.expected_salary"
                             :nationality="props.applicant.nationality" :religion="props.applicant.religion"
