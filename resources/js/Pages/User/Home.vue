@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 
 const props = defineProps({
     canLogin: {
@@ -15,7 +15,7 @@ const props = defineProps({
 
     <Head title="CMS" />
 
-    <div class="sm:flex sm:justify-center sm:items-center min-h-screen bg-center bg-blue-900">
+    <div class="sm:flex sm:justify-center sm:items-center min-h-screen bg-gradient-to-r from-sky-500 to-indigo-500">
         <div class="flex flex-col items-center">
             <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
             <h1 class="text-3xl text-white mt-5">Crew Management System</h1>

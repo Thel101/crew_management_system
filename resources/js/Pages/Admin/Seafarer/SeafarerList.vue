@@ -22,9 +22,6 @@ const props = defineProps({
 
         <div class="py-12">
             <div class="overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="flex flex-row bg-green-200">
-                    <Link :href="route('seafarer.form')" class="justify-end"><PrimaryButton>On-board seafarer</PrimaryButton></Link>
-                </div>
 
                 <div class="overflow-x-auto">
                     <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">

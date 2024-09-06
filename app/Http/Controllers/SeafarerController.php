@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jobs;
-use App\Models\MedicalDocuments;
 use Dompdf\Dompdf;
+use App\Models\Jobs;
 use Inertia\Inertia;
+use App\Models\Roles;
 use App\Models\Seafarer;
 use Illuminate\Http\Request;
+use App\Models\MedicalDocuments;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 class SeafarerController extends Controller
 {
 
-    public function index($job_id)
+    public function index()
     {
-
         return Inertia::render(
             'User/PersonalDetails',
             [
-                'role_id' => Jobs::with('role')->find($job_id)->role->id,
-                'vessel_id' => Jobs::with('vessel')->find($job_id)->vessel->id,
+                'roles' => Jobs::all(),
                 'user_name' => Auth()->user()->name,
                 'user_email' => Auth()->user()->email
             ]
@@ -31,22 +32,39 @@ class SeafarerController extends Controller
     /**
      * seafarer creation
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $validated = $request->validate($this->validateSeafarer());
-        $validated['user_id'] = auth()->user()->id;
-        $validated['vessel_id'] = $request->vessel_id;
+        if(auth()->user()->role != 'admin'){
+            $validated['user_id'] = auth()->user()->id;
+        }
+        else{
+            $user = \App\Models\User::create([
+                'name' => $validated['fullname'],
+                'email' => $validated['email'],
+                'password' => Hash::make('password')
+            ]);
+            $validated['user_id'] = $user->id;
+        }
+
+
         if ($request->file('profile')) {
             $file = uniqid() . $request->file('profile')->getClientOriginalName();
             $request->file('profile')->storeAs('public/images', $file);
             $validated['profile'] = $file;
         }
-
+        $validated['sign_on'] = '2024-09-12';
+        $validated['sign_off'] = '2024-09-12';
         $seafarer = Seafarer::create($validated);
-        return redirect(route('passport.index', $seafarer->id));
+        if($seafarer){
+            return redirect(route('passport.index', $seafarer->id));
+        }
+        else{
+            return 'something wrong';
+        }
+
+
     }
-
-
     /**
      * Display the specified resource.
      */
@@ -158,13 +176,19 @@ class SeafarerController extends Controller
      * Display profile on user page
      */
     public function profile($id){
-        $data = $this->retrieveSeafarer($id);
-        return Inertia::render('User/Profile',[
-            'applicant' => $data['seafarer'],
-            'passport' => $data['passport'],
-            'vessel' => $data['vessel']
+        $seafarer = Seafarer::where('user_id', $id)->first();
+        $data = $this->retrieveSeafarer($seafarer->id);
+        if($data){
+            return Inertia::render('User/Profile',[
+                'applicant' => $data['seafarer'],
+                'passport' => $data['passport'],
+                'vessel' => $data['vessel']
+            ]);
+        }
+        else{
+            return Inertia::render('User/Profile')->with(['message'=>'You have not applied for any position yet!']);
+        }
 
-        ]);
 
     }
 
@@ -173,13 +197,16 @@ class SeafarerController extends Controller
      */
     protected function retrieveSeafarer($id){
         $seafarer = Seafarer::with('passport','certificates','experiences','vessel')->find($id);
-        return [
-            'seafarer' => $seafarer,
-            'passport' => $seafarer->passport->first(),
-            'certificates' => $seafarer->certificates,
-            'experiences' => $seafarer->experiences,
-            'vessel' => $seafarer->vessel,
-        ];
+        if($seafarer){
+            return [
+                'seafarer' => $seafarer,
+                'passport' => $seafarer->passport->first(),
+                'certificates' => $seafarer->certificates,
+                'experiences' => $seafarer->experiences,
+                'vessel' => $seafarer->vessel,
+            ];
+        }
+
     }
     /*change to 'on_boarding' status
      **/
@@ -190,11 +217,14 @@ class SeafarerController extends Controller
             ->where('vessel_id', $request->vessel_id)
             ->first();
 
+
         if ($job && $seafarer && $seafarer->status == 'new') {
             // Update the seafarer's status and job_id if conditions are met
             $seafarer->update([
+                'vessel_id' => $request->vessel_id,
                 'status' => 'on_boarding'
             ]);
+
             return redirect(route('applicants.list'));
         }
     }
@@ -211,7 +241,10 @@ class SeafarerController extends Controller
      */
     public function seafarerForm()
     {
-        return Inertia::render('Admin/Seafarer/SeafarerCreateForm');
+        $roles = Roles::all();
+        return Inertia::render('Admin/Seafarer/SeafarerCreateForm',[
+            'roles' => $roles
+        ]);
     }
     /**
      * Validation

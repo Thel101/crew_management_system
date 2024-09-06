@@ -123,16 +123,19 @@ const submit = () => {
 
     <Head title="CMS" />
 
-    <div class="sm:flex sm:justify-center sm:items-center min-h-screen bg-center bg-blue-900">
-        <div class="flex flex-col items-center">
-            <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
-            <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
-            <form @submit.prevent="submit" class="p-3 bg-gray-200 rounded-md border-gray-400 shadow-md">
+
+        <div class="max-w-7xl mx-auto">
+            <div v-if="$page.props.auth.user.role != 'admin'">
+                <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
+                <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
+            </div>
+
+            <form @submit.prevent="submit" class="mt-3 p-3 bg-white rounded-md border-gray-400 shadow-md">
 
                     <!---Passport-->
 
                         <div>
-                        <h1 class="my-2 text-xl">Passport Info</h1>
+                        <h1 class="text-xl">Passport Info</h1>
                         <div class="flex flex-row gap-2 my-2">
                             <div class="w-1/4">
 
@@ -292,10 +295,6 @@ const submit = () => {
             </form>
 
         </div>
-
-
-
-    </div>
 </template>
 
 <style>

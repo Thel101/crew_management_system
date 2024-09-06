@@ -26,13 +26,18 @@ use App\Http\Controllers\MedicalDocumentsController;
 |
 */
 
-Route::get('/', [UserController::class, 'welcome'] )->name('user.welcome');
+Route::get('/', [UserController::class, 'welcome'])->name('user.welcome');
+Route::get('passport/{seafarer_id}', [PassportController::class, 'index'])->name('passport.index');
+Route::resource('passport', PassportController::class)->only('store');
+Route::resource('seafarers', SeafarerController::class)->only('store');
+Route::resource('certificates', CertificatesController::class)->only('index', 'store');
+Route::resource('experiences', ExperiencesController::class)->only('index', 'store');
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
-    Route::resource('users', UserController::class)->only('index','store','update');
+    Route::resource('users', UserController::class)->only('index', 'store', 'update');
     Route::controller(SeafarerController::class)->group(function () {
         Route::get('/applicants', 'applicantList')->name('applicants.list');
         Route::get('/applicant/{id}', 'show')->name('applicant.detail');
@@ -41,38 +46,25 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/seafarers', 'seafarer_list')->name('seafarer.list');
         Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
         Route::get('/form/seafarer', 'seafarerForm')->name('seafarer.form');
-        Route::post('/create/seafarer', 'createSeafarer')->name('seafarer.create');
-        Route::get('/send/email/{id}','send_email')->name('assign.email');
-
-
+        Route::get('/send/email/{id}', 'send_email')->name('assign.email');
     });
-    Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index','store','update');
-    Route::resource('bankAccounts', BankAccountsController::class)->only('index','store','update');
-    Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
-    Route::resource('roles', RolesController::class)->only('index', 'store', 'show','edit','update');
-    Route::resource('jobs', JobsController::class)->only('index', 'store', 'update','edit');
+    Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index', 'store', 'update');
+    Route::resource('bankAccounts', BankAccountsController::class)->only('index', 'store', 'update');
+    Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update','show');
+    Route::resource('roles', RolesController::class)->only('index', 'store', 'show', 'edit', 'update');
+    Route::resource('jobs', JobsController::class)->only('index', 'store', 'update', 'edit');
     Route::get('/assign/seafarers/{role_id}', [JobsController::class, 'assignSeafarers'])->name('assign.seafarers');
     Route::resource('leave', LeaveController::class)->only('index');
 });
 
 Route::middleware(['auth', 'user'])->group(function () {
-
     Route::get('/users/home', [UserController::class, 'index'])->name('user.home');
-    Route::resource('seafarers', SeafarerController::class)
-        ->only('store');
-    Route::controller(SeafarerController::class)->group(function(){
-        Route::get('cvforms/{role_id}', 'index')->name('cvforms.index');
-        Route::get('/profile/{id}','profile')->name('seafarer.profile');
+    Route::controller(SeafarerController::class)->group(function () {
+        Route::get('/cvforms', 'index')->name('cvforms.index');
+        Route::get('/profile/{id}', 'profile')->name('seafarer.profile');
     });
     Route::resource('leave', LeaveController::class)->only('store');
 
-    Route::get('passport/{seafarer_id}', [PassportController::class, 'index'])->name('passport.index');
-    Route::resource('passport', PassportController::class)
-        ->only('store');
-    Route::resource('certificates', CertificatesController::class)
-        ->only('index', 'store');
-    Route::resource('experiences', ExperiencesController::class)
-        ->only('index', 'store');
 });
 Route::resource('leave', LeaveController::class)->only('update');
 Route::middleware('auth')->group(function () {

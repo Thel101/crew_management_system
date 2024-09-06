@@ -106,7 +106,7 @@ const uploadBankAccount = () => {
                 </div>
                 <div class="overflow-hidden">
                     <div class="flex flex-row">
-                        <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
+                        <img :src="`storage/images/${props.applicant.profile}`" class="w-48 h-48 rounded-md" />
                         <PersonalDetails :fullname="props.applicant.fullname"
                             :expected_salary="props.applicant.expected_salary"
                             :nationality="props.applicant.nationality" :religion="props.applicant.religion"

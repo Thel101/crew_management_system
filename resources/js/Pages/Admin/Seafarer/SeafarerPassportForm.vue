@@ -1,9 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import PersonalDetails from '@/Pages/User/PersonalDetails.vue';
+import PassportForm from '@/Pages/User/PassportForm.vue';
 const props = defineProps({
-    roles: {
-        type: Object
+    seafarer_id: {
+        type: String
     }
 })
 </script>
@@ -12,6 +12,6 @@ const props = defineProps({
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Seafarers</h2>
         </template>
-        <PersonalDetails :roles="roles"></PersonalDetails>
+        <PassportForm :seafarer_id="seafarer_id"></PassportForm>
     </AuthenticatedLayout>
 </template>

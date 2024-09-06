@@ -20,13 +20,12 @@ class UserController extends Controller
 
     public function welcome()
     {
-        $vessels = Vessels::latest()->take(3)->get();
-        $jobs = Jobs::latest()->take(3)->get();
-        return Inertia::render('Welcome', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
-            'vessels' => $vessels,
-            'jobs' => $jobs
+        session()->flash('message', 'Registration successful');
+        if(auth()->check() && auth()->user()->role == 'admin'){
+            return redirect(route('dashboard'));
+        }
+        return Inertia::render('User/Profile', [
+            'message' => session('message')
         ]);
     }
     public function index()

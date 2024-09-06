@@ -15,7 +15,6 @@ const props = defineProps({
     jobs: {
         type: Object
     },
-
     passport: {
         type: Object
     },

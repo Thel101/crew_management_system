@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jobs;
 use App\Models\Vessels;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -51,9 +52,23 @@ class VesselsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Vessels $vessels)
+    public function show(Vessels $vessel)
     {
-        //
+       $vessel = Vessels::find($vessel->id);
+       $seafarers = Vessels::find($vessel->id)->seafarers;
+       foreach($seafarers as $seafarer){
+        $role = $seafarer->role;
+        $job = Jobs::find($role->id);
+        $seafarerWithRole[] =[
+            'seafarer' => $seafarer,
+            'role' => $role,
+            'job' => $job
+        ];
+       }
+       return Inertia::render('Admin/Vessels/seafarerlist',[
+        'seafarers' => $seafarerWithRole,
+        'vessel' => $vessel
+       ]);
     }
 
     /**

@@ -13,9 +13,16 @@ class PassportController extends Controller
      */
     public function index($seafarer_id)
     {
-        return Inertia::render('User/PassportForm',[
+        if(auth()->user()->role != 'admin'){
+            return Inertia::render('User/PassportForm',[
+                'seafarer_id' => $seafarer_id
+            ]);
+        }
+        return Inertia::render('Admin/Seafarer/SeafarerPassportForm',[
             'seafarer_id' => $seafarer_id
         ]);
+
+
     }
 
     /**

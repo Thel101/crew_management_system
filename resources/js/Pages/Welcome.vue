@@ -2,7 +2,9 @@
 import { Head, Link } from '@inertiajs/vue3';
 import BottomNavigationBar from '@/Components/BottomNavigationBar.vue'
 import Register from '@/Pages/Auth/Register.vue';
-defineProps({
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+defineProps
+({
     canLogin: {
         type: Boolean,
     },
@@ -42,9 +44,13 @@ defineProps({
         </div>
         <div v-if="canLogin">
             <button v-if="$page.props.auth.user">
-                <Link :href="route('dashboard')"
+                <Link :href="route('seafarer.profile', $page.props.auth.user.id)"
                     class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                Dashboard</Link>
+                Profile |</Link>
+                <Link method="post" :href="route('logout')"
+                    class="ms-2 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
+                Log out</Link>
+
             </button>
 
             <template v-else>
@@ -84,6 +90,7 @@ defineProps({
             </div>
         </div>
     </div>
+
     <div id="#vacancies">
         Vacancy
     </div>

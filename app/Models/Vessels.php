@@ -26,6 +26,6 @@ class Vessels extends Model
         return $this->hasMany(Jobs::class);
     }
     public function seafarers(): HasMany{
-        return $this->hasMany(Seafarer::class);
+        return $this->hasMany(Seafarer::class, 'vessel_id');
     }
 }

@@ -4,9 +4,13 @@ import PersonalDetails from '../Admin/PersonalDetail.vue';
 import TextInput from '@/Components/TextInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
-import { useForm } from '@inertiajs/vue3'
+import { useForm, Link } from '@inertiajs/vue3'
 
 const props = defineProps({
+    message:{
+        type: Object
+    },
+
     applicant: {
         type: Object
     },
@@ -34,8 +38,20 @@ const submitLeave = ()=>{
 console.log(today);
 </script>
 <template>
-    <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
-    <PersonalDetails :fullname="props.applicant.fullname" :expected_salary="props.applicant.expected_salary"
+    <div class="flex flex-col items-center bg-gradient-to-r from-sky-700 to-indigo-500 p-3">
+        <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
+        <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
+    </div>
+    <div v-if="props.message">
+        <h1 class="text-center text-xl mt-5">{{ props.message }}</h1>
+        <a :href="route('cvforms.index')"><PrimaryButton>Apply Now</PrimaryButton></a>
+    </div>
+    <div class="text-center my-2">
+            <Link class="text-center hover:underline text-blue-600" :href="route('user.welcome')">Back to Home Page</Link>
+        </div>
+    <div v-if="props.applicant && props.passport">
+        <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
+        <PersonalDetails :fullname="props.applicant.fullname" :expected_salary="props.applicant.expected_salary"
         :nationality="props.applicant.nationality" :religion="props.applicant.religion" :dob="props.applicant.dob"
         :height="props.applicant.height" :weight="props.applicant.weight" :mobile_no="props.applicant.mobile_no"
         :email="props.applicant.email" :next_of_kin="props.applicant.next_of_kin"
@@ -66,4 +82,6 @@ console.log(today);
         <PrimaryButton>Submit Leave Request</PrimaryButton>
         </form>
     </div>
+    </div>
+
 </template>

@@ -7,9 +7,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { XMarkIcon } from '@heroicons/vue/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/vue/20/solid'
+import { Inertia } from '@inertiajs/inertia';
+
+
 
 const props = defineProps({
     applicants:
@@ -84,7 +84,7 @@ const assign = () => {
         onSuccess: () => {
             form.reset();
             showAssignForm.value = false
-            Inertia.get(route('assign.email', email_id))
+            // Inertia.get(route('assign.email', email_id))
         }
     })
 }
@@ -101,19 +101,24 @@ const assign = () => {
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
+
                     <div v-show="applicants.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There
                         is no
                         applicants!</div>
 
-                    <div v-show="applicants.data.length > 0" class="overflow-x-auto">
+                    <div class="flex flex-row justify-between">
+                        <div>
+                            <Link :href="route('seafarer.form')" class="justify-end mb-5">
+                            <PrimaryButton>On-board seafarer</PrimaryButton>
+                            </Link>
+                        </div>
+                        <div>
+                            <input type="text" v-model="search" placeholder="Search..."
+                                class="rounded-md border-gray-100 mb-4">
+                        </div>
 
-
-                    </div>
-                    <div class="max-w-6xl flex justify-end">
-                        <input type="text" v-model="search" placeholder="Search..."
-                            class="rounded-md border-gray-100 my-5">
                     </div>
 
                     <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
@@ -122,7 +127,6 @@ const assign = () => {
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ApplicantID</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman Book</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Nationality</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Phone Number</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
@@ -138,18 +142,23 @@ const assign = () => {
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.formatted_id }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.seaman_book }}</td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.nationality }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.mobile_no }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.email }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.role.name }}</td>
+
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new
                         Date(applicant.created_at).toLocaleDateString('en-US') }}</td>
 
 
-                                <td class="whitespace-nowrap px-4 py-2">
-                                    <a :href="route('applicant.detail', applicant.id)"
-                                        class="mx-2 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                <td class="whitespace-nowrap py-2">
+                                    <a v-if="applicant.passport.length > 0"
+                                        :href="route('applicant.detail', applicant.id)"
+                                        class="mr-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         View
+                                    </a>
+                                    <a v-else :href="route('passport.index', applicant.id)"
+                                        class="mr-2 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                        Attach
                                     </a>
                                     <Link preserve-state
                                         @click="AssignSeafarer(applicant.id, applicant.fullname, applicant.seaman_book, applicant.role.name, applicant.role.id)"
