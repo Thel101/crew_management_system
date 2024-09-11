@@ -52,6 +52,18 @@ class CertificatesController extends Controller
 
         return redirect(route('user.home'));
     }
+    /**
+     * Approve or Decline Certificate
+     */
+    public function changeStatus($id){
+        $certificate = Certificates::find($id);
+        if($certificate){
+            if($certificate->status == 'pending'){
+                $certificate->update(['status' => 'active']);
+                return redirect(route('applicant.detail', $certificate->seafarer_id))->with(['message'=>'Documents have been approved!']);
+            }
+        }
+    }
 
     /**
      * Display the specified resource.

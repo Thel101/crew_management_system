@@ -21,7 +21,7 @@ class SeafarerController extends Controller
         return Inertia::render(
             'User/PersonalDetails',
             [
-                'roles' => Jobs::all(),
+                'roles' => Roles::all(),
                 'user_name' => Auth()->user()->name,
                 'user_email' => Auth()->user()->email
             ]
@@ -35,10 +35,9 @@ class SeafarerController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate($this->validateSeafarer());
-        if(auth()->user()->role != 'admin'){
+        if (auth()->user()->role != 'admin') {
             $validated['user_id'] = auth()->user()->id;
-        }
-        else{
+        } else {
             $user = \App\Models\User::create([
                 'name' => $validated['fullname'],
                 'email' => $validated['email'],
@@ -56,27 +55,24 @@ class SeafarerController extends Controller
         $validated['sign_on'] = '2024-09-12';
         $validated['sign_off'] = '2024-09-12';
         $seafarer = Seafarer::create($validated);
-        if($seafarer){
+        if ($seafarer) {
             return redirect(route('passport.index', $seafarer->id));
-        }
-        else{
+        } else {
             return 'something wrong';
         }
-
-
     }
     /**
      * Display the specified resource.
      */
     public function show($seafarer_id)
     {
-        $seafarer = Seafarer::find($seafarer_id);
+        $data = $this->retrieveSeafarer($seafarer_id);
 
-        return Inertia::render('Admin/ApplicantDetail', [
-            'applicant' => $seafarer,
-            'passport' => $seafarer->passport->first(),
-            'certificates' => $seafarer->certificates,
-            'experiences' => $seafarer->experiences,
+        return Inertia::render('Admin/Applicant/ApplicantDetail', [
+            'applicant' => $data['seafarer'],
+            'passport' => $data['passport'],
+            'certificates' => $data['certificates'],
+            'experiences' => $data['experiences'],
 
         ]);
     }
@@ -100,15 +96,15 @@ class SeafarerController extends Controller
             });
         }
         $jobs = $jobsQuery->get();
-        return Inertia::render('Admin/ApplicantList', [
+        return Inertia::render('Admin/Applicant/ApplicantList', [
             'applicants' => $applicants,
             'jobs' => $jobs
 
         ]);
-
     }
-    protected function searchEmail($query, $search){
-        return $query->when($search, function($query, $search){
+    protected function searchEmail($query, $search)
+    {
+        return $query->when($search, function ($query, $search) {
             $query->whereAny([
                 'fullname',
                 'formatted_id',
@@ -164,7 +160,7 @@ class SeafarerController extends Controller
     {
         $seafarer = Seafarer::find($seafarer_id);
 
-        return Inertia('Admin/ApplicantPdf', [
+        return Inertia('Admin/Applicant/ApplicantPdf', [
             'applicant' => $seafarer,
             'passport' => $seafarer->passport->first(),
             'certificates' => $seafarer->certificates,
@@ -175,29 +171,44 @@ class SeafarerController extends Controller
     /**
      * Display profile on user page
      */
-    public function profile($id){
+    public function profile($id)
+    {
         $seafarer = Seafarer::where('user_id', $id)->first();
-        $data = $this->retrieveSeafarer($seafarer->id);
-        if($data){
-            return Inertia::render('User/Profile',[
+        if ($seafarer) {
+            $data = $this->retrieveSeafarer($seafarer->id);
+
+            return Inertia::render('User/Profile', [
                 'applicant' => $data['seafarer'],
                 'passport' => $data['passport'],
-                'vessel' => $data['vessel']
+                'vessel' => $data['vessel'],
+                'certificates' => $data['certificates'],
+                'experiences' => $data['experiences']
             ]);
-        }
-        else{
-            return Inertia::render('User/Profile')->with(['message'=>'You have not applied for any position yet!']);
-        }
 
-
+        } else {
+            return Inertia::render('User/Profile')->with(['message' => 'You have not applied for any position yet!']);
+        }
     }
+    /**
+     * Display pdf file
+     */
+    public function serveFile($file)
+    {
+        $path = storage_path('storage/images/' . $file); // Adjust path as needed
 
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->file($path);
+    }
     /**
      * retrieve a particular seafarer info
      */
-    protected function retrieveSeafarer($id){
-        $seafarer = Seafarer::with('passport','certificates','experiences','vessel')->find($id);
-        if($seafarer){
+    protected function retrieveSeafarer($id)
+    {
+        $seafarer = Seafarer::with('passport', 'experiences', 'vessel')->find($id);
+        if ($seafarer) {
             return [
                 'seafarer' => $seafarer,
                 'passport' => $seafarer->passport->first(),
@@ -206,7 +217,6 @@ class SeafarerController extends Controller
                 'vessel' => $seafarer->vessel,
             ];
         }
-
     }
     /*change to 'on_boarding' status
      **/
@@ -219,6 +229,7 @@ class SeafarerController extends Controller
 
 
         if ($job && $seafarer && $seafarer->status == 'new') {
+
             // Update the seafarer's status and job_id if conditions are met
             $seafarer->update([
                 'vessel_id' => $request->vessel_id,
@@ -242,15 +253,16 @@ class SeafarerController extends Controller
     public function seafarerForm()
     {
         $roles = Roles::all();
-        return Inertia::render('Admin/Seafarer/SeafarerCreateForm',[
+        return Inertia::render('Admin/Seafarer/SeafarerCreateForm', [
             'roles' => $roles
         ]);
     }
     /**
      * Validation
      */
-    protected function validateSeafarer(){
-        return[
+    protected function validateSeafarer()
+    {
+        return [
             'role_id' => 'required',
             'profile' => 'required|file|mimes:png,jpg,jpeg,webp',
             'fullname' => 'required|string|max:30',

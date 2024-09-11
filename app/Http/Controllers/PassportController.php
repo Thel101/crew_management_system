@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Passport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -38,12 +39,19 @@ class PassportController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'seafarer_id' => 'required',
             'passport_no' => 'required|string|max:10|unique:passports,passport_no,except,id',
             'place_of_issue' => 'required|string|max:15',
             'issue_date' => 'required',
-            'expiry_date' => 'required',
+            'expiry_date' => ['required','date', function($attribute, $value, $fail){
+                $expiryDate = Carbon::parse($value);
+                $minExpiryDate = Carbon::today()->addMonths(6);
+                if ($expiryDate->lte($minExpiryDate)){
+                    $fail('The expiry date must be at least 6 months from today.');
+                }
+            }],
         ]);
         $validated['status'] = 'active';
         Passport::create($validated);

@@ -14,8 +14,6 @@ const props = defineProps({
     },
 });
 
-const step_1 = ref(true);
-const step_2 = ref(false);
 
 const src = ref('');
 
@@ -103,12 +101,13 @@ const addExperience = () => {
 const removeExperience = (index) => {
     experiences.experiences.splice(index, 1);
 };
+const today = new Date().toISOString().split('T')[0];
 
 const submit = () => {
     passport.post(route('passport.store'), {
-        onFinish:()=>{
+        onSuccess:()=>{
             certificates.post(route('certificates.store'),{
-                onFinish:()=>{
+                onSuccess:()=>{
                     experiences.post(route('experiences.store'))
                 }
             })
@@ -155,14 +154,14 @@ const submit = () => {
                             </div>
                             <div class="w-1/4">
                                 <InputLabel for="issue_date">Issue date</InputLabel>
-                                <TextInput id="issue_date" type="date" class="mt-1 block w-full"
+                                <TextInput id="issue_date" :max="today" type="date" class="mt-1 block w-full"
                                     v-model="passport.issue_date" />
 
                                 <InputError class="mt-2" :message="passport.errors.issue_date" />
                             </div>
                             <div>
                                 <InputLabel for="expiry_date">Expiry Date</InputLabel>
-                                <TextInput id="expiry_date" type="date" class="mt-1 block w-full"
+                                <TextInput id="expiry_date" type="date" :max="maxDate" class="mt-1 block w-full"
                                     v-model="passport.expiry_date" />
 
                                 <InputError class="mt-2" :message="passport.errors.expiry_date" />
@@ -253,10 +252,10 @@ const submit = () => {
                                     <TextInput class="w-28" for="rank" type="text" v-model="experience.rank" />
                                 </td>
                                 <td>
-                                    <TextInput for="sign_on_date" type="date" v-model="experience.sign_on_date" />
+                                    <TextInput for="sign_on_date" :max="today" type="date" v-model="experience.sign_on_date" />
                                 </td>
                                 <td>
-                                    <TextInput for="sign_off_date" type="date" v-model="experience.sign_off_date" />
+                                    <TextInput for="sign_off_date" :max="today" type="date" v-model="experience.sign_off_date" />
                                 </td>
 
                                 <td>

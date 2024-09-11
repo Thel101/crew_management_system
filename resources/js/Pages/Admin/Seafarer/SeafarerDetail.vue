@@ -41,17 +41,17 @@ const showBankForm = ref(false);
 const toggleBankForm = () => {
     showBankForm.value = !showBankForm.value
 }
-const change = (e)=>{
+const change = (e) => {
     const result_file = e.target.files[0];
     form.file = result_file
 }
 const selectedType = ref('');
-const selectType = (chosen_type)=>{
+const selectType = (chosen_type) => {
     selectedType.value = chosen_type;
     form.type = chosen_type;
 }
 const selectedResult = ref('');
-const selectResult=(chosen_result)=>{
+const selectResult = (chosen_result) => {
     selectedResult.value = chosen_result;
     form.result = chosen_result;
 }
@@ -65,7 +65,7 @@ const form = useForm({
     file: null
 })
 const submitMedicalDocuments = () => {
-    form.post(route('medicalDocuments.store'),{
+    form.post(route('medicalDocuments.store'), {
         onFinish: () => {
             showForm.value = false();
             form.seafared_id = '';
@@ -85,7 +85,7 @@ const bank = useForm({
     holder_phone: ''
 })
 const uploadBankAccount = () => {
-    bank.post(route('bankAccounts.store'),{
+    bank.post(route('bankAccounts.store'), {
 
     })
 }
@@ -108,18 +108,21 @@ const uploadBankAccount = () => {
                 <div class="overflow-hidden">
                     <div class="flex flex-row">
                         <!-- storag//app/public/images/66dacae161fb0vietnam.jpg -->
-                        <img :src="`/storage/images/${props.applicant.profile}`" class="w-48 h-48 rounded-md" :alt="props.applicant.profile" />
+                        <img :src="`/storage/images/${props.applicant.profile}`" class="w-48 h-48 rounded-md"
+                            :alt="props.applicant.profile" />
 
-                        <PersonalDetails :fullname="props.applicant.fullname"
+                        <PersonalDetails class="w-3/4" :fullname="props.applicant.fullname"
                             :expected_salary="props.applicant.expected_salary"
                             :nationality="props.applicant.nationality" :religion="props.applicant.religion"
                             :dob="props.applicant.dob" :height="props.applicant.height" :weight="props.applicant.weight"
                             :mobile_no="props.applicant.mobile_no" :email="props.applicant.email"
                             :next_of_kin="props.applicant.next_of_kin" :relationship="props.applicant.relationship"
-                            :next_of_kin_phone="props.applicant.next_of_kin_mobile" :passport_no="props.passport.passport_no" :place_of_issue="props.passport.place_of_issue"
-        :issue_date="props.passport.issue_date" :expiry_date="props.passport.expiry_date"
-        :seaman_book="props.applicant.seaman_book" :book_place_of_issue="props.applicant.place_of_issue"
-        :book_issue_date="props.applicant.issue_date"></PersonalDetails>
+                            :next_of_kin_phone="props.applicant.next_of_kin_mobile"
+                            :passport_no="props.passport.passport_no" :place_of_issue="props.passport.place_of_issue"
+                            :issue_date="props.passport.issue_date" :expiry_date="props.passport.expiry_date"
+                            :seaman_book="props.applicant.seaman_book"
+                            :book_place_of_issue="props.applicant.place_of_issue"
+                            :book_issue_date="props.applicant.issue_date"></PersonalDetails>
                     </div>
                 </div>
 
@@ -146,20 +149,16 @@ const uploadBankAccount = () => {
                         <tbody class="divide-y divide-gray-200">
                             <tr v-for="certificate in certificates" :key="certificate.id">
                                 <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
-                            certificate.name }}
+                    certificate.name }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.certificate_no
                                     }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.issue_date }}
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.expiry_date
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.expiry_date }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ certificate.issuing_authority
                                     }}</td>
-
-
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{
-                            certificate.issuing_authority }}
-
-                                </td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"><img class="w-20 h-20" :src="`/storage/images/${certificate.cert_image}`"/> </td>
                             </tr>
 
 
@@ -188,7 +187,7 @@ const uploadBankAccount = () => {
                         <tbody class="divide-y divide-gray-200">
                             <tr v-for="experience in experiences" :key="experience.id">
                                 <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
-                            experience.ship_name }}
+                    experience.ship_name }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ experience.flag
                                     }}</td>
@@ -201,7 +200,7 @@ const uploadBankAccount = () => {
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.GRT }}
 
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.Trade }}
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.trade }}
 
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.sign_on_date }}
@@ -237,15 +236,15 @@ const uploadBankAccount = () => {
                         <div>
                             <InputLabel>Document Type</InputLabel>
                             <Dropdown align="left">
-                                <template #trigger >
+                                <template #trigger>
                                     <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                    {{selectedType || 'Select document type'}}</div>
+                                        {{ selectedType || 'Select document type' }}</div>
                                 </template>
-                                <template #content >
+                                <template #content>
                                     <ul>
-                                       <li @click="selectType('general')">Medical Check Up</li>
-                                       <li @click="selectType('d_c')">Drug & Alcohol Result</li>
-                                       <li @click="selectType('vaccination')">Vaccination Record</li>
+                                        <li @click="selectType('general')">Medical Check Up</li>
+                                        <li @click="selectType('d_c')">Drug & Alcohol Result</li>
+                                        <li @click="selectType('vaccination')">Vaccination Record</li>
                                     </ul>
                                 </template>
                             </Dropdown>
@@ -253,21 +252,21 @@ const uploadBankAccount = () => {
                         </div>
                         <div>
                             <InputLabel>Document Date</InputLabel>
-                            <input type="date" v-model="form.document_date"/>
+                            <input type="date" v-model="form.document_date" />
                             <InputError class="mt-2" :message="form.errors.document_date" />
                         </div>
                         <div>
                             <InputLabel>Result</InputLabel>
                             <Dropdown align="left">
-                                <template #trigger >
+                                <template #trigger>
                                     <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                    {{selectedResult || 'Select Result'}}</div>
+                                        {{ selectedResult || 'Select Result' }}</div>
                                 </template>
-                                <template #content >
+                                <template #content>
                                     <ul>
-                                       <li @click="selectResult('pass')">Pass</li>
-                                       <li @click="selectResult('fail')">Fail</li>
-                                       <li @click="selectResult('pending')">Pending</li>
+                                        <li @click="selectResult('pass')">Pass</li>
+                                        <li @click="selectResult('fail')">Fail</li>
+                                        <li @click="selectResult('pending')">Pending</li>
                                     </ul>
                                 </template>
                             </Dropdown>
@@ -275,14 +274,14 @@ const uploadBankAccount = () => {
                         </div>
                         <div>
                             <InputLabel>Document File</InputLabel>
-                            <input type="file" @input="change"/>
+                            <input type="file" @input="change" />
                             <InputError class="mt-2" :message="form.errors.file" />
                         </div>
                         <PrimaryButton>Upload Documents</PrimaryButton>
                     </form>
                 </div>
-                 <!--Bank Account-->
-                 <div @click="toggleBankForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                <!--Bank Account-->
+                <div @click="toggleBankForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
                     <h1>Bank Accounts</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">

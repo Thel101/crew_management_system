@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('seafarers', function (Blueprint $table) {
-            $table->foreignId('vessel_id')->nullable()->cascadeOnUpdate()->cascadeOnDelete()->change();
-
+        Schema::table('certificates', function (Blueprint $table) {
+            $table->enum('status',['pending','active', 'warning', 'expired'])->change();
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('seafarers', function (Blueprint $table) {
-            $table->foreignId('vessel_id')->nullable()->cascadeOnUpdate()->cascadeOnDelete()->change();
+        Schema::table('certificates', function (Blueprint $table) {
+            $table->enum('status',['pending','active', 'warning', 'expired']);
         });
     }
 };

@@ -95,7 +95,9 @@ const checkEmpty = (event) => {
 }
 const today = new Date();
 const eighteenYearsAgo = new Date();
+const sixMonths = new Date();
 eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
+sixMonths.setMonth(today.getMonth() + 6);
 const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
 

@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Seafarer;
 use App\Models\Vacancies;
 use App\Models\Certificates;
+use App\Models\Roles;
 use App\Models\Vessels;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
@@ -20,20 +21,31 @@ class UserController extends Controller
 
     public function welcome()
     {
-        session()->flash('message', 'Registration successful');
         if(auth()->check() && auth()->user()->role == 'admin'){
             return redirect(route('dashboard'));
         }
-        return Inertia::render('User/Profile', [
-            'message' => session('message')
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'roles' => Roles::all(),
         ]);
     }
     public function index()
     {
-        $users = User::whereIn('role', ['admin', 'staff'])->paginate(5);
-        return Inertia::render('Admin/UserList', [
-            'users' => $users
-        ]);
+        if(auth()->user()->role == 'admin'){
+            $users = User::whereIn('role', ['admin', 'staff'])->paginate(5);
+            return Inertia::render('Admin/UserList', [
+                'users' => $users
+            ]);
+        }
+        else{
+            session()->flash('message', 'Registration successful');
+            return Inertia::render('User/Profile',[
+                'message' => session('message')
+            ]);
+
+        }
+
     }
     /**
      * user creation
@@ -46,8 +58,14 @@ class UserController extends Controller
         $validated['password'] = Hash::make('password');
         $validated['role'] = 'admin';
         $user = User::create($validated);
-        if($user){
+        dd($user->role);
+        if($user->role=='admin'){
             return redirect(route('users.index'))->with(['message'=>'New User has been created!']);
+        }
+        else
+        {
+            $seafarer= Seafarer::where('user_id', $user->id);
+            return redirect(route('seafarer.profile', $seafarer->id))->with(['message'=>'Application Successful']);
         }
     }
 

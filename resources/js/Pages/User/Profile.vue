@@ -5,7 +5,8 @@ import TextInput from '@/Components/TextInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
 import { useForm, Link } from '@inertiajs/vue3'
-
+import CertificateTable from '@/Components/CertificateTable.vue';
+import ExperienceTable from '@/Components/ExperienceTable.vue';
 const props = defineProps({
     message:{
         type: Object
@@ -18,6 +19,12 @@ const props = defineProps({
         type: Object
     },
     vessel:{
+        type: Object
+    },
+    certificates:{
+        type: Object
+    },
+    experiences:{
         type: Object
     }
 })
@@ -61,9 +68,15 @@ console.log(today);
         :seaman_book="props.applicant.seaman_book" :book_place_of_issue="props.applicant.place_of_issue"
         :book_issue_date="props.applicant.issue_date"></PersonalDetails>
 
-    <div v-if="props.applicant.status == 'on_boarding'">
+    <div v-if="props.applicant.status == 'on_boarding' && vessel">
         <span>Assigned Vessel: {{ props.vessel.name }}</span>
         <span>Salary: 40000$</span>
+    </div>
+    <div>
+        <CertificateTable :certificates="props.certificates"></CertificateTable>
+    </div>
+    <div>
+        <ExperienceTable :experiences="props.experiences"></ExperienceTable>
     </div>
     <div>
         <form @submit.prevent="submitLeave">

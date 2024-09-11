@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('seafarers', function (Blueprint $table) {
-            $table->foreignId('vessel_id')->nullable()->cascadeOnUpdate()->cascadeOnDelete()->change();
-
+            $table->after('sign_off', function ($table) {
+                $table->enum('remark_type', ['compliment', 'comment', 'punishment', 'ban'])->nullable();
+                $table->string('comment')->nullable();
+            });
         });
     }
 
@@ -23,7 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('seafarers', function (Blueprint $table) {
-            $table->foreignId('vessel_id')->nullable()->cascadeOnUpdate()->cascadeOnDelete()->change();
+
+            $table->dropColumn('remark_type');
+            $table->dropColumn('comment');
         });
     }
 };

@@ -33,7 +33,7 @@ const props = defineProps([
             <div class="overflow-hidden">
                 <div>
 
-                    <div class="ml-10">
+                    <div class="">
 
                         <h1 class="text-2xl font-semi-bold my-2">Personal Details</h1>
 
@@ -65,15 +65,15 @@ const props = defineProps([
                         </div>
                     </div>
                     <hr class="h-8">
-                    <div class="flex flex-row justify-between">
-                        <div>
+                    <div class="flex flex-row">
+                        <div class="w-1/2">
                             <h1 class="text-2xl font-semi-bold my-2">Passport</h1>
                             <PersonalText :label="'Passport Number'" :text="props.passport_no"></PersonalText>
                             <PersonalText :label="'Place of issue'" :text="props.place_of_issue"></PersonalText>
                             <PersonalText :label="'Issue Date'" :text="props.issue_date"></PersonalText>
                             <PersonalText :label="'Expiry Date'" :text="props.expiry_date"></PersonalText>
                         </div>
-                        <div>
+                        <div class="w-1/2">
                             <h1 class="text-2xl font-semi-bold my-2">Seaman Book</h1>
                             <PersonalText :label="'Seaman book No'" :text="props.seaman_book"></PersonalText>
                             <PersonalText :label="'Place of issue'" :text="props.place_of_issue"></PersonalText>
