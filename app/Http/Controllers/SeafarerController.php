@@ -240,6 +240,27 @@ class SeafarerController extends Controller
         }
     }
     /**
+     * Edit Remark
+     */
+    public function postRemark(Request $request){
+        $seafarer = Seafarer::find($request->seafarer_id);
+        $validated = $request->validate([
+            'remark_type' => 'required',
+            'comment' => 'required|string'
+        ]);
+
+        if($seafarer){
+            $seafarer->update([
+                'remark_type' => $validated['remark_type'],
+                'comment' => $validated['comment']
+            ]);
+
+        }
+        // dd('success');
+        return redirect(route('seafarer.detail', $seafarer->id));
+
+    }
+    /**
      * Sending Email for being seafarer
      */
     public function send_email($email_id)

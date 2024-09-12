@@ -44,7 +44,9 @@ class Seafarer extends Model
         'relationship',
         'next_of_kin_mobile',
         'sign_on',
-        'sign_off'
+        'sign_off',
+        'remark_type',
+        'comment'
     ];
     public function role(): BelongsTo{
         return $this->belongsTo(Roles::class);

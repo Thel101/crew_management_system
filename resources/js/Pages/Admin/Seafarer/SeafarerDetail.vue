@@ -9,8 +9,10 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import InputError from '@/Components/InputError.vue';
-
-
+import { capitalize } from 'lodash';
+import CertificateTable from '@/Components/CertificateTable.vue';
+import ExperienceTable from '@/Components/ExperienceTable.vue';
+import Modal from '@/Components/Modal.vue';
 const open = ref(false)
 
 const props = defineProps({
@@ -30,9 +32,15 @@ const props = defineProps({
     },
     experiences: {
         type: Array
+    },
+    remarks: {
+        type: Array,
+        default: () => [
+            'compliment', 'comment', 'punishment', 'ban'
+        ]
     }
 })
-
+console
 const showForm = ref(false);
 const toggleForm = () => {
     showForm.value = !showForm.value
@@ -41,10 +49,21 @@ const showBankForm = ref(false);
 const toggleBankForm = () => {
     showBankForm.value = !showBankForm.value
 }
+
+const showRemarkSection = ref(false);
+const toggleRemarkSection = () => {
+    showRemarkSection.value = !showRemarkSection.value
+}
+const showRemarkForm = ref(false);
+const toggleRemarkForm = () => {
+    console.log('clicked');
+    showRemarkForm.value = !showRemarkForm.value
+}
 const change = (e) => {
     const result_file = e.target.files[0];
     form.file = result_file
 }
+
 const selectedType = ref('');
 const selectType = (chosen_type) => {
     selectedType.value = chosen_type;
@@ -89,6 +108,35 @@ const uploadBankAccount = () => {
 
     })
 }
+const selectedRemarkType = ref('');
+const chooseRemark = (chosen_remark) => {
+    selectedRemarkType.value = chosen_remark;
+    remarks.remark_type = chosen_remark;
+}
+
+const remarks = useForm({
+    seafarer_id: props.applicant.id,
+    remark_type: '',
+    comment: ''
+})
+if (props.applicant.remark_type) {
+    remarks.remark_type = props.applicant.remark_type;
+    remarks.comment = props.applicant.comment
+}
+
+const submitRemark = () => {
+    remarks.patch(route('seafarer.remark'), {
+        onSuccess: () => {
+            remarks.reset();
+            showModal.value = true
+            showRemarkForm.value = false
+        }
+    });
+}
+const showModal = ref(false);
+const closeModal = ()=>{
+    showModal.value = false
+}
 </script>
 
 <template>
@@ -129,92 +177,12 @@ const uploadBankAccount = () => {
                 <hr>
                 <!--Certificates-->
                 <div>
-                    <h1 class="text-lg font-bold">Certificates</h1>
-                    <table class="divide-y-2 divide-gray-200 bg-white text-sm">
-                        <thead class="ltr:text-left rtl:text-right">
-                            <tr>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Certificate</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Certificate Number
-                                </th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Issue Date</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Expiry Date</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Issuing Authority
-                                </th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
-
-                                <th class="px-4 py-2"></th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="divide-y divide-gray-200">
-                            <tr v-for="certificate in certificates" :key="certificate.id">
-                                <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
-                    certificate.name }}
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.certificate_no
-                                    }}</td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.issue_date }}
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ certificate.expiry_date }}</td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ certificate.issuing_authority
-                                    }}</td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"><img class="w-20 h-20" :src="`/storage/images/${certificate.cert_image}`"/> </td>
-                            </tr>
-
-
-                        </tbody>
-                    </table>
+                    <CertificateTable :certificates="props.certificates"></CertificateTable>
                 </div>
                 <!--Certificates-->
                 <!--Experiences-->
                 <div>
-                    <h1 class="text-lg font-bold">Experiences</h1>
-                    <table class="divide-y-2 divide-gray-200 bg-white text-sm">
-                        <thead class="ltr:text-left rtl:text-right">
-                            <tr>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Ship Name</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Flag</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Ship Type</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Rank</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">GRT
-                                </th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Trade</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Sign-on</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Sign-off</th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="divide-y divide-gray-200">
-                            <tr v-for="experience in experiences" :key="experience.id">
-                                <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
-                    experience.ship_name }}
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ experience.flag
-                                    }}</td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ experience.ship_type }}
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ experience.rank
-                                    }}</td>
-
-
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.GRT }}
-
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.trade }}
-
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.sign_on_date }}
-
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ experience.sign_off_date
-                                    }}
-
-                                </td>
-                            </tr>
-
-
-                        </tbody>
-                    </table>
+                    <ExperienceTable :experiences="props.experiences"></ExperienceTable>
                 </div>
                 <!--Experiences-->
                 <!--Medical Documents-->
@@ -315,6 +283,86 @@ const uploadBankAccount = () => {
                         <PrimaryButton>Add Bank Account </PrimaryButton>
                     </form>
                 </div>
+
+                <!--Remark Form-->
+                <div @click="toggleRemarkSection" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                    <h1>Remarks by Supervisior</h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+
+                </div>
+                <div v-show="showRemarkSection">
+
+                    <div class="mt-3" v-show="applicant.remark_type != ''">
+                        <div class="flex flex-row ms-3">
+                            <div class="w-1/4 font-bold text-md">{{ capitalize(applicant.remark_type) + ' : ' }} </div>
+                            <div class="w-3/4 flex flex-row justify-between">
+                                <div>{{ applicant.comment }}</div>
+                                <div>
+                                    <svg @click="toggleRemarkForm" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                        class="size-6 text-blue-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                    </svg>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <form v-show="showRemarkForm" @submit.prevent="submitRemark"
+                        class="mt-3 bg-gray-200 p-2 rounded-md shadow-sm">
+                        <div class="flex flex-row w-full">
+                            <div class="mr-2 w-1/4">
+                                <InputLabel>Remark Type</InputLabel>
+                                <Dropdown align="left">
+                                    <template #trigger>
+                                        <div
+                                            class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
+                                            {{ selectedRemarkType || 'Select remark type' }}</div>
+                                    </template>
+                                    <template #content>
+                                        <ul class="px-2">
+                                            <li v-for="remark in props.remarks" :key="remark"
+                                                @click="chooseRemark(remark)">{{ remark }}
+                                            </li>
+
+                                        </ul>
+
+
+                                    </template>
+                                </Dropdown>
+                                <InputError class="mt-2" :message="remarks.errors.remark_type" />
+                            </div>
+                            <div class="w-3/4">
+                                <InputLabel>Comments</InputLabel>
+                                <textarea
+                                    class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    v-model="remarks.comment"></textarea>
+                                <InputError class="mt-2" :message="remarks.errors.comment" />
+                            </div>
+                        </div>
+
+
+                        <PrimaryButton>Submit Remark </PrimaryButton>
+                    </form>
+                </div>
+                <template>
+                    <Modal :show="showModal" :closeable="true" class="max-w-md" :maxWidth="md" @close="closeModal">
+                        <div class="p-4 bg-green-200">
+                            <h2 class="text-lg font-bold">Remark Submission Successful</h2>
+                            <p>Remark has been successfully submitted!</p>
+                            <div class="flex flex-row justify-end">
+                                <button @click="closeModal" class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+                            </div>
+                        </div>
+                    </Modal>
+                </template>
+
             </div>
         </div>
 

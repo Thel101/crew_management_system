@@ -48,6 +48,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/form/seafarer', 'seafarerForm')->name('seafarer.form');
         Route::get('/send/email/{id}', 'send_email')->name('assign.email');
         Route::get('/applicant/{filename}', 'serveFile')->name('applicant.serveFile');
+        Route::patch('/remark', 'postRemark')->name('seafarer.remark');
     });
 
     Route::patch('/certificate/status',[CertificatesController::class,'changeStatus'])->name('certificate.status');
