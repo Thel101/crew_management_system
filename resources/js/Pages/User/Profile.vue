@@ -7,6 +7,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import { useForm, Link } from '@inertiajs/vue3'
 import CertificateTable from '@/Components/CertificateTable.vue';
 import ExperienceTable from '@/Components/ExperienceTable.vue';
+import LeaveList from '@/Components/LeaveList.vue';
+import PayrollTable from '../Admin/Payroll/PayrollTable.vue';
+import { watch, ref } from 'vue';
 const props = defineProps({
     message:{
         type: Object
@@ -26,23 +29,44 @@ const props = defineProps({
     },
     experiences:{
         type: Object
+    },
+    payrolls:{
+        type: Array
+    },
+    leaves:{
+        type: Array
     }
 })
-const today = new Date();
+const today = new Date().toISOString().split('T')[0];
+
 const form = useForm({
     seafarer_id : props.applicant.id,
     leave_start: '',
     leave_end: '',
     reason: ''
 })
+const endDate = ref('');
+watch(()=>form.leave_start, (value)=>{
+    const date = new Date(value);
+    const leaveEndDate = new Date();
+    leaveEndDate.setDate(date.getDate() + 1)
+    endDate.value = leaveEndDate.toISOString().split('T')[0]
+})
+
 const submitLeave = ()=>{
     form.post(route('leave.store'),{
         onFinish:()=>{
-            form.reset();
+            form.leave_start = '',
+            form.leave_end = '',
+            form.reason = ''
+
         }
     })
 }
-console.log(today);
+const showLeaveForm = ref(false);
+const toggleLeaveForm = () => {
+    showLeaveForm.value = !showLeaveForm.value
+}
 </script>
 <template>
     <div class="flex flex-col items-center bg-gradient-to-r from-sky-700 to-indigo-500 p-3">
@@ -79,14 +103,21 @@ console.log(today);
         <ExperienceTable :experiences="props.experiences"></ExperienceTable>
     </div>
     <div>
+        <PayrollTable :payrolls="props.payrolls"></PayrollTable>
+    </div>
+    <div>
+        <LeaveList :leaves="props.leaves"></LeaveList>
+    </div>
+    <PrimaryButton @click="toggleLeaveForm">Request Leave</PrimaryButton>
+    <div v-show="showLeaveForm">
         <form @submit.prevent="submitLeave">
         <div>
             <InputLabel>Leave Start Date</InputLabel>
-            <TextInput type="date" :max="today" v-model="form.leave_start"></TextInput>
+            <TextInput type="date" :min="today" v-model="form.leave_start"></TextInput>
         </div>
         <div>
             <InputLabel>Leave End Date</InputLabel>
-            <TextInput type="date" v-model="form.leave_end"></TextInput>
+            <TextInput type="date" :min="endDate" v-model="form.leave_end"></TextInput>
         </div>
         <div>
             <InputLabel>Leave Reason</InputLabel>

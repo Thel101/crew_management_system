@@ -14,6 +14,7 @@ use App\Http\Controllers\BankAccountsController;
 use App\Http\Controllers\CertificatesController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\MedicalDocumentsController;
+use App\Http\Controllers\PayrollController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/send/email/{id}', 'send_email')->name('assign.email');
         Route::get('/applicant/{filename}', 'serveFile')->name('applicant.serveFile');
         Route::patch('/remark', 'postRemark')->name('seafarer.remark');
+    });
+    Route::controller(PayrollController::class)->group(function(){
+        Route::post('/payroll','calculate')->name('payroll.calculate');
+        Route::get('/status/{id}','changeStatus')->name('payroll.pay');
     });
 
     Route::patch('/certificate/status',[CertificatesController::class,'changeStatus'])->name('certificate.status');

@@ -143,12 +143,15 @@ class SeafarerController extends Controller
     public function showSeafarer($seafarer_id)
     {
         $data = $this->retrieveSeafarer($seafarer_id);
-
         return Inertia::render('Admin/Seafarer/SeafarerDetail', [
             'applicant' => $data['seafarer'],
             'passport' => $data['passport'],
             'certificates' => $data['certificates'],
             'experiences' => $data['experiences'],
+            'payrolls' => $data['payrolls'],
+            'medical_documents' => $data['medical_documents'],
+            'bank_accounts' => $data['bank_accounts'],
+            'leaves' => $data['leaves']
 
         ]);
     }
@@ -182,7 +185,9 @@ class SeafarerController extends Controller
                 'passport' => $data['passport'],
                 'vessel' => $data['vessel'],
                 'certificates' => $data['certificates'],
-                'experiences' => $data['experiences']
+                'experiences' => $data['experiences'],
+                'leaves' => $data['leaves'],
+                'payrolls' => $data['payrolls']
             ]);
 
         } else {
@@ -207,7 +212,7 @@ class SeafarerController extends Controller
      */
     protected function retrieveSeafarer($id)
     {
-        $seafarer = Seafarer::with('passport', 'experiences', 'vessel')->find($id);
+        $seafarer = Seafarer::with('passport', 'experiences', 'vessel','payrolls','leaves')->find($id);
         if ($seafarer) {
             return [
                 'seafarer' => $seafarer,
@@ -215,8 +220,13 @@ class SeafarerController extends Controller
                 'certificates' => $seafarer->certificates,
                 'experiences' => $seafarer->experiences,
                 'vessel' => $seafarer->vessel,
+                'payrolls' => $seafarer->payrolls,
+                'leaves' => $seafarer->leaves,
+                'medical_documents' => $seafarer->medical_documents,
+                'bank_accounts' => $seafarer->bank_accounts
             ];
         }
+
     }
     /*change to 'on_boarding' status
      **/

@@ -33,12 +33,18 @@ class MedicalDocumentsController extends Controller
             'type'=> 'required',
             'clinic'=> 'required|string|max:50',
             'document_date'=> 'required',
-            'result'=> 'required',
+            'file' => 'required||mimes:pdf',
         ]);
         if ($request->file('file')) {
             $file = uniqid() . $request->file('file')->getClientOriginalName();
             $request->file('file')->storeAs('public/documents', $file);
             $validated['file'] = $file;
+        }
+        if(auth()->user()->role == 'admin'){
+            $validated['status'] = 1;
+        }
+        else{
+            $validated['status'] = 0;
         }
         $document = MedicalDocuments::create($validated);
         return redirect()->route('seafarer.detail', $document->seafarer_id)->with('message','Document Uploaded successfully!');

@@ -8,6 +8,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref, watch } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { debounce } from 'lodash';
+
 const props = defineProps({
     seafarers:
     {

@@ -13,6 +13,11 @@ import { capitalize } from 'lodash';
 import CertificateTable from '@/Components/CertificateTable.vue';
 import ExperienceTable from '@/Components/ExperienceTable.vue';
 import Modal from '@/Components/Modal.vue';
+import Payroll from '../Payroll/Payroll.vue';
+import PayrollTable from '../Payroll/PayrollTable.vue';
+import MedicalDocumentsTable from '@/Components/MedicalDocumentsTable.vue';
+import BankAccountTable from '@/Components/BankAccountTable.vue';
+import  html2pdf  from 'html2pdf.js';
 const open = ref(false)
 
 const props = defineProps({
@@ -33,6 +38,18 @@ const props = defineProps({
     experiences: {
         type: Array
     },
+    payrolls: {
+        type: Array
+    },
+    medical_documents: {
+        type: Array
+    },
+    bank_accounts: {
+        type: Array
+    },
+    leaves:{
+        type: Array
+    },
     remarks: {
         type: Array,
         default: () => [
@@ -40,14 +57,25 @@ const props = defineProps({
         ]
     }
 })
-console
+const modalMessage = ref('');
+const modalTitle = ref('');
+
 const showForm = ref(false);
 const toggleForm = () => {
     showForm.value = !showForm.value
 }
+const showCertificates = ref(false);
+const toggleCertificates = ()=>{
+    showCertificates.value = !showCertificates.value
+}
+const showExperiences = ref(false);
+const toggleExperiences = ()=>{
+    showExperiences.value = !showExperiences.value
+}
+const showBankSection = ref(false);
 const showBankForm = ref(false);
 const toggleBankForm = () => {
-    showBankForm.value = !showBankForm.value
+    showBankSection.value = !showBankSection.value
 }
 
 const showRemarkSection = ref(false);
@@ -56,8 +84,15 @@ const toggleRemarkSection = () => {
 }
 const showRemarkForm = ref(false);
 const toggleRemarkForm = () => {
-    console.log('clicked');
     showRemarkForm.value = !showRemarkForm.value
+}
+const showPayrollSection = ref(false);
+const togglePayrollSection = () => {
+    showPayrollSection.value = !showPayrollSection.value
+}
+const showPayrollForm = ref(false);
+const togglePayrollForm = () => {
+    showPayrollForm.value = !showPayrollForm.value
 }
 const change = (e) => {
     const result_file = e.target.files[0];
@@ -68,11 +103,6 @@ const selectedType = ref('');
 const selectType = (chosen_type) => {
     selectedType.value = chosen_type;
     form.type = chosen_type;
-}
-const selectedResult = ref('');
-const selectResult = (chosen_result) => {
-    selectedResult.value = chosen_result;
-    form.result = chosen_result;
 }
 
 const form = useForm({
@@ -85,14 +115,13 @@ const form = useForm({
 })
 const submitMedicalDocuments = () => {
     form.post(route('medicalDocuments.store'), {
-        onFinish: () => {
-            showForm.value = false();
-            form.seafared_id = '';
-            form.type = '';
-            form.clinic = '';
-            form.document_date = '';
-            form.result = '';
-            form.file = null;
+        onSuccess: () => {
+            showForm.value = false;
+            showModal.value = true;
+            modalTitle.value = "Successful Medical Document Submission";
+            modalMessage.value = "Medical Document has been uploaded!"
+            form.reset()
+
         }
     })
 }
@@ -105,7 +134,13 @@ const bank = useForm({
 })
 const uploadBankAccount = () => {
     bank.post(route('bankAccounts.store'), {
-
+        onSuccess:()=>{
+            showBankForm.value = false
+            showModal.value = true
+            modalTitle.value = 'Successful Bank Account Submission'
+            modalMessage.value = 'Bank Account has been successfully submitted'
+            bank.reset()
+        }
     })
 }
 const selectedRemarkType = ref('');
@@ -130,12 +165,29 @@ const submitRemark = () => {
             remarks.reset();
             showModal.value = true
             showRemarkForm.value = false
+            modalMessage.value = "Remark has been submitted successfully!"
+            modalTitle.value = "Successful remark submission"
         }
     });
 }
 const showModal = ref(false);
-const closeModal = ()=>{
+const closeModal = () => {
     showModal.value = false
+}
+const printHide = ref(true);
+const printPdf = ()=>{
+    printHide.value = false
+    const printElement = document.getElementById('printableSection');
+    if(printElement){
+        html2pdf(printElement,{
+        margin : 1,
+        filename : 'seafarer.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: { format: 'letter', orientation: 'landscape' }
+    })
+    elementsToHide.forEach(el => el.style.display = '');
+    }
+
 }
 </script>
 
@@ -148,12 +200,16 @@ const closeModal = ()=>{
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Seafarers</h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div id="printableSection" class="py-12">
+            <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
                 <div v-if="$page.props.flash.message">
                     {{ $page.props.flash.message }}
                 </div>
                 <div class="overflow-hidden">
+                    <div class="flex flex-row justify-end">
+                        <PrimaryButton @click="printPdf">Print this page</PrimaryButton>
+                    </div>
+
                     <div class="flex flex-row">
                         <!-- storag//app/public/images/66dacae161fb0vietnam.jpg -->
                         <img :src="`/storage/images/${props.applicant.profile}`" class="w-48 h-48 rounded-md"
@@ -175,18 +231,49 @@ const closeModal = ()=>{
                 </div>
 
                 <hr>
+                <!--Payroll-->
+                <div @click="togglePayrollSection" class="flex flex-row justify-between bg-gray-200 h-14 p-3">
+                    <h1>Payroll</h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+
+                </div>
+                <div class="mt-5" v-show="showPayrollSection">
+                    <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
+                    <PrimaryButton v-show="printHide" @click="togglePayrollForm">Calculate Payroll</PrimaryButton>
+                    <Payroll v-show="showPayrollForm" class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3"
+                        :seafarer_id="props.applicant.id"></Payroll>
+                </div>
+                <div class="page-break"></div>
+                <!--Payroll-->
                 <!--Certificates-->
-                <div>
+                <div @click="toggleCertificates" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                    <h1>Certificates</h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </div>
+                <div v-show="showCertificates">
                     <CertificateTable :certificates="props.certificates"></CertificateTable>
                 </div>
                 <!--Certificates-->
                 <!--Experiences-->
-                <div>
+                <div @click="toggleExperiences" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                    <h1>Experiences</h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </div>
+                <div v-show="showExperiences">
                     <ExperienceTable :experiences="props.experiences"></ExperienceTable>
                 </div>
                 <!--Experiences-->
                 <!--Medical Documents-->
-                <div @click="toggleForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3">
+                <div @click="toggleForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
                     <h1>Medical Documents</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -194,57 +281,47 @@ const closeModal = ()=>{
                     </svg>
 
                 </div>
-                <div v-show="showForm">
+                <MedicalDocumentsTable v-show="props.medical_documents.length > 0" :documents="props.medical_documents"></MedicalDocumentsTable>
+                <div v-show="showForm" class="bg-gray-200 mt-3 rounded-md shadow-sm p-3">
                     <form @submit.prevent="submitMedicalDocuments">
-                        <div>
+                        <div class="w-full">
                             <InputLabel>Clinic Name, Address</InputLabel>
-                            <TextInput v-model="form.clinic"></TextInput>
+                            <TextInput class="w-full" v-model="form.clinic"></TextInput>
                             <InputError class="mt-2" :message="form.errors.clinic" />
                         </div>
-                        <div>
-                            <InputLabel>Document Type</InputLabel>
-                            <Dropdown align="left">
-                                <template #trigger>
-                                    <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                        {{ selectedType || 'Select document type' }}</div>
-                                </template>
-                                <template #content>
-                                    <ul>
-                                        <li @click="selectType('general')">Medical Check Up</li>
-                                        <li @click="selectType('d_c')">Drug & Alcohol Result</li>
-                                        <li @click="selectType('vaccination')">Vaccination Record</li>
-                                    </ul>
-                                </template>
-                            </Dropdown>
-                            <InputError class="mt-2" :message="form.errors.type" />
+                        <div class="flex flex-row">
+                            <div class="w-1/3 me-2">
+                                <InputLabel>Document Type</InputLabel>
+                                <Dropdown align="left">
+                                    <template #trigger>
+                                        <div
+                                            class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
+                                            {{ selectedType || 'Select document type' }}</div>
+                                    </template>
+                                    <template #content>
+                                        <ul>
+                                            <li @click="selectType('general')">Medical Check Up</li>
+                                            <li @click="selectType('d_c')">Drug & Alcohol Result</li>
+                                            <li @click="selectType('vaccination')">Vaccination Record</li>
+                                        </ul>
+                                    </template>
+                                </Dropdown>
+                                <InputError class="mt-2" :message="form.errors.type" />
+                            </div>
+                            <div class="w-1/3 me-2">
+                                <InputLabel>Document Date</InputLabel>
+                                <input class="bg-white border-gray-100 rounded-md shadow-sm mt-1 w-full" type="date"
+                                    v-model="form.document_date" />
+                                <InputError class="mt-2" :message="form.errors.document_date" />
+                            </div>
+
+                            <div class="w-1/3">
+                                <InputLabel>Document File</InputLabel>
+                                <input type="file" @input="change" />
+                                <InputError class="mt-2" :message="form.errors.file" />
+                            </div>
                         </div>
-                        <div>
-                            <InputLabel>Document Date</InputLabel>
-                            <input type="date" v-model="form.document_date" />
-                            <InputError class="mt-2" :message="form.errors.document_date" />
-                        </div>
-                        <div>
-                            <InputLabel>Result</InputLabel>
-                            <Dropdown align="left">
-                                <template #trigger>
-                                    <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                        {{ selectedResult || 'Select Result' }}</div>
-                                </template>
-                                <template #content>
-                                    <ul>
-                                        <li @click="selectResult('pass')">Pass</li>
-                                        <li @click="selectResult('fail')">Fail</li>
-                                        <li @click="selectResult('pending')">Pending</li>
-                                    </ul>
-                                </template>
-                            </Dropdown>
-                            <InputError class="mt-2" :message="form.errors.result" />
-                        </div>
-                        <div>
-                            <InputLabel>Document File</InputLabel>
-                            <input type="file" @input="change" />
-                            <InputError class="mt-2" :message="form.errors.file" />
-                        </div>
+
                         <PrimaryButton>Upload Documents</PrimaryButton>
                     </form>
                 </div>
@@ -256,116 +333,132 @@ const closeModal = ()=>{
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
 
+
                 </div>
-                <div v-show="showBankForm">
+                <BankAccountTable v-show="props.bank_accounts.length > 0 && showBankSection" :bank_accounts="props.bank_accounts"></BankAccountTable>
+                <div v-show="showBankForm" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
+
                     <form @submit.prevent="uploadBankAccount">
-                        <div>
-                            <InputLabel>Bank Account Number</InputLabel>
-                            <TextInput v-model="bank.account_no"></TextInput>
-                            <InputError class="mt-2" :message="bank.errors.account_no" />
+                        <div class="flex flex-row">
+                            <div class="w-1/2 me-3">
+                                <InputLabel>Bank Account Number</InputLabel>
+                                <TextInput class="w-full" v-model="bank.account_no"></TextInput>
+                                <InputError class="mt-2" :message="bank.errors.account_no" />
+                            </div>
+                            <div class="w-1/2">
+                                <InputLabel>Bank Branch</InputLabel>
+                                <TextInput class="w-full" v-model="bank.bank_branch"></TextInput>
+                                <InputError class="mt-2" :message="bank.errors.bank_branch" />
+                            </div>
                         </div>
-                        <div>
-                            <InputLabel>Bank Branch</InputLabel>
-                            <TextInput v-model="bank.bank_branch"></TextInput>
-                            <InputError class="mt-2" :message="bank.errors.bank_branch" />
+                        <div class="flex flex-row">
+                            <div class="w-1/2 me-2">
+                                <InputLabel>Account Holder Name</InputLabel>
+                                <TextInput class="w-full" v-model="bank.account_holder"></TextInput>
+                                <InputError class="mt-2" :message="bank.errors.account_holder" />
+                            </div>
+                            <div class="w-1/2">
+                                <InputLabel>Account Phone Number</InputLabel>
+                                <TextInput class="w-full" v-model="bank.holder_phone"></TextInput>
+                                <InputError class="mt-2" :message="bank.errors.holder_phone" />
+                            </div>
                         </div>
-                        <div>
-                            <InputLabel>Account Holder Name</InputLabel>
-                            <TextInput v-model="bank.account_holder"></TextInput>
-                            <InputError class="mt-2" :message="bank.errors.account_holder" />
-                        </div>
-                        <div>
-                            <InputLabel>Account Phone Number</InputLabel>
-                            <TextInput v-model="bank.holder_phone"></TextInput>
-                            <InputError class="mt-2" :message="bank.errors.holder_phone" />
-                        </div>
+
 
                         <PrimaryButton>Add Bank Account </PrimaryButton>
                     </form>
                 </div>
 
                 <!--Remark Form-->
-                <div @click="toggleRemarkSection" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
-                    <h1>Remarks by Supervisior</h1>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
-
-                </div>
-                <div v-show="showRemarkSection">
-
-                    <div class="mt-3" v-show="applicant.remark_type != ''">
-                        <div class="flex flex-row ms-3">
-                            <div class="w-1/4 font-bold text-md">{{ capitalize(applicant.remark_type) + ' : ' }} </div>
-                            <div class="w-3/4 flex flex-row justify-between">
-                                <div>{{ applicant.comment }}</div>
-                                <div>
-                                    <svg @click="toggleRemarkForm" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                        class="size-6 text-blue-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                    </svg>
-
-                                </div>
-                            </div>
-                        </div>
+                <div>
+                    <div @click="toggleRemarkSection" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                        <h1>Remarks by Supervisior</h1>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
 
                     </div>
+                    <div v-show="showRemarkSection">
 
-                    <form v-show="showRemarkForm" @submit.prevent="submitRemark"
-                        class="mt-3 bg-gray-200 p-2 rounded-md shadow-sm">
-                        <div class="flex flex-row w-full">
-                            <div class="mr-2 w-1/4">
-                                <InputLabel>Remark Type</InputLabel>
-                                <Dropdown align="left">
-                                    <template #trigger>
-                                        <div
-                                            class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                            {{ selectedRemarkType || 'Select remark type' }}</div>
-                                    </template>
-                                    <template #content>
-                                        <ul class="px-2">
-                                            <li v-for="remark in props.remarks" :key="remark"
-                                                @click="chooseRemark(remark)">{{ remark }}
-                                            </li>
+                        <div class="mt-3" v-show="applicant.remark_type != ''">
+                            <div class="flex flex-row ms-3">
+                                <div class="w-1/4 font-bold text-md">{{ capitalize(applicant.remark_type) + ' : ' }}
+                                </div>
+                                <div class="w-3/4 flex flex-row justify-between">
+                                    <div>{{ applicant.comment }}</div>
+                                    <div>
+                                        <svg @click="toggleRemarkForm" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-blue-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                        </svg>
 
-                                        </ul>
-
-
-                                    </template>
-                                </Dropdown>
-                                <InputError class="mt-2" :message="remarks.errors.remark_type" />
+                                    </div>
+                                </div>
                             </div>
-                            <div class="w-3/4">
-                                <InputLabel>Comments</InputLabel>
-                                <textarea
-                                    class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    v-model="remarks.comment"></textarea>
-                                <InputError class="mt-2" :message="remarks.errors.comment" />
-                            </div>
+
                         </div>
 
+                        <form v-show="showRemarkForm" @submit.prevent="submitRemark"
+                            class="mt-3 bg-gray-200 p-2 rounded-md shadow-sm">
+                            <div class="flex flex-row w-full">
+                                <div class="mr-2 w-1/4">
+                                    <InputLabel>Remark Type</InputLabel>
+                                    <Dropdown align="left">
+                                        <template #trigger>
+                                            <div
+                                                class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
+                                                {{ selectedRemarkType || 'Select remark type' }}</div>
+                                        </template>
+                                        <template #content>
+                                            <ul class="px-2">
+                                                <li v-for="remark in props.remarks" :key="remark"
+                                                    @click="chooseRemark(remark)">{{ remark }}
+                                                </li>
 
-                        <PrimaryButton>Submit Remark </PrimaryButton>
-                    </form>
+                                            </ul>
+
+
+                                        </template>
+                                    </Dropdown>
+                                    <InputError class="mt-2" :message="remarks.errors.remark_type" />
+                                </div>
+                                <div class="w-3/4">
+                                    <InputLabel>Comments</InputLabel>
+                                    <textarea
+                                        class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                        v-model="remarks.comment"></textarea>
+                                    <InputError class="mt-2" :message="remarks.errors.comment" />
+                                </div>
+                            </div>
+
+
+                            <PrimaryButton>Submit Remark </PrimaryButton>
+                        </form>
+                    </div>
+                    <template>
+                        <Modal :show="showModal" :closeable="true" class="max-w-md" :maxWidth="md" @close="closeModal">
+                            <div class="p-4 bg-green-200">
+                                <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
+                                <p>{{ modalMessage }}</p>
+                                <div class="flex flex-row justify-end">
+                                    <button @click="closeModal"
+                                        class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+                                </div>
+                            </div>
+                        </Modal>
+                    </template>
                 </div>
-                <template>
-                    <Modal :show="showModal" :closeable="true" class="max-w-md" :maxWidth="md" @close="closeModal">
-                        <div class="p-4 bg-green-200">
-                            <h2 class="text-lg font-bold">Remark Submission Successful</h2>
-                            <p>Remark has been successfully submitted!</p>
-                            <div class="flex flex-row justify-end">
-                                <button @click="closeModal" class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
-                            </div>
-                        </div>
-                    </Modal>
-                </template>
 
             </div>
         </div>
 
-
     </AuthenticatedLayout>
 </template>
+<style scoped>
+.page-break{
+    page-break-before: always;
+}
+</style>

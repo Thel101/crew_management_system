@@ -76,4 +76,7 @@ class Seafarer extends Model
     public function leaves(): HasMany{
         return $this->hasMany(Leave::class);
     }
+    public function payrolls(): HasMany{
+        return $this->hasMany(Payroll::class);
+    }
 }
