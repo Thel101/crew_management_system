@@ -7,6 +7,8 @@ use App\Models\Vessels;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+use function Laravel\Prompts\select;
+
 class VesselsController extends Controller
 {
     /**
@@ -33,18 +35,7 @@ class VesselsController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|unique:vessels,name,except,id',
-            'flag' => 'required|string|max:30',
-            'type' => 'required|string',
-            'IMO_number' => 'required|string|min:7|max:7',
-            'built' => 'required|string|min:4|max:4|starts_with:1,2',
-            'GRT' => 'required|string',
-            'DWT' => 'required',
-            'Engine' => 'required',
-            'BHP' => 'required',
-            'Trade' => 'required'
-        ]);
+        $validated = $request->validate($this->validateVessel());
         vessels::create($validated);
         return redirect(route('vessels.index'));
     }
@@ -52,23 +43,30 @@ class VesselsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Vessels $vessel)
+    public function show(Vessels $vessel, ?bool $option = null)
     {
-       $vessel = Vessels::find($vessel->id);
-       $seafarers = Vessels::find($vessel->id)->seafarers;
-       foreach($seafarers as $seafarer){
-        $role = $seafarer->role;
-        $job = Jobs::find($role->id);
-        $seafarerWithRole[] =[
-            'seafarer' => $seafarer,
-            'role' => $role,
-            'job' => $job
-        ];
-       }
-       return Inertia::render('Admin/Vessels/seafarerlist',[
-        'seafarers' => $seafarerWithRole,
-        'vessel' => $vessel
-       ]);
+
+        if ($option) {
+            $seafarers = $vessel->seafarers()->get();
+            foreach ($seafarers as $seafarer) {
+                $role = $seafarer->role->name;
+            }
+            return Inertia::render('Admin/Vessels/seafarerlist', [
+                'seafarers' => $seafarers,
+                'vessel' => $vessel,
+                'pagination' => false
+            ]);
+        } else {
+            $seafarers = $vessel->seafarers()->paginate(2);
+            foreach ($seafarers as $seafarer) {
+                $role = $seafarer->role->name;
+            }
+            return Inertia::render('Admin/Vessels/seafarerlist', [
+                'seafarers' => $seafarers,
+                'vessel' => $vessel,
+                'pagination' => true
+            ]);
+        }
     }
 
     /**
@@ -82,9 +80,14 @@ class VesselsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Vessels $vessels)
+    public function update(Request $request, Vessels $vessel)
     {
-        //
+        $vessel = Vessels::find($vessel->id);
+        if ($vessel) {
+            $validated = $request->validate($this->validateVessel());
+            $vessel->update($validated);
+            return redirect()->back();
+        }
     }
 
     /**
@@ -93,5 +96,20 @@ class VesselsController extends Controller
     public function destroy(Vessels $vessels)
     {
         //
+    }
+    protected function validateVessel()
+    {
+        return [
+            'name' => 'required|string|unique:vessels,name,except,id',
+            'flag' => 'required|string|max:30',
+            'type' => 'required|string',
+            'IMO_number' => 'required|string|min:7|max:7',
+            'built' => 'required|string|min:4|max:4|starts_with:1,2',
+            'GRT' => 'required|string',
+            'DWT' => 'required',
+            'Engine' => 'required',
+            'BHP' => 'required',
+            'Trade' => 'required'
+        ];
     }
 }

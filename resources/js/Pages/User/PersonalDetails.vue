@@ -253,20 +253,20 @@ const submit = () => {
                 </div>
                 <div class="flex flex-row gap-2 my-2">
                     <div class="w-1/3">
-                        <InputLabel for="next_of_kin">Seaman Book Number</InputLabel>
-                        <TextInput id="next_of_kin" type="text" class="mt-1 block w-full" v-model="form.seaman_book" />
+                        <InputLabel for="seaman_book">Seaman Book Number</InputLabel>
+                        <TextInput id="seaman_book" type="text" class="mt-1 block w-full" v-model="form.seaman_book" />
 
                         <InputError class="mt-2" :message="form.errors.seaman_book" />
                     </div>
                     <div class="w-1/3">
-                        <InputLabel for="relationship">Book Issue Date</InputLabel>
-                        <TextInput id="relationship" type="date" class="mt-1 block w-full" v-model="form.issue_date" />
+                        <InputLabel for="book_issue_date">Book Issue Date</InputLabel>
+                        <TextInput id="book_issue_date" type="date" class="mt-1 block w-full" v-model="form.issue_date" />
 
                         <InputError class="mt-2" :message="form.errors.issue_date" />
                     </div>
                     <div class="w-1/3">
-                        <InputLabel for="next_of_kin_mobile">Book Issue Place</InputLabel>
-                        <TextInput id="next_of_kin_mobile" type="text" class="mt-1 block w-full"
+                        <InputLabel for="book_issue_place">Book Issue Place</InputLabel>
+                        <TextInput id="book_issue_place" type="text" class="mt-1 block w-full"
                             v-model="form.seaman_book_place" />
 
                         <InputError class="mt-2" :message="form.errors.place_of_issue" />

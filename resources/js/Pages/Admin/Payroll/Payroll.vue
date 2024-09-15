@@ -9,7 +9,7 @@ const props = defineProps({
         type: Number
     }
 })
-console.log(props.seafarer_id);
+
 const form = useForm({
     seafarer_id : props.seafarer_id,
     base_salary: '',

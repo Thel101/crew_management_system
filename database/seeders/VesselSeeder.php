@@ -43,7 +43,35 @@ class VesselSeeder extends Seeder
                     'Trade' => 'Worldwide',
                     'created_at' => Carbon::now(),
                     'updated_at'=> Carbon::now()
-                ]
+                ],
+                [
+                    'name' => 'M.T CS Innovation',
+                    'flag' => 'PORT KLANG',
+                    'type' => 'TANKER',
+                    'IMO_number' => '9158886',
+                    'built' => '1997',
+                    'GRT' => '5081',
+                    'DWT' => '10032',
+                    'Engine' => 'Cummins',
+                    'BHP' => '8156',
+                    'Trade' => 'Worldwide',
+                    'created_at' => Carbon::now(),
+                    'updated_at'=> Carbon::now()
+                ],
+                [
+                    'name' => 'M.T CS Prosperity',
+                    'flag' => 'MARSHALL ISLAND',
+                    'type' => 'TANKER',
+                    'IMO_number' => '9169691',
+                    'built' => '1999',
+                    'GRT' => '11438',
+                    'DWT' => '21230',
+                    'Engine' => 'Cummins',
+                    'BHP' => '8156',
+                    'Trade' => 'Worldwide',
+                    'created_at' => Carbon::now(),
+                    'updated_at'=> Carbon::now()
+                ],
             ]
             );
     }

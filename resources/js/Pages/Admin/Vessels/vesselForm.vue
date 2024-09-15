@@ -1,7 +1,68 @@
 <script setup>
+import InputError from '@/Components/InputError.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { useForm } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
+const props = defineProps([
+    'name',
+    'flag',
+    'type',
+    'IMO_number',
+    'built',
+    'GRT',
+    'DWT',
+    'Engine',
+    'BHP',
+    'trade',
+    'edit',
+    'vessel'
+
+])
+const form = useForm({
+    name: props.name,
+    flag: props.flag,
+    type: props.type,
+    IMO_number: props.IMO_number,
+    built: props.built,
+    GRT: props.GRT,
+    DWT: props.DWT,
+    Engine: props.Engine,
+    BHP: props.BHP,
+    Trade: props.trade
+
+});
+const showModal = ref(false);
+const closeModal = () => {
+    showModal.value = false
+}
+const modalMessage = ref('');
+const modalTitle = ref('');
+const submit = () => {
+    if (props.edit == true) {
+        form.patch(route('vessels.update', props.vessel),
+            {
+                onSuccess: () => {
+                    showModal.value = true
+                    modalTitle.value = 'Vessel Edit Successful'
+                    modalMessage.value = 'Vessel information has been updated successfully!'
+                }
+            })
+    }
+    else {
+        form.post(route('vessels.store'), {
+            onSuccess: () => form.reset()
+        });
+    }
+
+};
 </script>
 <template>
-    <div>
+    <div class="max-w-2xl mx-auto bg-slate-200 rounded-md p-3 mb-5">
+        <h1 v-if="props.edit =true" class="text-center text-xl font-semibold mb-5 mt-3">Vessel Information</h1>
+        <h1 v-else class="text-center text-xl font-semibold mb-5 mt-3">Create New Vessel</h1>
         <form @submit.prevent="submit">
             <div class="flex flex-row justify-between">
                 <div class="mr-5">
@@ -85,8 +146,13 @@
                 </div>
             </div>
 
+            <div v-if="props.edit == true" class="flex justify-center mt-5">
+                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    Edit Vessel
+                </PrimaryButton>
+            </div>
 
-            <div class="flex justify-center mt-5">
+            <div v-else class="flex justify-center mt-5">
                 <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Create New Vessel
                 </PrimaryButton>
@@ -94,5 +160,18 @@
 
 
         </form>
+
     </div>
+    <template>
+        <Modal :show="showModal" :closeable="true" @close="closeModal">
+            <div class="p-4 bg-green-200">
+                <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
+                <p>{{ modalMessage }}</p>
+                <div class="flex flex-row justify-end">
+                    <button @click="closeModal"
+                        class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+                </div>
+            </div>
+        </Modal>
+    </template>
 </template>

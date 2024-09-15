@@ -101,7 +101,7 @@ const assign = () => {
         </template>
 
         <div class="py-12">
-            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
 
                     <div v-show="applicants.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There
@@ -147,25 +147,30 @@ const assign = () => {
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.role.name }}</td>
 
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new
-                        Date(applicant.created_at).toLocaleDateString('en-US') }}</td>
+                                    Date(applicant.created_at).toLocaleDateString('en-US') }}</td>
 
 
                                 <td class="whitespace-nowrap py-2">
-                                    <a v-if="applicant.passport.length > 0"
-                                        :href="route('applicant.detail', applicant.id)"
-                                        class="mr-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                                        View
-                                    </a>
+                                    <div v-if="applicant.passport.length > 0">
+                                        <a
+                                            :href="route('applicant.detail', applicant.id)"
+                                            class="mr-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium
+                                            text-white hover:bg-indigo-700">
+                                            View
+                                        </a>
+                                        <Link preserve-state
+                                            @click="AssignSeafarer(applicant.id, applicant.fullname, applicant.seaman_book, applicant.role.name, applicant.role.id)"
+                                            href="#"
+                                            class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                        Assign
+                                        </Link>
+                                    </div>
+
                                     <a v-else :href="route('passport.index', applicant.id)"
                                         class="mr-2 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         Attach
                                     </a>
-                                    <Link preserve-state
-                                        @click="AssignSeafarer(applicant.id, applicant.fullname, applicant.seaman_book, applicant.role.name, applicant.role.id)"
-                                        href="#"
-                                        class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                                    Assign
-                                    </Link>
+
                                 </td>
                             </tr>
 

@@ -26,6 +26,8 @@ const selectVessel = (vessel_id, vessel_name) => {
     selectedVessel.value = vessel_name;
     form.vessel_id = vessel_id
 }
+const today = new Date().toISOString().split('T')[0];
+
 const selectedRole = ref('');
 const selectRole = (role_id, role_name) => {
     selectedRole.value = role_name;
@@ -137,26 +139,26 @@ const submit = () => {
                                 <InputError class="mt-2" :message="form.errors.description" />
                             </div>
                             <div>
-                                <InputLabel for="description" value="Job requirements" />
+                                <InputLabel for="requirements" value="Job requirements" />
 
-                                <TextInput id="description" type="text" class="mt-1 block w-full"
+                                <TextInput id="requirements" type="text" class="mt-1 block w-full"
                                     v-model="form.requirements" />
 
                                 <InputError class="mt-2" :message="form.errors.requirements" />
                             </div>
                             <div class="flex flex-row">
                                 <div class="w-1/2 mr-2">
-                                    <InputLabel for="description" value="Available head counts" />
+                                    <InputLabel for="head_count" value="Available head counts" />
 
-                                    <TextInput id="description" type="text" class="mt-1 block w-full"
+                                    <TextInput id="head_count" type="text" class="mt-1 block w-full"
                                         v-model="form.count" />
 
                                     <InputError class="mt-2" :message="form.errors.count" />
                                 </div>
                                 <div class="w-1/2">
-                                    <InputLabel for="description" value="Basic salary" />
+                                    <InputLabel for="salary" value="Basic salary" />
 
-                                    <TextInput id="description" type="text" class="mt-1 block w-full"
+                                    <TextInput id="salary" type="text" class="mt-1 block w-full"
                                         v-model="form.basic_salary" />
 
                                     <InputError class="mt-2" :message="form.errors.basic_salary" />
@@ -167,7 +169,7 @@ const submit = () => {
                                 <div class="w-1/2 mr-2">
                                     <InputLabel for="joining" value="Estimated Joining Date" />
 
-                                    <TextInput id="joining" type="date" class="mt-1 block w-full"
+                                    <TextInput :min="today" id="joining" type="date" class="mt-1 block w-full"
                                         v-model="form.joining_date" />
 
                                     <InputError class="mt-2" :message="form.errors.joining_date" />

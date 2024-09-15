@@ -26,7 +26,44 @@ class RoleSeeder extends Seeder
                 'description' => 'maintains working and storage area by wiping down machinery and cleaning oil spill',
                 'created_at' => Carbon::now(),
                 'updated_at'=> Carbon::now()
-            ]
+            ],
+            [
+                'name' => 'Oiler (OL)',
+                'description' => 'maintains working and storage area by wiping down machinery and cleaning oil spill',
+                'created_at' => Carbon::now(),
+                'updated_at'=> Carbon::now()
+            ],
+            [
+                'name' => 'Fitter (FT)',
+                'description' => 'maintains working and storage area by wiping down machinery and cleaning oil spill',
+                'created_at' => Carbon::now(),
+                'updated_at'=> Carbon::now()
+            ],
+            [
+                'name' => 'Mottarman (MM)',
+                'description' => 'maintains working and storage area by wiping down machinery and cleaning oil spill',
+                'created_at' => Carbon::now(),
+                'updated_at'=> Carbon::now()
+            ],
+            [
+                'name' => 'Junior Engineer (JE)',
+                'description' => 'maintains working and storage area by wiping down machinery and cleaning oil spill',
+                'created_at' => Carbon::now(),
+                'updated_at'=> Carbon::now()
+            ],
+            [
+                'name' => 'Assistant Engineer (AE)',
+                'description' => 'maintains working and storage area by wiping down machinery and cleaning oil spill',
+                'created_at' => Carbon::now(),
+                'updated_at'=> Carbon::now()
+            ],
+            [
+                'name' => '4th Engineer (4E)',
+                'description' => 'maintains working and storage area by wiping down machinery and cleaning oil spill',
+                'created_at' => Carbon::now(),
+                'updated_at'=> Carbon::now()
+            ],
+
         ]);
     }
 }

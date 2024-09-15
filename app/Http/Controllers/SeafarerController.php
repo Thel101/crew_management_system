@@ -56,7 +56,13 @@ class SeafarerController extends Controller
         $validated['sign_off'] = '2024-09-12';
         $seafarer = Seafarer::create($validated);
         if ($seafarer) {
-            return redirect(route('passport.index', $seafarer->id));
+            if(auth()->user()->role == 'admin'){
+                return redirect(route('passport.index', $seafarer->id));
+            }
+            else{
+                return redirect(route('applicants.list'));
+            }
+
         } else {
             return 'something wrong';
         }
@@ -64,7 +70,24 @@ class SeafarerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($seafarer_id)
+    public function show($id){
+        $data = $this->retrieveSeafarer($id);
+        $roles = Roles::all();
+
+        if(auth()->user()->role == 'admin'){
+            return Inertia::render('Admin/Seafarer/SeafarerEdit', [
+                'seafarer' => $data['seafarer'],
+                'passport' => $data['passport'],
+                'roles' => $roles
+            ]);
+
+        }
+        else
+        {
+
+        }
+    }
+    public function detail($seafarer_id)
     {
         $data = $this->retrieveSeafarer($seafarer_id);
 
@@ -143,8 +166,9 @@ class SeafarerController extends Controller
     public function showSeafarer($seafarer_id)
     {
         $data = $this->retrieveSeafarer($seafarer_id);
+
         return Inertia::render('Admin/Seafarer/SeafarerDetail', [
-            'applicant' => $data['seafarer'],
+            'seafarer' => $data['seafarer'],
             'passport' => $data['passport'],
             'certificates' => $data['certificates'],
             'experiences' => $data['experiences'],
@@ -212,13 +236,14 @@ class SeafarerController extends Controller
      */
     protected function retrieveSeafarer($id)
     {
-        $seafarer = Seafarer::with('passport', 'experiences', 'vessel','payrolls','leaves')->find($id);
+        $seafarer = Seafarer::with('passport', 'experiences', 'vessel', 'payrolls','role')->find($id);
         if ($seafarer) {
             return [
                 'seafarer' => $seafarer,
                 'passport' => $seafarer->passport->first(),
                 'certificates' => $seafarer->certificates,
                 'experiences' => $seafarer->experiences,
+                'role' => $seafarer->role,
                 'vessel' => $seafarer->vessel,
                 'payrolls' => $seafarer->payrolls,
                 'leaves' => $seafarer->leaves,
@@ -291,16 +316,15 @@ class SeafarerController extends Controller
     /**
      * Validation
      */
-    protected function validateSeafarer()
+    protected function validateSeafarer(Seafarer $seafarer = null)
     {
         return [
             'role_id' => 'required',
-            'profile' => 'required|file|mimes:png,jpg,jpeg,webp',
+            'profile' => ($seafarer ? 'nullable' : 'required') . '|sometimes|mimes:jpg,jpeg,webp,png',
             'fullname' => 'required|string|max:30',
             'seaman_book' => 'required|string|max:10',
             'seaman_book_place' => 'required|string|max:30',
             'issue_date' => 'required',
-            'expected_salary' => 'required',
             'nationality' => 'required',
             'religion' => 'required',
             'dob' => 'required',
@@ -321,7 +345,20 @@ class SeafarerController extends Controller
 
     public function update(Request $request, Seafarer $seafarer)
     {
-        //
+        $updateSeafarer = Seafarer::find($seafarer->id);
+        if($updateSeafarer){
+        $validated = $request->validate($this->validateSeafarer($seafarer));
+        if($request->hasFile('profile')){
+            $file = uniqid() . $request->file('profile')->getClientOriginalName();
+            $request->file('profile')->storeAs('public/images', $file);
+            $validated['profile'] = $file;
+        }
+        else{
+            $validated['profile']= $seafarer->profile;
+        }
+        $seafarer->update($validated);
+        return redirect(route('seafarer.detail', $seafarer->id))->with(['message'=> 'Seafarer profile updated successfully!']);
+        }
     }
 
     /**

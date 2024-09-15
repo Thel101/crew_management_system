@@ -105,15 +105,15 @@ const today = new Date().toISOString().split('T')[0];
 
 const submit = () => {
     passport.post(route('passport.store'), {
-        onSuccess:()=>{
-            certificates.post(route('certificates.store'),{
-                onSuccess:()=>{
+        onSuccess: () => {
+            certificates.post(route('certificates.store'), {
+                onSuccess: () => {
                     experiences.post(route('experiences.store'))
                 }
             })
         }
     }
-)
+    )
 
 }
 </script>
@@ -123,177 +123,178 @@ const submit = () => {
     <Head title="CMS" />
 
 
-        <div class="max-w-7xl mx-auto">
-            <div v-if="$page.props.auth.user.role != 'admin'">
-                <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
-                <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
-            </div>
+    <div class="max-w-7xl mx-auto">
+        <div v-if="$page.props.auth.user.role != 'admin'">
+            <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
+            <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
+        </div>
 
-            <form @submit.prevent="submit" class="mt-3 p-3 bg-white rounded-md border-gray-400 shadow-md">
+        <form @submit.prevent="submit" class="mt-3 p-3 bg-white rounded-md border-gray-400 shadow-md">
 
-                    <!---Passport-->
+            <!---Passport-->
 
-                        <div>
-                        <h1 class="text-xl">Passport Info</h1>
-                        <div class="flex flex-row gap-2 my-2">
-                            <div class="w-1/4">
+            <div>
+                <h1 class="text-xl">Passport Info</h1>
+                <div class="flex flex-row gap-2 my-2">
+                    <div class="w-1/4">
 
-                                <InputLabel for="passport_no">Passport No:</InputLabel>
-                                <TextInput id="passport_no" type="text" class="mt-1 block w-full"
-                                    v-model="passport.passport_no" />
+                        <InputLabel for="passport_no">Passport No:</InputLabel>
+                        <TextInput id="passport_no" type="text" class="mt-1 block w-full"
+                            v-model="passport.passport_no" />
 
-                                <InputError class="mt-2" :message="passport.errors.passport_no" />
-                            </div>
-                            <div class="w-1/4">
-                                <InputLabel for="place_of_issue">Place of issue</InputLabel>
-                                <TextInput id="place_of_issue" type="text" class="mt-1 block w-full"
-                                    v-model="passport.place_of_issue" />
+                        <InputError class="mt-2" :message="passport.errors.passport_no" />
+                    </div>
+                    <div class="w-1/4">
+                        <InputLabel for="place_of_issue">Place of issue</InputLabel>
+                        <TextInput id="place_of_issue" type="text" class="mt-1 block w-full"
+                            v-model="passport.place_of_issue" />
 
-                                <InputError class="mt-2" :message="passport.errors.place_of_issue" />
-
-                            </div>
-                            <div class="w-1/4">
-                                <InputLabel for="issue_date">Issue date</InputLabel>
-                                <TextInput id="issue_date" :max="today" type="date" class="mt-1 block w-full"
-                                    v-model="passport.issue_date" />
-
-                                <InputError class="mt-2" :message="passport.errors.issue_date" />
-                            </div>
-                            <div>
-                                <InputLabel for="expiry_date">Expiry Date</InputLabel>
-                                <TextInput id="expiry_date" type="date" :max="maxDate" class="mt-1 block w-full"
-                                    v-model="passport.expiry_date" />
-
-                                <InputError class="mt-2" :message="passport.errors.expiry_date" />
-                            </div>
-                        </div>
-
-
-
-                    <!---Passport-->
-
-
-                    <div>
-                        <h1 class="mt-2 text-xl">Certificates</h1>
-                        <!-- Labels displayed only once -->
-                        <div class="flex gap-5">
-                            <InputLabel>Certificate Name</InputLabel>
-                            <InputLabel class="ms-14">Certificate Number</InputLabel>
-                            <InputLabel class="ms-14">Issue Date</InputLabel>
-                            <InputLabel class="ms-16">Expiry Date</InputLabel>
-                            <InputLabel class="ms-20">Issuing Authority</InputLabel>
-
-                        </div>
-
-
-                        <div v-for="(certificate, index) in certificates.certificates" :key="index" class="flex flex-col gap-2 mt-2">
-                            <div>
-                                <TextInput type="text" v-model="certificate.name" placeholder="Certificate Name" />
-                                <TextInput type="text" v-model="certificate.certificate_no"
-                                    placeholder="Certificate Number" />
-                                <TextInput type="date" v-model="certificate.issue_date" placeholder="Issue Date" />
-                                <TextInput type="date" v-model="certificate.expiry_date" placeholder="Expiry Date" />
-                                <TextInput type="text" v-model="certificate.issuing_authority"
-                                    placeholder="Issuing Authority" />
-
-                            </div>
-
-                            <div class="flex">
-                                <input type="file" @input="certificateImage($event, index)">
-                                <img v-show="cert_img[index]" :src="cert_img[index]" alt="Certificate" class="w-24 h-24">
-                            </div>
-                            <div class="flex flex-row gap-2">
-                                <button class="bg-red-300 p-2 rounded-md" type="button" @click="removeCertificate(index)">Remove</button>
-                                <button class="bg-green-300 p-2 rounded-md" type="button" @click="addCertificate(index)">Add</button>
-                            </div>
-                        <hr style="border: 1px solid #ccc; margin: 20px 0;">
-                        </div>
-                        <br>
+                        <InputError class="mt-2" :message="passport.errors.place_of_issue" />
 
                     </div>
+                    <div class="w-1/4">
+                        <InputLabel for="issue_date">Issue date</InputLabel>
+                        <TextInput id="issue_date" :max="today" type="date" class="mt-1 block w-full"
+                            v-model="passport.issue_date" />
 
+                        <InputError class="mt-2" :message="passport.errors.issue_date" />
+                    </div>
+                    <div>
+                        <InputLabel for="expiry_date">Expiry Date</InputLabel>
+                        <TextInput id="expiry_date" type="date" :max="maxDate" class="mt-1 block w-full"
+                            v-model="passport.expiry_date" />
+
+                        <InputError class="mt-2" :message="passport.errors.expiry_date" />
+                    </div>
                 </div>
+
+
+
+                <!---Passport-->
+
 
                 <div>
-                    <h1 class="text-xl">Past Experiences</h1>
-                    <table class="min-w-full">
-                        <thead>
-                            <tr>
-                                <th>Ship Name</th>
-                                <th>Flag</th>
-                                <th>Ship Type</th>
-                                <th>Trade</th>
-                                <th>GRT</th>
-                                <th>Rank</th>
-                                <th>Sign-on</th>
-                                <th>Sign-off</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(experience, index) in experiences.experiences" :key="index">
+                    <h1 class="mt-2 text-xl">Certificates</h1>
+                    <!-- Labels displayed only once -->
+                    <div class="flex gap-5">
+                        <InputLabel>Certificate Name</InputLabel>
+                        <InputLabel class="ms-14">Certificate Number</InputLabel>
+                        <InputLabel class="ms-14">Issue Date</InputLabel>
+                        <InputLabel class="ms-16">Expiry Date</InputLabel>
+                        <InputLabel class="ms-20">Issuing Authority</InputLabel>
 
-                                <td>
-                                    <TextInput for="ship_name" type="text" v-model="experience.ship_name" />
-                                </td>
-                                <td>
-                                    <TextInput for="flag" type="text" v-model="experience.flag" />
-                                </td>
-                                <td>
-                                    <TextInput for="ship_type" type="text" v-model="experience.ship_type" />
-                                </td>
-                                <td>
-                                    <TextInput for="trade" type="text" v-model="experience.trade" />
-                                </td>
-                                <td>
-                                    <TextInput class="w-28" for="grt" type="text" v-model="experience.GRT" />
-                                </td>
-                                <td>
-                                    <TextInput class="w-28" for="rank" type="text" v-model="experience.rank" />
-                                </td>
-                                <td>
-                                    <TextInput for="sign_on_date" :max="today" type="date" v-model="experience.sign_on_date" />
-                                </td>
-                                <td>
-                                    <TextInput for="sign_off_date" :max="today" type="date" v-model="experience.sign_off_date" />
-                                </td>
-
-                                <td>
-                                    <button class="me-1 text-red-500" type="button"
-                                        @click="removeExperience(index)"><svg xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="size-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
-                                    <button class="text-green-400" type="button" @click="addExperience(index)"><svg
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
-                                </td>
+                    </div>
 
 
-                                <div>
+                    <div v-for="(certificate, index) in certificates.certificates" :key="index"
+                        class="flex flex-col gap-2 mt-2">
+                        <div>
+                            <TextInput type="text" v-model="certificate.name" placeholder="Certificate Name" />
+                            <TextInput type="text" v-model="certificate.certificate_no"
+                                placeholder="Certificate Number" />
+                            <TextInput type="date" v-model="certificate.issue_date" placeholder="Issue Date" />
+                            <TextInput type="date" v-model="certificate.expiry_date" placeholder="Expiry Date" />
+                            <TextInput type="text" v-model="certificate.issuing_authority"
+                                placeholder="Issuing Authority" />
+                            <input type="file" @input="certificateImage($event, index)">
 
-                                </div>
-                            </tr>
-                        </tbody>
-                    </table>
+                        </div>
+
+                        <div class="flex flex-row gap-2">
+                            <button class="bg-red-300 p-2 rounded-md" type="button"
+                                @click="removeCertificate(index)">Remove</button>
+                            <button class="bg-green-300 p-2 rounded-md" type="button"
+                                @click="addCertificate(index)">Add</button>
+                        </div>
+                        <hr style="border: 1px solid #ccc; margin: 20px 0;">
+                    </div>
+                    <br>
+
                 </div>
 
-                <div class="flex flex-row justify-center mt-3">
-                        <PrimaryButton class=" bg-blue-500 rounded-full p-3" :class="{ 'opacity-25': passport.processing }"
-                        :disabled="passport.processing">
-                        Upload Personal Details
-                        </PrimaryButton>
-                    </div>
-            </form>
+            </div>
 
-        </div>
+            <div>
+                <h1 class="text-xl">Past Experiences</h1>
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th>Ship Name</th>
+                            <th>Flag</th>
+                            <th>Ship Type</th>
+                            <th>Trade</th>
+                            <th>GRT</th>
+                            <th>Rank</th>
+                            <th>Sign-on</th>
+                            <th>Sign-off</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(experience, index) in experiences.experiences" :key="index">
+
+                            <td>
+                                <TextInput for="ship_name" type="text" v-model="experience.ship_name" />
+                            </td>
+                            <td>
+                                <TextInput for="flag" type="text" v-model="experience.flag" />
+                            </td>
+                            <td>
+                                <TextInput for="ship_type" type="text" v-model="experience.ship_type" />
+                            </td>
+                            <td>
+                                <TextInput for="trade" type="text" v-model="experience.trade" />
+                            </td>
+                            <td>
+                                <TextInput class="w-28" for="grt" type="text" v-model="experience.GRT" />
+                            </td>
+                            <td>
+                                <TextInput class="w-28" for="rank" type="text" v-model="experience.rank" />
+                            </td>
+                            <td>
+                                <TextInput for="sign_on_date" :max="today" type="date"
+                                    v-model="experience.sign_on_date" />
+                            </td>
+                            <td>
+                                <TextInput for="sign_off_date" :max="today" type="date"
+                                    v-model="experience.sign_off_date" />
+                            </td>
+
+                            <td>
+                                <button class="me-1 text-red-500" type="button" @click="removeExperience(index)"><svg
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                                <button class="text-green-400" type="button" @click="addExperience(index)"><svg
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </td>
+
+
+                            <div>
+
+                            </div>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex flex-row justify-center mt-3">
+                <PrimaryButton class=" bg-blue-500 rounded-full p-3" :class="{ 'opacity-25': passport.processing }"
+                    :disabled="passport.processing">
+                    Upload Personal Details
+                </PrimaryButton>
+            </div>
+        </form>
+
+    </div>
 </template>
 
 <style>

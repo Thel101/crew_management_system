@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
-import PersonalDetails from '../PersonalDetail.vue';
+import PersonalDetail from '../PersonalDetail.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -17,18 +17,16 @@ import Payroll from '../Payroll/Payroll.vue';
 import PayrollTable from '../Payroll/PayrollTable.vue';
 import MedicalDocumentsTable from '@/Components/MedicalDocumentsTable.vue';
 import BankAccountTable from '@/Components/BankAccountTable.vue';
-import  html2pdf  from 'html2pdf.js';
-const open = ref(false)
+import html2pdf from 'html2pdf.js';
 
 const props = defineProps({
-    applicant:
+    seafarer:
     {
         type: Object
     },
     jobs: {
         type: Object
     },
-
     passport: {
         type: Object
     },
@@ -47,7 +45,7 @@ const props = defineProps({
     bank_accounts: {
         type: Array
     },
-    leaves:{
+    leaves: {
         type: Array
     },
     remarks: {
@@ -57,6 +55,7 @@ const props = defineProps({
         ]
     }
 })
+
 const modalMessage = ref('');
 const modalTitle = ref('');
 
@@ -65,11 +64,11 @@ const toggleForm = () => {
     showForm.value = !showForm.value
 }
 const showCertificates = ref(false);
-const toggleCertificates = ()=>{
+const toggleCertificates = () => {
     showCertificates.value = !showCertificates.value
 }
 const showExperiences = ref(false);
-const toggleExperiences = ()=>{
+const toggleExperiences = () => {
     showExperiences.value = !showExperiences.value
 }
 const showBankSection = ref(false);
@@ -106,7 +105,7 @@ const selectType = (chosen_type) => {
 }
 
 const form = useForm({
-    seafarer_id: props.applicant.id,
+    seafarer_id: props.seafarer.id,
     type: '',
     clinic: '',
     document_date: '',
@@ -126,7 +125,7 @@ const submitMedicalDocuments = () => {
     })
 }
 const bank = useForm({
-    seafarer_id: props.applicant.id,
+    seafarer_id: props.seafarer.id,
     account_no: '',
     bank_branch: '',
     account_holder: '',
@@ -134,7 +133,7 @@ const bank = useForm({
 })
 const uploadBankAccount = () => {
     bank.post(route('bankAccounts.store'), {
-        onSuccess:()=>{
+        onSuccess: () => {
             showBankForm.value = false
             showModal.value = true
             modalTitle.value = 'Successful Bank Account Submission'
@@ -150,13 +149,13 @@ const chooseRemark = (chosen_remark) => {
 }
 
 const remarks = useForm({
-    seafarer_id: props.applicant.id,
+    seafarer_id: props.seafarer.id,
     remark_type: '',
     comment: ''
 })
-if (props.applicant.remark_type) {
-    remarks.remark_type = props.applicant.remark_type;
-    remarks.comment = props.applicant.comment
+if (props.seafarer.remark_type) {
+    remarks.remark_type = props.seafarer.remark_type;
+    remarks.comment = props.seafarer.comment
 }
 
 const submitRemark = () => {
@@ -175,20 +174,21 @@ const closeModal = () => {
     showModal.value = false
 }
 const printHide = ref(true);
-const printPdf = ()=>{
+const printPdf = () => {
     printHide.value = false
     const printElement = document.getElementById('printableSection');
-    if(printElement){
-        html2pdf(printElement,{
-        margin : 1,
-        filename : 'seafarer.pdf',
-        html2canvas: { scale: 2 },
-        jsPDF: { format: 'letter', orientation: 'landscape' }
-    })
-    elementsToHide.forEach(el => el.style.display = '');
+    if (printElement) {
+        html2pdf(printElement, {
+            margin: 1,
+            filename: 'seafarer.pdf',
+            html2canvas: { scale: 2 },
+            jsPDF: { format: 'letter', orientation: 'landscape' }
+        })
+        elementsToHide.forEach(el => el.style.display = '');
     }
 
 }
+
 </script>
 
 <template>
@@ -208,25 +208,26 @@ const printPdf = ()=>{
                 <div class="overflow-hidden">
                     <div class="flex flex-row justify-end">
                         <PrimaryButton @click="printPdf">Print this page</PrimaryButton>
+                        <Link :href="route('seafarer.editPage', props.seafarer.id)"><PrimaryButton class="ms-2">Edit</PrimaryButton></Link>
                     </div>
 
                     <div class="flex flex-row">
                         <!-- storag//app/public/images/66dacae161fb0vietnam.jpg -->
-                        <img :src="`/storage/images/${props.applicant.profile}`" class="w-48 h-48 rounded-md"
-                            :alt="props.applicant.profile" />
+                        <img :src="`/storage/images/${props.seafarer.profile}`" class="w-48 h-48 rounded-md"
+                            :alt="props.seafarer.profile" />
 
-                        <PersonalDetails class="w-3/4" :fullname="props.applicant.fullname"
-                            :expected_salary="props.applicant.expected_salary"
-                            :nationality="props.applicant.nationality" :religion="props.applicant.religion"
-                            :dob="props.applicant.dob" :height="props.applicant.height" :weight="props.applicant.weight"
-                            :mobile_no="props.applicant.mobile_no" :email="props.applicant.email"
-                            :next_of_kin="props.applicant.next_of_kin" :relationship="props.applicant.relationship"
-                            :next_of_kin_phone="props.applicant.next_of_kin_mobile"
+                        <PersonalDetail class="w-3/4" :fullname="props.seafarer.fullname"
+                            :expected_salary="props.seafarer.expected_salary"
+                            :nationality="props.seafarer.nationality" :religion="props.seafarer.religion"
+                            :dob="props.seafarer.dob" :height="props.seafarer.height" :weight="props.seafarer.weight"
+                            :mobile_no="props.seafarer.mobile_no" :email="props.seafarer.email"
+                            :next_of_kin="props.seafarer.next_of_kin" :relationship="props.seafarer.relationship"
+                            :next_of_kin_phone="props.seafarer.next_of_kin_mobile"
                             :passport_no="props.passport.passport_no" :place_of_issue="props.passport.place_of_issue"
                             :issue_date="props.passport.issue_date" :expiry_date="props.passport.expiry_date"
-                            :seaman_book="props.applicant.seaman_book"
-                            :book_place_of_issue="props.applicant.place_of_issue"
-                            :book_issue_date="props.applicant.issue_date"></PersonalDetails>
+                            :seaman_book="props.seafarer.seaman_book"
+                            :book_place_of_issue="props.seafarer.place_of_issue"
+                            :book_issue_date="props.seafarer.issue_date"></PersonalDetail>
                     </div>
                 </div>
 
@@ -244,7 +245,7 @@ const printPdf = ()=>{
                     <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
                     <PrimaryButton v-show="printHide" @click="togglePayrollForm">Calculate Payroll</PrimaryButton>
                     <Payroll v-show="showPayrollForm" class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3"
-                        :seafarer_id="props.applicant.id"></Payroll>
+                        :seafarer_id="props.seafarer.id"></Payroll>
                 </div>
                 <div class="page-break"></div>
                 <!--Payroll-->
@@ -281,7 +282,8 @@ const printPdf = ()=>{
                     </svg>
 
                 </div>
-                <MedicalDocumentsTable v-show="props.medical_documents.length > 0" :documents="props.medical_documents"></MedicalDocumentsTable>
+                <MedicalDocumentsTable v-show="props.medical_documents.length > 0" :documents="props.medical_documents">
+                </MedicalDocumentsTable>
                 <div v-show="showForm" class="bg-gray-200 mt-3 rounded-md shadow-sm p-3">
                     <form @submit.prevent="submitMedicalDocuments">
                         <div class="w-full">
@@ -335,7 +337,8 @@ const printPdf = ()=>{
 
 
                 </div>
-                <BankAccountTable v-show="props.bank_accounts.length > 0 && showBankSection" :bank_accounts="props.bank_accounts"></BankAccountTable>
+                <BankAccountTable v-show="props.bank_accounts.length > 0 && showBankSection"
+                    :bank_accounts="props.bank_accounts"></BankAccountTable>
                 <div v-show="showBankForm" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
 
                     <form @submit.prevent="uploadBankAccount">
@@ -381,12 +384,12 @@ const printPdf = ()=>{
                     </div>
                     <div v-show="showRemarkSection">
 
-                        <div class="mt-3" v-show="applicant.remark_type != ''">
+                        <div class="mt-3" v-show="seafarer.remark_type != ''">
                             <div class="flex flex-row ms-3">
-                                <div class="w-1/4 font-bold text-md">{{ capitalize(applicant.remark_type) + ' : ' }}
+                                <div class="w-1/4 font-bold text-md">{{ capitalize(seafarer.remark_type) + ' : ' }}
                                 </div>
                                 <div class="w-3/4 flex flex-row justify-between">
-                                    <div>{{ applicant.comment }}</div>
+                                    <div>{{ seafarer.comment }}</div>
                                     <div>
                                         <svg @click="toggleRemarkForm" xmlns="http://www.w3.org/2000/svg" fill="none"
                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -439,7 +442,7 @@ const printPdf = ()=>{
                         </form>
                     </div>
                     <template>
-                        <Modal :show="showModal" :closeable="true" class="max-w-md" :maxWidth="md" @close="closeModal">
+                        <Modal :show="showModal" :closeable="true" class="max-w-md" @close="closeModal">
                             <div class="p-4 bg-green-200">
                                 <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
                                 <p>{{ modalMessage }}</p>
@@ -458,7 +461,7 @@ const printPdf = ()=>{
     </AuthenticatedLayout>
 </template>
 <style scoped>
-.page-break{
+.page-break {
     page-break-before: always;
 }
 </style>
