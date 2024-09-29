@@ -1,11 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import { ref } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
 const props = defineProps({
     users:
     {
@@ -26,6 +27,20 @@ const submit = () => {
         }
     })
 }
+const changeRole = (user) => {
+    router.patch(route('users.update', user), {
+        onSuccess: () => {
+            showMessage.value = true
+
+        }
+    })
+}
+const clearFlashMessage = ()=>{
+    router.visit(window.location.href, {
+                preserveState: true,  // Keep the state of the current page
+                preserveScroll: true  // Maintain the scroll position
+            });
+}
 </script>
 
 <template>
@@ -38,10 +53,10 @@ const submit = () => {
         </template>
 
         <div class="py-12">
-            <div v-if="$page.props.flash.message && showMessage"
+            <div v-if="$page.props.flash.message"
                 class="max-w-lg mx-auto bg-green-300 flex flex-row justify-between p-3 rounded-md my-2">
                 <span>{{ $page.props.flash.message }}</span>
-                <button @click="showMessage = !showMessage"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                <button @click="clearFlashMessage"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -98,16 +113,19 @@ const submit = () => {
                             <tbody class="divide-y divide-gray-200">
                                 <tr v-for="user in users.data" :key="user.id">
                                     <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
-                user.name }}
+                                        user.name }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.email }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ user.role }}
                                     </td>
 
                                     <td class="whitespace-nowrap px-4 py-2">
-                                        <a href="#"
+                                        <a v-show="user.role == 'admin'" @click="changeRole(user)"
+                                            class="inline-block rounded bg-red-500 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
+                                            Remove Admin
+                                        </a> <a v-show="user.role == 'staff'" @click="changeRole(user)"
                                             class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                                            View
+                                            Assign Admin
                                         </a>
                                     </td>
                                 </tr>

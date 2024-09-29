@@ -36,7 +36,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('users.index')" :active="route().current('users.index')">
+                                <NavLink v-show="$page.props.auth.user.role =='admin'" :href="route('users.index')" :active="route().current('users.index')">
                                     Users
                                 </NavLink>
                                 <div class="flex flex-row">

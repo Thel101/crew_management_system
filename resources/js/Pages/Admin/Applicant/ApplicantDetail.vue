@@ -7,6 +7,7 @@ import { ref } from 'vue';
 import PersonalDetails from '../../Admin/PersonalDetail.vue';
 import CertificateTable from '@/Components/CertificateTable.vue';
 import ExperienceTable from '@/Components/ExperienceTable.vue';
+import html2pdf from 'html2pdf.js';
 const open = ref(false)
 
 const props = defineProps({
@@ -34,6 +35,21 @@ const page = usePage();
 const clearFlashMessage = () => {
     page.props.flash.message = null
 }
+const filename = props.applicant.fullname + '-CV'
+const printPdf = () => {
+    const printElement = document.getElementById('printableSection');
+    if (printElement) {
+        html2pdf(printElement, {
+            margin: 1,
+            filename: filename,
+            html2canvas: { scale: 2 },
+            jsPDF: { format: 'letter', orientation: 'portrait' }
+        })
+    }
+
+
+
+}
 </script>
 
 <template>
@@ -58,8 +74,8 @@ const clearFlashMessage = () => {
                             </svg>
                         </button>
                     </div>
-
-                    <div class="flex flex-row">
+                    <div id="printableSection">
+                        <div class="flex flex-row">
                         <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
                         <PersonalDetails :fullname="props.applicant.fullname"
                             :expected_salary="props.applicant.expected_salary"
@@ -83,9 +99,13 @@ const clearFlashMessage = () => {
                     <div>
                         <ExperienceTable :experiences="props.experiences"></ExperienceTable>
                     </div>
-                    <a target="__blank" :href="route('applicant.pdf', applicant.id)">
+                    </div>
+
+                    <!-- <PrimaryButton><a target="__blank" :href="route('applicant.pdf', applicant.id)">
                         Save as PDF
-                    </a>
+                    </a></PrimaryButton> -->
+                    <PrimaryButton @click="printPdf">Save as PDF</PrimaryButton>
+                    <PrimaryButton> <a :href="route('send.email')">Send Email</a></PrimaryButton>
 
                 </div>
             </div>

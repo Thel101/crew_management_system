@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
 import { debounce } from 'lodash';
@@ -14,15 +14,15 @@ const props = defineProps({
         String
     }
 })
-const search = ref(props.filters);
-watch(search, debounce((value) => {
-    Inertia.get(route('vessels.index'), { search: value },
-        {
-            preserveState: true,
-            replace: true
-        }
-    );
-}, 300));
+// const search = ref(props.filters);
+// watch(search, debounce((value) => {
+//     Inertia.get(route('vessels.index'), { search: value },
+//         {
+//             preserveState: true,
+//             replace: true
+//         }
+//     );
+// }, 300));
 
 
 
@@ -35,7 +35,7 @@ watch(search, debounce((value) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Roles</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Vessels</h2>
         </template>
 
         <div class="py-12">
@@ -85,7 +85,7 @@ watch(search, debounce((value) => {
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ vessel.Trade }}</td>
 
                                 <td class="whitespace-nowrap px-4 py-2">
-                                    <a :href="route('vessels.show', vessel)"
+                                    <a :href="route('vessel.show', [vessel])"
                                         class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         View
                                     </a>

@@ -1,10 +1,14 @@
 <?php
 
+use App\Mail\SendCV;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\RolesController;
+use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VesselsController;
 use App\Http\Controllers\PassportController;
@@ -12,9 +16,8 @@ use App\Http\Controllers\SeafarerController;
 use App\Http\Controllers\ExperiencesController;
 use App\Http\Controllers\BankAccountsController;
 use App\Http\Controllers\CertificatesController;
-use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\MedicalDocumentsController;
-use App\Http\Controllers\PayrollController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,11 +64,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index', 'store', 'update');
     Route::resource('bankAccounts', BankAccountsController::class)->only('index', 'store', 'update');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
-    Route::get('/vessels/{vessel}/{option?}',[VesselsController::class,'show'])->name('vessels.show');
+    Route::get('/vessel/{vessel}/{option?}',[VesselsController::class,'show'])->name('vessel.show');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'show', 'edit', 'update');
     Route::resource('jobs', JobsController::class)->only('index', 'store', 'update', 'edit');
     Route::get('/assign/seafarers/{role_id}', [JobsController::class, 'assignSeafarers'])->name('assign.seafarers');
     Route::resource('leave', LeaveController::class)->only('index');
+    Route::get('/email', function(){
+       return Inertia::render('Admin/Applicant/SendEmail');
+    })->name('send.email');
+    Route::post('/send/email', [EmailController::class, 'sendEmail'])->name('send.cv');
 });
 
 Route::middleware(['auth', 'user'])->group(function () {

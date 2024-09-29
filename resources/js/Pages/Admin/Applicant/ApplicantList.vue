@@ -125,7 +125,6 @@ const assign = () => {
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">ApplicantID</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman Book</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Phone Number</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
@@ -139,8 +138,6 @@ const assign = () => {
                             <tr v-for="applicant in applicants.data" :key="applicant.id">
 
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.fullname }}</td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.formatted_id }}
-                                </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.seaman_book }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.mobile_no }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ applicant.email }}</td>

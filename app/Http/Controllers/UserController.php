@@ -24,17 +24,20 @@ class UserController extends Controller
         if(auth()->check() && auth()->user()->role == 'admin'){
             return redirect(route('dashboard'));
         }
+        $jobs = Jobs::latest()->take(3)->get();
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'roles' => Roles::all(),
+            'vessels' => Vessels::latest()->take(3)->get(),
+            'jobs' => $jobs->load(['role']),
+            'seafarer_count' => Seafarer::count()
         ]);
     }
     public function index()
     {
         if(auth()->user()->role == 'admin'){
             $users = User::whereIn('role', ['admin', 'staff'])->paginate(5);
-            return Inertia::render('Admin/UserList', [
+            return Inertia::render('Admin/User/UserList', [
                 'users' => $users
             ]);
         }
@@ -56,10 +59,9 @@ class UserController extends Controller
             'email' => 'required|unique:users,email,except,id'
         ]);
         $validated['password'] = Hash::make('password');
-        $validated['role'] = 'admin';
+        $validated['role'] = 'staff';
         $user = User::create($validated);
-        dd($user->role);
-        if($user->role=='admin'){
+        if($user->role=='admin' || $user->role =='staff'){
             return redirect(route('users.index'))->with(['message'=>'New User has been created!']);
         }
         else
@@ -67,6 +69,28 @@ class UserController extends Controller
             $seafarer= Seafarer::where('user_id', $user->id);
             return redirect(route('seafarer.profile', $seafarer->id))->with(['message'=>'Application Successful']);
         }
+    }
+    /**
+     * Assign as admin
+     */
+    public function update(User $user){
+        $user = User::find($user->id);
+        if($user->role == 'staff'){
+            $user->update([
+                'role' => 'admin'
+            ]);
+            return redirect(route('users.index'))->with('message','User Role has been changed to!');
+
+        }
+
+        else{
+            $user->update([
+                'role' => 'staff'
+            ]);
+            return redirect(route('users.index'))->with('message', 'User Role has been changed to!');
+
+        }
+
     }
 
 

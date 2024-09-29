@@ -21,14 +21,7 @@ const props = defineProps({
 
 })
 const search = ref(props.filters);
-watch(search, debounce((value) => {
-    Inertia.get(route('vessels.index'), { search: value },
-        {
-            preserveState: true,
-            replace: true
-        }
-    );
-}, 300));
+
 const filename = props.vessel.name + 'crew list'
 const printHide = ref(true);
 const printPdf = () => {
@@ -41,7 +34,7 @@ const printPdf = () => {
             html2canvas: { scale: 2 },
             jsPDF: { format: 'letter', orientation: 'portrait' }
         })
-        elementsToHide.forEach(el => el.style.display = '');
+
     }
     printHide.value = false
 
@@ -65,16 +58,20 @@ const printPdf = () => {
                 :trade="props.vessel.Trade" :edit="true"></vesselForm>
         </div>
         <div class="py-12" id="printableSection">
-            <h2 v-show="!printHide" class="font-semibold text-xl text-gray-800 leading-tight">Seafarers on {{ vessel.name }}</h2>
+            <h2 v-show="!printHide" class="font-semibold text-xl text-gray-800 leading-tight text-center">Seafarers on {{ vessel.name }}</h2>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight"></h2>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <a v-show="printHide" :href="route('vessels.show', [props.vessel, true])">View All</a>
-                <PrimaryButton v-show="printHide" @click="printPdf">Print</PrimaryButton>
+
+
                 <div class="overflow-x-auto">
-                    <div class="flex flex-row justify-between my-5">
-                        <h1 class="text-xl text-center lg:ms-14 md:ms-4"> Crew List </h1>
-                        <input v-show="printHide" type="text" v-model="search" class="rounded-md border-slate-400 lg:me-14 md:me-4"
-                            name="search" placeholder="search.....">
+                    <div class="flex flex-row justify-around my-5">
+                        <h1 class="text-xl text-left lg:ms-14 md:ms-20"> Crew List </h1>
+                        <div>
+                            <a v-show="pagination==true && printHide" :href="route('vessel.show', [props.vessel, true])"><PrimaryButton>View All</PrimaryButton> </a>
+                            <a v-show="pagination==false && printHide" :href="route('vessel.show', [props.vessel])"><PrimaryButton>View Less</PrimaryButton> </a>
+                            <PrimaryButton v-show="pagination==false && printHide" class="ms-2" @click="printPdf">Print List</PrimaryButton>
+                        </div>
+
                     </div>
                     <!--view all-->
                     <table v-if="pagination == false && seafarers.length > 0"
@@ -83,7 +80,9 @@ const printPdf = () => {
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman book</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman Book</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Sign on Date</th>
 
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
 
@@ -97,10 +96,12 @@ const printPdf = () => {
                                     }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.email }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.role.name }} </td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.seaman_book }} </td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new Date(seafarer.sign_on).toLocaleDateString()}} </td>
 
 
                                 <td class="whitespace-nowrap px-4 py-2">
-                                    <a href="#"
+                                    <a v-show="printHide" href="#"
                                         class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         View
                                     </a>
@@ -118,7 +119,9 @@ const printPdf = () => {
                         <tr>
                             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
                             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Email</th>
-                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman book</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman Book</th>
+                            <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Sign on date</th>
 
                             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
 
@@ -132,10 +135,12 @@ const printPdf = () => {
                             </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.email }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.role.name }} </td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.seaman_book }} </td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new Date(seafarer.sign_on).toLocaleDateString() }} </td>
 
 
                             <td class="whitespace-nowrap px-4 py-2">
-                                <a href="#"
+                                <a v-show="printHide" href="#"
                                     class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                     View
                                 </a>

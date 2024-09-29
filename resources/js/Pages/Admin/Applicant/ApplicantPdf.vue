@@ -224,7 +224,7 @@ const printme = () => {
                         </div>
                     </div>
 
-                    <a href="" target="__blank" @click.prevent="printme">Print</a>
+                    <PrimaryButton><a href="" target="__blank" @click.prevent="printme">Print</a></PrimaryButton>
 
                 </div>
             </div>
