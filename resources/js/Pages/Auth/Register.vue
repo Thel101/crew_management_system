@@ -27,7 +27,7 @@ const submit = () => {
 <template>
 
     <Head title="Register" />
-    <div class="w-80">
+    <div class="md:w-80 md:px-0 px-2 md:mx-0 mt-4">
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="name" value="Name" />

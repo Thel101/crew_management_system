@@ -28,7 +28,7 @@ class UserController extends Controller
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'vessels' => Vessels::latest()->take(3)->get(),
+            'vessels' => Vessels::latest()->take(6)->get(),
             'jobs' => $jobs->load(['role']),
             'seafarer_count' => Seafarer::count()
         ]);

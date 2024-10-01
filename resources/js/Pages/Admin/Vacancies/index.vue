@@ -1,12 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 defineProps
     ({
@@ -59,6 +59,25 @@ const submit = () => {
     });
 };
 
+const search = ref(''), pageNumber = ref(0)
+
+let jobUrl = computed(() => {
+    let url = new URL(route("jobs.index"))
+    url.searchParams.append("pageNumber", pageNumber.value)
+    if (search.value) {
+        url.searchParams.append("search", search.value)
+    }
+    return url;
+});
+
+watch(jobUrl, newUrl => {
+    router.visit(newUrl, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true
+    })
+})
+
 </script>
 
 <template>
@@ -89,9 +108,9 @@ const submit = () => {
 
                             <div class="flex flex-row">
                                 <div class="w-1/2 mr-2">
-                                    <InputLabel for="name" value="Vessel" />
+                                    <InputLabel for="vessel" value="Vessel" />
 
-                                    <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
+                                    <Dropdown id="vessel" align="left" width="48" contentClasses="py-2 bg-gray-100">
                                         <template #trigger>
                                             <div
                                                 class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
@@ -110,7 +129,7 @@ const submit = () => {
                                 <div class="w-1/2">
                                     <InputLabel for="role" value="Role" />
 
-                                    <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
+                                    <Dropdown id="role" align="left" width="48" contentClasses="py-2 bg-gray-100">
                                         <template #trigger>
                                             <div
                                                 class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
@@ -175,9 +194,9 @@ const submit = () => {
                                     <InputError class="mt-2" :message="form.errors.joining_date" />
                                 </div>
                                 <div class="w-1/2">
-                                    <InputLabel for="description" value="Joining Port" />
+                                    <InputLabel for="port" value="Joining Port" />
 
-                                    <TextInput id="description" type="text" class="mt-1 block w-full"
+                                    <TextInput id="port" type="text" class="mt-1 block w-full"
                                         v-model="form.port" />
 
                                     <InputError class="mt-2" :message="form.errors.port" />
@@ -226,17 +245,15 @@ const submit = () => {
 
                             <tbody class="divide-y divide-gray-200">
                                 <tr v-for="job in jobs.data" :key="job.id">
-                                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{
-                            job.vessel.name }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.role.name }}</td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.count }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.vessel_name }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.role_name }}</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.head_count }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.joining_date }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.port }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.basic_salary }} USD</td>
 
                                     <td class="whitespace-nowrap px-4 py-2">
-                                        <a :href="route('jobs.edit', job)"
+                                        <a :href="route('jobs.edit', job.job_id)"
                                             class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                             View
                                         </a>

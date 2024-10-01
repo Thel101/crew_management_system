@@ -1,9 +1,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
-import { Inertia } from '@inertiajs/inertia';
-import { debounce } from 'lodash';
+import { Head,router } from '@inertiajs/vue3';
+import { ref, watch, computed } from 'vue';
+
 import vesselForm from './vesselForm.vue';
 const props = defineProps({
     vessels:
@@ -14,16 +13,24 @@ const props = defineProps({
         String
     }
 })
-// const search = ref(props.filters);
-// watch(search, debounce((value) => {
-//     Inertia.get(route('vessels.index'), { search: value },
-//         {
-//             preserveState: true,
-//             replace: true
-//         }
-//     );
-// }, 300));
+const search = ref(''), pageNumber = ref(0)
 
+let vesselUrl = computed(() => {
+    let url = new URL(route("vessels.index"))
+    url.searchParams.append("pageNumber", pageNumber.value)
+    if (search.value) {
+        url.searchParams.append("search", search.value)
+    }
+    return url;
+});
+
+watch(vesselUrl, newUrl => {
+    router.visit(newUrl, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true
+    })
+})
 
 
 

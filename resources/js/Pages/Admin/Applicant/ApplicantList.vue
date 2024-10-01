@@ -68,10 +68,6 @@ watch(role_id, value => {
     Inertia.get('/applicants', { role_id: value });
 });
 
-// watch(search, value =>{
-//    router.visit(route('applicants.list', {search : value}))
-// })
-
 
 const selectedVessel = ref('');
 const selectVessel = (vessel_id, vessel_name) => {
@@ -101,6 +97,17 @@ const assign = () => {
         </template>
 
         <div class="py-12">
+            <div v-show="applicants.data.length > 0" class="max-w-4xl mx-auto flex flex-row justify-between">
+                <div>
+                    <Link :href="route('seafarer.form')" class="justify-end mb-5">
+                    <PrimaryButton>On-board seafarer</PrimaryButton>
+                    </Link>
+                </div>
+                <div>
+                    <input type="text" v-model="search" placeholder="Search..." class="rounded-md border-gray-100 mb-4">
+                </div>
+
+            </div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
 
@@ -108,20 +115,8 @@ const assign = () => {
                         is no
                         applicants!</div>
 
-                    <div class="flex flex-row justify-between">
-                        <div>
-                            <Link :href="route('seafarer.form')" class="justify-end mb-5">
-                            <PrimaryButton>On-board seafarer</PrimaryButton>
-                            </Link>
-                        </div>
-                        <div>
-                            <input type="text" v-model="search" placeholder="Search..."
-                                class="rounded-md border-gray-100 mb-4">
-                        </div>
-
-                    </div>
-
-                    <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                    <table v-show="applicants.data.length > 0"
+                        class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
@@ -149,9 +144,7 @@ const assign = () => {
 
                                 <td class="whitespace-nowrap py-2">
                                     <div v-if="applicant.passport.length > 0">
-                                        <a
-                                            :href="route('applicant.detail', applicant.id)"
-                                            class="mr-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium
+                                        <a :href="route('applicant.detail', applicant.id)" class="mr-4 inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium
                                             text-white hover:bg-indigo-700">
                                             View
                                         </a>

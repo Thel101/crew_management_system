@@ -16,8 +16,11 @@ class VesselsController extends Controller
      */
     public function index(Request $request)
     {
+        $vesselsQuery = Vessels::query();
+        $this->searchVessel($vesselsQuery, $request->search);
+        $vessels = $vesselsQuery->paginate(5);
         return Inertia::render('Admin/Vessels/index', [
-            'vessels' => Vessels::paginate(5)
+            'vessels' => $vessels
 
         ]);
     }
@@ -97,6 +100,22 @@ class VesselsController extends Controller
     {
         //
     }
+    /*
+    Vessel Search
+    */
+    protected function searchVessel($query, $search)
+    {
+        return $query->when($search, function ($query, $search) {
+            $query->whereAny([
+                'name',
+                'flag',
+                'type',
+                'IMO_number',
+                'Trade'
+            ], 'like', '%' . $search . '%');
+        });
+    }
+
     protected function validateVessel()
     {
         return [

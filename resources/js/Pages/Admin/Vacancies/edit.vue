@@ -16,11 +16,11 @@ const form = useForm({
     role_id: props.job.role_id,
     vessel_id: props.job.vessel_id,
     description: props.job.description,
-    count: '',
-    requirements: '',
-    joining_date: '',
-    port: '',
-    basic_salary: '',
+    count: props.job.count,
+    requirements: props.job.requirements,
+    joining_date: props.job.joining_date,
+    port: props.job.port,
+    basic_salary: props.job.basic_salary,
 
 });
 
