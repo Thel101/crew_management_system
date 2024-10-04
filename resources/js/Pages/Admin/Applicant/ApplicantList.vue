@@ -7,9 +7,6 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
-import { Inertia } from '@inertiajs/inertia';
-
-
 
 const props = defineProps({
     applicants:
@@ -17,7 +14,10 @@ const props = defineProps({
         type: Object
     },
     jobs: {
-        type: Array
+        type: [Array, String]
+    },
+    assigne: {
+        type: Object
     }
 })
 
@@ -31,44 +31,32 @@ const showAssignForm = ref(false)
 const seafarer_name = ref('');
 const seaman_book = ref('');
 const seafarer_role = ref('');
-const role_id = ref(0)
-const seafarer_id = ref('');
-const email_id = ref('');
+const assignRoleId = ref('')
 const search = ref(''), pageNumber = ref(0)
-
-let applicantUrl = computed(() => {
-    let url = new URL(route("applicants.list"))
-    url.searchParams.append("pageNumber", pageNumber.value)
-    if (search.value) {
-        url.searchParams.append("search", search.value)
-    }
-    return url;
-});
-
-watch(applicantUrl, newUrl => {
-    router.visit(newUrl, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true
-    })
-})
-const AssignSeafarer = (id, name, book, role_name, roleId) => {
-    showAssignForm.value = true;
-    seafarer_id.value = id;
-    seafarer_name.value = name;
-    seaman_book.value = book;
-    seafarer_role.value = role_name;
-    role_id.value = roleId;
-    email_id.value = id;
-    form.user_id = id;
-    form.role_id = roleId;
+const AssignSeafarer = (id,role_name, roleId) => {
+    seafarer_role.value = role_name
+    assignRoleId.value = roleId
+    form.user_id = id
 }
-
-watch(role_id, value => {
-    Inertia.get('/applicants', { role_id: value });
+watch([() => assignRoleId.value, () => form.user_id], ([newRoleId, newUserId]) => {
+    if (newRoleId && newUserId) {
+        router.visit(route('applicants.list', { role_id: newRoleId, user_id: newUserId }));
+    }
 });
 
 
+if (Array.isArray(props.jobs)) {
+    showAssignForm.value = true
+    if (props.assigne) {
+        seafarer_name.value = props.assigne.fullname
+        seaman_book.value = props.assigne.seaman_book
+        seafarer_role.value = props.assigne.role.name
+        form.user_id = props.assigne.id
+        form.role_id = props.assigne.role_id
+    }
+
+
+}
 const selectedVessel = ref('');
 const selectVessel = (vessel_id, vessel_name) => {
     selectedVessel.value = vessel_name;
@@ -80,10 +68,27 @@ const assign = () => {
         onSuccess: () => {
             form.reset();
             showAssignForm.value = false
-            // Inertia.get(route('assign.email', email_id))
         }
     })
 }
+let applicantUrl = computed(() => {
+    let url = new URL(route("applicants.list"))
+    url.searchParams.append("pageNumber", pageNumber.value)
+    if (search.value) {
+        url.searchParams.append("search", search.value)
+    }
+
+
+});
+
+watch(applicantUrl, newUrl => {
+    router.visit(newUrl, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true
+    })
+})
+
 
 </script>
 
@@ -104,20 +109,21 @@ const assign = () => {
                     </Link>
                 </div>
                 <div>
-                    <input type="text" v-model="search" placeholder="Search..." class="rounded-md border-gray-100 mb-4">
+                    <input type="text" v-model="search" placeholder="Search..."
+                        class="rounded-md border-slate-400 mb-4">
                 </div>
 
             </div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
 
-                    <div v-show="applicants.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There
+                    <div v-show="applicants.data.length <= 0" class="text-center text-red-400 font-bold text-2xl">There
                         is no
                         applicants!</div>
 
                     <table v-show="applicants.data.length > 0"
                         class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
-                        <thead class="ltr:text-left rtl:text-right">
+                        <thead class="ltr:text-left rtl:text-right overflow-x-auto">
                             <tr>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Seaman Book</th>
@@ -149,7 +155,7 @@ const assign = () => {
                                             View
                                         </a>
                                         <Link preserve-state
-                                            @click="AssignSeafarer(applicant.id, applicant.fullname, applicant.seaman_book, applicant.role.name, applicant.role.id)"
+                                            @click="AssignSeafarer(applicant.id, applicant.role.name, applicant.role.id)"
                                             href="#"
                                             class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         Assign
@@ -167,7 +173,7 @@ const assign = () => {
 
                         </tbody>
                     </table>
-                    <div class="flex justify-end lg:me-24" v-if="applicants.links.length > 0">
+                    <div v-show="applicants.data.length > 0" class="flex justify-end lg:me-24" v-if="applicants.links.length > 0">
                         <ul class="flex">
                             <li class="mr-2" v-for="link in applicants.links" :key="link.label">
                                 <a :href="link.url" v-html="link.label"></a>
@@ -209,14 +215,13 @@ const assign = () => {
 
                                 </template>
                                 <template #content>
-                                    <ul>
+                                    <ul v-if="Array.isArray(jobs)">
                                         <li v-for="job in jobs" :key="job.id"
                                             @click="selectVessel(job.vessel.id, job.vessel.name)"
                                             class="cursor-pointer hover:bg-gray-200"> {{ job.vessel.name }}</li>
                                     </ul>
                                 </template>
                             </Dropdown>
-
 
                         </div>
                     </div>
@@ -225,8 +230,10 @@ const assign = () => {
                     </div>
 
                 </form>
+
             </div>
         </div>
+        <!-- <p v-if="jobs">{{ jobs.value }}</p> -->
 
     </AuthenticatedLayout>
 </template>

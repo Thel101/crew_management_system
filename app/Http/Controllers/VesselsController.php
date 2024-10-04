@@ -19,8 +19,12 @@ class VesselsController extends Controller
         $vesselsQuery = Vessels::query();
         $this->searchVessel($vesselsQuery, $request->search);
         $vessels = $vesselsQuery->paginate(5);
+        $types = Vessels::groupBy('type')->distinct()->pluck('type');
+        $flags = Vessels::groupBy('flag')->distinct()->pluck('flag');
         return Inertia::render('Admin/Vessels/index', [
-            'vessels' => $vessels
+            'vessels' => $vessels,
+            'types' => $types,
+            'flags' => $flags
 
         ]);
     }

@@ -62,7 +62,8 @@ const printPdf = () => {
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <a :href="route('applicants.list')" class="ms-7 text-blue-600 text-lg underline">Back to Applicant List</a>
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
                 <div class="overflow-hidden">
                     <div class="flex flex-row bg-green-300 rounded-md  justify-between"
                         v-if="$page.props.flash.message">

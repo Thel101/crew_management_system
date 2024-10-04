@@ -1,11 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref } from 'vue';
+import { ref, watch,computed } from 'vue';
 defineProps({
     roles:
     {
@@ -29,6 +29,25 @@ const submit = () => {
         }
     });
 };
+const search = ref(''), pageNumber = ref(0)
+
+let roleUrl = computed(() => {
+    let url = new URL(route("roles.index"))
+    url.searchParams.append("pageNumber", pageNumber.value)
+    if (search.value) {
+        url.searchParams.append("search", search.value)
+    }
+    return url;
+});
+
+watch(roleUrl, newUrl => {
+    router.visit(newUrl, {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true
+    })
+})
+
 
 </script>
 
@@ -52,49 +71,47 @@ const submit = () => {
                     </svg></button>
 
             </div>
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="overflow-hidden">
-                    <div class="max-w-lg mx-auto bg-white shadow sm:rounded-lg p-3 mb-5">
-                        <h1 class="text-center text-xl font-semibold mb-5 mt-3">Create New Role</h1>
-                        <form @submit.prevent="submit">
-                            <div>
-                                <InputLabel for="name" value="Role Name" />
-
-                                <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" />
-
-                                <InputError class="mt-2" :message="form.errors.name" />
-                            </div>
-
-                            <div class="mt-4">
-                                <InputLabel for="description" value="Role Brief Description" />
-
-                                <TextInput id="description" type="text" class="mt-1 block w-full"
-                                    v-model="form.description" />
-
-                                <InputError class="mt-2" :message="form.errors.description" />
-                            </div>
-                            <div class="flex justify-center">
-                                <PrimaryButton class="mt-5 mb-3" :class="{ 'opacity-25': form.processing }"
-                                    :disabled="form.processing">
-                                    Create New Role
-                                </PrimaryButton>
-                            </div>
 
 
-                        </form>
+            <div class="max-w-lg mx-auto bg-white shadow sm:rounded-lg p-3 mb-5">
+                <h1 class="text-center text-xl font-semibold mb-5 mt-3">Create New Role</h1>
+                <form @submit.prevent="submit">
+                    <div>
+                        <InputLabel for="name" value="Role Name" />
+
+                        <TextInput id="name" type="text" class="mt-1 block w-full" v-model="form.name" />
+
+                        <InputError class="mt-2" :message="form.errors.name" />
+                    </div>
+
+                    <div class="mt-4">
+                        <InputLabel for="description" value="Role Brief Description" />
+
+                        <TextInput id="description" type="text" class="mt-1 block w-full" v-model="form.description" />
+
+                        <InputError class="mt-2" :message="form.errors.description" />
+                    </div>
+                    <div class="flex justify-center">
+                        <PrimaryButton class="mt-5 mb-3" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">
+                            Create New Role
+                        </PrimaryButton>
                     </div>
 
 
-                    <div v-show="roles.data.length <= 0">
-                        <h1 class="text-center text-red-500 font-bold text-2xl">There is no registered roles!</h1>
-                    </div>
-                </div>
+                </form>
             </div>
+
+
+            <div v-show="roles.data.length <= 0">
+                <h1 class="text-center text-red-500 font-bold text-2xl">There is no registered roles!</h1>
+            </div>
+
             <div v-show="roles.data.length > 0" class="items-center justify-center">
 
                 <div class="max-w-5xl mx-auto flex flex-row justify-between my-5">
-                    <h1 class="text-xl text-center lg:ms-14 md:ms-4"> Roles </h1>
-                    <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-14 md:me-4"
+                    <h1 class="text-xl font-bold text-center lg:ms-20 md:ms-4"> Roles </h1>
+                    <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-20 md:me-4"
                         name="search" placeholder="search.....">
                 </div>
                 <div class="max-w-7xl mx-auto">
@@ -132,13 +149,13 @@ const submit = () => {
                     </table>
                 </div>
 
-                <div class="max-w-5xl mx-auto flex justify-end mt-5 me-5" v-show="roles.data.length > 0">
-                    <ul class="flex">
-                        <li class="mr-2" v-for="link in roles.links" :key="link.label">
-                            <a :href="link.url" v-html="link.label"></a>
-                        </li>
-                    </ul>
-                </div>
+            </div>
+            <div class="max-w-4xl mx-auto flex mt-5 justify-end" v-show="roles.data.length > 0">
+                <ul class="flex">
+                    <li class="mr-2" v-for="link in roles.links" :key="link.label">
+                        <a :href="link.url" v-html="link.label"></a>
+                    </li>
+                </ul>
             </div>
 
 

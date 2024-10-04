@@ -7,12 +7,15 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const props = defineProps({
     seafarer_id: {
         type: Number
+    },
+    basic_salary:{
+        type: Number
     }
 })
 
 const form = useForm({
     seafarer_id : props.seafarer_id,
-    base_salary: '',
+    base_salary: props.basic_salary,
     bonus: '',
     overtime_pay: '',
     deduction: '',

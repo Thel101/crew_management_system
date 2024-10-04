@@ -38,7 +38,7 @@ class HandleInertiaRequests extends Middleware
             'flash'=>[
                 'message'=> fn()=> $request->session()->get('message')
             ],
-            'applicant' =>[
+            'applied' =>[
                 'count' => Seafarer::where('status','new')->count()
             ],
             'leave' =>[

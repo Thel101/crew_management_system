@@ -1,8 +1,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head,router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { ref, watch, computed } from 'vue';
-
+import Dropdown from '@/Components/Dropdown.vue';
 import vesselForm from './vesselForm.vue';
 const props = defineProps({
     vessels:
@@ -11,9 +11,20 @@ const props = defineProps({
     },
     filters: {
         String
+    },
+    types: {
+        type: Array
+    },
+    flags: {
+        type: Array
     }
 })
 const search = ref(''), pageNumber = ref(0)
+const filters = ref('')
+const changeFilter = (value) => {
+    filters.value = value
+}
+
 
 let vesselUrl = computed(() => {
     let url = new URL(route("vessels.index"))
@@ -21,6 +32,10 @@ let vesselUrl = computed(() => {
     if (search.value) {
         url.searchParams.append("search", search.value)
     }
+    if (filters.value) {
+        url.searchParams.append("search", filters.value)
+    }
+
     return url;
 });
 
@@ -57,9 +72,58 @@ watch(vesselUrl, newUrl => {
                 <h1 v-show="vessels.length > 0" class="text-xl font-bold text-center">Vessels</h1>
                 <div class="overflow-x-auto">
                     <div class="flex flex-row justify-between min-w-xl w-lg my-5">
-                        <h1 class="text-xl text-center lg:ms-14 md:ms-4"> Vessels </h1>
-                        <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-14 md:me-4"
-                            name="search" placeholder="search.....">
+                        <h1 class="text-xl text-center font-bold"> Vessels </h1>
+                        <div class="flex flex-row">
+                            <!--flag filter-->
+                            <div class="mx-2">
+                                <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100 me-2">
+                                    <template #trigger>
+                                        <div
+                                            class="flex flex-row bg-white border-gray-300 border-2 rounded-md py-2 px-2">
+                                            Vessel Flag <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </div>
+                                    </template>
+                                    <template #content>
+                                        <button @click="changeFilter('')">All</button>
+                                        <div v-for="(flag, index) in flags" :key="index">
+                                            <button @click="changeFilter(flag)">{{ flag }}</button>
+                                        </div>
+                                    </template>
+                                </Dropdown>
+                            </div>
+
+                            <!--Type Filter-->
+                            <div class="me-2">
+                                <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
+                                <template #trigger>
+                                    <div class="flex flex-row bg-white border-gray-300 border-2 rounded-md py-2 px-2">
+                                        Vessel Type <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                    </div>
+                                </template>
+                                <template #content>
+                                    <button @click="changeFilter('')">All</button>
+                                    <div v-for="(type, index) in types" :key="index">
+                                        <button @click="changeFilter(type)">{{ type }}</button>
+                                    </div>
+                                </template>
+                            </Dropdown>
+                            </div>
+
+
+                            <input type="text" v-model="search" class="rounded-md border-slate-400" name="search"
+                                placeholder="search.....">
+                        </div>
+                        <!--Flag Filter-->
+
                     </div>
 
                     <table v-show="vessels.data.length > 0" class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">

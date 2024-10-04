@@ -48,6 +48,9 @@ const props = defineProps({
     leaves: {
         type: Array
     },
+    basic_salary:{
+        type: Number
+    },
     remarks: {
         type: Array,
         default: () => [
@@ -200,8 +203,8 @@ const printPdf = () => {
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Seafarers</h2>
         </template>
 
-        <div id="printableSection" class="py-12">
-            <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
+        <div id="printableSection" class="py-12 overflow-auto">
+            <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 overscroll-contain">
                 <div v-if="$page.props.flash.message">
                     {{ $page.props.flash.message }}
                 </div>
@@ -242,9 +245,9 @@ const printPdf = () => {
 
                 </div>
                 <div class="mt-5" v-show="showPayrollSection">
-                    <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
+                    <PayrollTable class="overflow-x-auto" v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
                     <PrimaryButton v-show="printHide" @click="togglePayrollForm">Calculate Payroll</PrimaryButton>
-                    <Payroll v-show="showPayrollForm" class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3"
+                    <Payroll :basic_salary="props.basic_salary" v-show="showPayrollForm" class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3"
                         :seafarer_id="props.seafarer.id"></Payroll>
                 </div>
                 <div class="page-break"></div>
@@ -461,6 +464,7 @@ const printPdf = () => {
     </AuthenticatedLayout>
 </template>
 <style scoped>
+
 .page-break {
     page-break-before: always;
 }

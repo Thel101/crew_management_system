@@ -35,11 +35,11 @@ const changeRole = (user) => {
         }
     })
 }
-const clearFlashMessage = ()=>{
+const clearFlashMessage = () => {
     router.visit(window.location.href, {
-                preserveState: true,  // Keep the state of the current page
-                preserveScroll: true  // Maintain the scroll position
-            });
+        preserveState: true,  // Keep the state of the current page
+        preserveScroll: true  // Maintain the scroll position
+    });
 }
 </script>
 
@@ -133,19 +133,19 @@ const clearFlashMessage = ()=>{
 
                             </tbody>
                         </table>
-                        <div class="flex justify-end lg:me-24" v-if="users.links.length > 0">
-                            <ul class="flex">
-                                <li class="mr-2" v-for="link in users.links" :key="link.label">
-                                    <a :href="link.url" v-html="link.label"></a>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
 
                 </div>
 
 
 
+            </div>
+            <div class="max-w-4xl mt-4 flex justify-end lg:me-24" v-if="users.links.length > 0">
+                <ul class="flex">
+                    <li class="mr-2" v-for="link in users.links" :key="link.label">
+                        <a :href="link.url" v-html="link.label"></a>
+                    </li>
+                </ul>
             </div>
         </div>
     </AuthenticatedLayout>

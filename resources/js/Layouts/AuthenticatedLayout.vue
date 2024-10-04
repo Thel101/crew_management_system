@@ -4,7 +4,6 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
@@ -13,8 +12,8 @@ const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100">
+    <div id="main">
+        <div id="wrapper" class="min-h-screen bg-gray-100">
             <nav class="border-b border-gray-400">
                 <!-- Primary Navigation Menu -->
                 <div>
@@ -92,8 +91,8 @@ const showingNavigationDropdown = ref(false);
             <!-- Page Content -->
             <div>
 
-                <main class="flex flex-row">
-                    <div id="nav" class="flex flex-col bg-gray-300 w-2/12 h-screen">
+                <main class="flex flex-row min-h-screen">
+                    <div id="nav" class="flex flex-col bg-gray-300 w-2/12 min-h-screen">
                         <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </NavLink>
@@ -104,7 +103,7 @@ const showingNavigationDropdown = ref(false);
 
                         <NavLink :href="route('applicants.list')" :active="route().current('applicants.list')">
                             Applicants
-                            <span class="ms-2 bg-green-500 px-3 rounded-full m-5">{{ $page.props.applicant.count
+                            <span class="ms-2 bg-green-500 px-3 rounded-full m-5">{{ $page.props.applied.count
                             }}</span>
                         </NavLink>
 
@@ -133,7 +132,7 @@ const showingNavigationDropdown = ref(false);
 
 
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 h-full overflow-y-auto">
 
                         <slot />
                     </div>
@@ -143,3 +142,6 @@ const showingNavigationDropdown = ref(false);
         </div>
     </div>
 </template>
+<style scoped>
+
+</style>

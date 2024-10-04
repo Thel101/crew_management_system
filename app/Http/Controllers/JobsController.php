@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Jobs;
 use App\Models\Roles;
 use App\Models\Seafarer;
+use App\Models\Vessels;
 use Inertia\Inertia;
 use Illuminate\Contracts\Queue\Job;
 use Illuminate\Http\Request;
@@ -35,8 +36,11 @@ class JobsController extends Controller
         $paginatedJobs = $jobs->paginate(10);
 
         // Return paginated jobs to Inertia
+
         return Inertia::render('Admin/Vacancies/index', [
             'jobs' => $paginatedJobs,
+            'vessels' => Vessels::get(),
+            'roles' => Roles::get()
         ]);
     }
 

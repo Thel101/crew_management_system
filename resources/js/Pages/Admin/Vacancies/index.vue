@@ -54,7 +54,7 @@ const submit = () => {
         onSuccess: () => {
             form.reset();
             selectedVessel.value = '',
-                selectRole.value = ''
+               selectedRole.value = ''
         }
     });
 };
@@ -224,8 +224,8 @@ watch(jobUrl, newUrl => {
                 </div>
                 <div v-show="jobs.data.length > 0">
                     <div class="overflow-x-auto">
-                        <div class="flex flex-row justify-between min-w-xl w-lg my-5">
-                            <h1 class="text-xl text-center lg:ms-28 md:ms-4"> Jobs </h1>
+                        <div class="flex flex-row justify-between my-5">
+                            <h1 class="text-xl font-bold text-center lg:ms-28 md:ms-4"> Jobs </h1>
                             <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-28 md:me-4"
                                 name="search" placeholder="search.....">
                         </div>
