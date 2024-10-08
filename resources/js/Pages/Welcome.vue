@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link,usePage } from '@inertiajs/vue3';
 import BottomNavigationBar from '@/Components/BottomNavigationBar.vue'
 import Register from '@/Pages/Auth/Register.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -22,18 +22,20 @@ defineProps
             type: Number
         }
     });
+
 const image_url = '/images/home-seafarer.jpg'
 const activeSection = ref('home');
 const home = ref(null);
 const partners = ref(null);
 const vacancies = ref(null);
 const about = ref(null);
+const observer = ref(null);
 const observeSection = () => {
     const options = {
         root: null, // Observe the viewport
         threshold: 0.5, // Trigger when 50% of the section is visible
     };
-    const observer = new IntersectionObserver((entries) => {
+    observer.value = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 activeSection.value = entry.target.id;
@@ -59,6 +61,8 @@ const scrollToSection = (sectionId) => {
     }
 }
 const showingNavigationDropdown = ref(false)
+const $page = usePage();
+console.log($page.props.auth.user);
 </script>
 
 <template>
@@ -103,10 +107,10 @@ const showingNavigationDropdown = ref(false)
                 <div v-if="canLogin">
                     <button v-if="$page.props.auth.user">
                         <Link :href="route('seafarer.profile', $page.props.auth.user.id)"
-                            class="sm:hidden font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                        Profile |</Link>
+                            class="hidden md:inline text-lg font-semibold text-white hover:text-yellow-400 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
+                        Profile</Link> |
                         <Link method="post" :href="route('logout')"
-                            class="md:hidden ms-2 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
+                            class="hidden md:inline ms-2 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
                         Log out</Link>
 
                     </button>

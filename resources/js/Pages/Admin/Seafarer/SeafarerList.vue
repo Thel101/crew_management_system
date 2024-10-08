@@ -46,10 +46,14 @@ watch(seafarerUrl, newUrl => {
                     <div v-show="seafarers.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There
                         is no
                         applicants!</div>
+                    <div class="flex flex-row bg-green-200">
+                        <Link :href="route('seafarer.form')" class="justify-end">
+                        <PrimaryButton>On-board seafarer</PrimaryButton>
+                        </Link>
+                    </div>
 
                     <div class="flex justify-end me-9" v-show="seafarers.data.length > 0">
-                        <input type="text" v-model="search" placeholder="Search..."
-                            class="rounded-md rounded-md border-slate-400 mb-4">
+                        <input type="text" v-model="search" placeholder="Search..." class=" border-slate-400 mb-4">
                     </div>
                     <table v-if="seafarers.data.length > 0" class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                         <thead class="ltr:text-left rtl:text-right">
@@ -88,15 +92,15 @@ watch(seafarerUrl, newUrl => {
 
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{
                                     seafarer.passport[0].passport_no
-                                    }}
+                                }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{
                                     seafarer.passport[0].expiry_date
-                                    }}
+                                }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{
                                     seafarer.seaman_book
-                                    }}
+                                }}
                                 </td>
 
 

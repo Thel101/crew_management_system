@@ -34,6 +34,7 @@ const seafarer_role = ref('');
 const assignRoleId = ref('')
 const search = ref(''), pageNumber = ref(0)
 const AssignSeafarer = (id,role_name, roleId) => {
+    showAssignForm.value = true
     seafarer_role.value = role_name
     assignRoleId.value = roleId
     form.user_id = id
@@ -46,7 +47,6 @@ watch([() => assignRoleId.value, () => form.user_id], ([newRoleId, newUserId]) =
 
 
 if (Array.isArray(props.jobs)) {
-    showAssignForm.value = true
     if (props.assigne) {
         seafarer_name.value = props.assigne.fullname
         seaman_book.value = props.assigne.seaman_book
@@ -233,7 +233,6 @@ watch(applicantUrl, newUrl => {
 
             </div>
         </div>
-        <!-- <p v-if="jobs">{{ jobs.value }}</p> -->
 
     </AuthenticatedLayout>
 </template>

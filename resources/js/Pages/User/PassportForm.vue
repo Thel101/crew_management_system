@@ -216,7 +216,7 @@ const submit = () => {
 
             <div>
                 <h1 class="text-xl">Past Experiences</h1>
-                <table class="min-w-full">
+                <table class="overflow-x-auto ">
                     <thead>
                         <tr>
                             <th>Ship Name</th>

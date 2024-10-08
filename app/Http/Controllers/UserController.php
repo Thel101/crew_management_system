@@ -56,7 +56,8 @@ class UserController extends Controller
     public function store(Request $request){
         $validated = $request->validate([
             'name' => 'required',
-            'email' => 'required|unique:users,email,except,id'
+            'email' => 'required|unique:users,email,except,id',
+            'role' => 'required'
         ]);
         $validated['password'] = Hash::make('password');
         $validated['role'] = 'staff';
