@@ -1,11 +1,12 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Modal from '@/Components/Modal.vue';
 
 
 const props = defineProps({
@@ -16,7 +17,7 @@ const props = defineProps({
 
 
 const src = ref('');
-
+const showModal = ref(false)
 const cert_img = ref([]);
 const certificateImage = (e, index) => {
     const cert_file = e.target.files[0];
@@ -108,13 +109,21 @@ const submit = () => {
         onSuccess: () => {
             certificates.post(route('certificates.store'), {
                 onSuccess: () => {
-                    experiences.post(route('experiences.store'))
+                    experiences.post(route('experiences.store'), {
+                        onSuccess: () => {
+                            showModal.value = true
+                        }
+                    })
                 }
             })
         }
     }
     )
 
+}
+const home = ()=>{
+    showModal.value = false
+    router.visit(route('user.home'))
 }
 </script>
 
@@ -124,6 +133,23 @@ const submit = () => {
 
 
     <div class="max-w-7xl mx-auto">
+
+        <template>
+            <div>
+                <Modal :show="showModal" @close="showModal = false">
+                    <template #default>
+                        <div class="p-4">
+                            <h2 class="text-lg font-bold">Application Successful</h2>
+                            <p class="mt-2">Your application has been succesfully sent!</p>
+                            <button @click="home" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+                                Close Modal
+                            </button>
+                        </div>
+                    </template>
+                </Modal>
+            </div>
+        </template>
+
         <div v-if="$page.props.auth.user.role != 'admin'">
             <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
             <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
@@ -134,7 +160,7 @@ const submit = () => {
             <!---Passport-->
 
             <div>
-                <h1 class="text-xl">Passport Info</h1>
+                <h1 class="text-xl">Passport Information</h1>
                 <div class="flex flex-row gap-2 my-2">
                     <div class="w-1/4">
 

@@ -56,7 +56,7 @@ class SeafarerController extends Controller
         $validated['sign_off'] = '2024-09-12';
         $seafarer = Seafarer::create($validated);
         if ($seafarer) {
-            if (auth()->user()->role == 'admin') {
+            if (auth()->user()->role == 'user') {
                 return redirect(route('passport.index', $seafarer->id));
             } else {
                 return redirect(route('applicants.list'));

@@ -39,32 +39,32 @@ const props = defineProps({
 })
 const today = new Date().toISOString().split('T')[0];
 
-if (props.applicant) {
-    const form = useForm({
-        seafarer_id: props.applicant.id,
-        leave_start: '',
-        leave_end: '',
-        reason: ''
-    })
-    const endDate = ref('');
-    watch(() => form.leave_start, (value) => {
-        const date = new Date(value);
-        const leaveEndDate = new Date();
-        leaveEndDate.setDate(date.getDate() + 1)
-        endDate.value = leaveEndDate.toISOString().split('T')[0]
-    })
+// if (props.applicant) {
+const form = useForm({
+    seafarer_id: props.applicant.id,
+    leave_start: '',
+    leave_end: '',
+    reason: ''
+})
+const endDate = ref('');
+watch(() => form.leave_start, (value) => {
+    const date = new Date(value);
+    const leaveEndDate = new Date();
+    leaveEndDate.setDate(date.getDate() + 1)
+    endDate.value = leaveEndDate.toISOString().split('T')[0]
+})
 
-    const submitLeave = () => {
-        form.post(route('leave.store'), {
-            onFinish: () => {
-                form.leave_start = '',
-                    form.leave_end = '',
-                    form.reason = ''
+const submitLeave = () => {
+    form.post(route('leave.store'), {
+        onFinish: () => {
+            form.leave_start = '',
+                form.leave_end = '',
+                form.reason = ''
 
-            }
-        })
-    }
+        }
+    })
 }
+// }
 
 const showLeaveForm = ref(false);
 const toggleLeaveForm = () => {
@@ -89,8 +89,8 @@ const toggleLeaveForm = () => {
     <div class="text-center my-2">
         <Link class="text-center hover:underline text-blue-600" :href="route('user.welcome')">Back to Home Page</Link>
     </div>
-    <div v-if="props.applicant && props.passport">
-        <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
+    <div class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2" v-if="props.applicant && props.passport">
+        <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md border-slate-300 border-2" />
         <PersonalDetails :fullname="props.applicant.fullname" :expected_salary="props.applicant.expected_salary"
             :nationality="props.applicant.nationality" :religion="props.applicant.religion" :dob="props.applicant.dob"
             :height="props.applicant.height" :weight="props.applicant.weight" :mobile_no="props.applicant.mobile_no"
@@ -112,26 +112,31 @@ const toggleLeaveForm = () => {
             <ExperienceTable :experiences="props.experiences"></ExperienceTable>
         </div>
         <div>
-            <PayrollTable :payrolls="props.payrolls"></PayrollTable>
+            <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
+            <div class="text-red-400 mx-2 font-semibold" v-show="props.payrolls.length == 0">No payroll calculated yet!</div>
         </div>
         <div>
-            <LeaveList :leaves="props.leaves"></LeaveList>
+            <LeaveList v-show="props.leaves.length > 0" :leaves="props.leaves"></LeaveList>
+            <div class="text-red-400 mx-2 font-semibold" v-show="props.leaves.length == 0">No leaves taken yet!</div>
         </div>
         <PrimaryButton @click="toggleLeaveForm">Request Leave</PrimaryButton>
-        <div v-show="showLeaveForm">
+        <div v-show="showLeaveForm" class="mt-2">
             <form @submit.prevent="submitLeave">
-                <div>
-                    <InputLabel>Leave Start Date</InputLabel>
-                    <TextInput type="date" :min="today" v-model="form.leave_start"></TextInput>
+                <div class="flex flex-row">
+                    <div class="w-1/3 mx-2">
+                        <InputLabel>Leave Start Date</InputLabel>
+                        <TextInput type="date" class="w-full" :min="today" v-model="form.leave_start"></TextInput>
+                    </div>
+                    <div class="w-1/3 mx-2">
+                        <InputLabel>Leave End Date</InputLabel>
+                        <TextInput type="date" class="w-full" :min="endDate" v-model="form.leave_end"></TextInput>
+                    </div>
+                    <div class="w-1/3 mx-2">
+                        <InputLabel>Leave Reason</InputLabel>
+                        <TextInput class="w-full" v-model="form.reason"></TextInput>
+                    </div>
                 </div>
-                <div>
-                    <InputLabel>Leave End Date</InputLabel>
-                    <TextInput type="date" :min="endDate" v-model="form.leave_end"></TextInput>
-                </div>
-                <div>
-                    <InputLabel>Leave Reason</InputLabel>
-                    <TextInput v-model="form.reason"></TextInput>
-                </div>
+
                 <PrimaryButton>Submit Leave Request</PrimaryButton>
             </form>
         </div>

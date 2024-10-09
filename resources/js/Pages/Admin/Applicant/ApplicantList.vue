@@ -102,13 +102,13 @@ watch(applicantUrl, newUrl => {
         </template>
 
         <div class="py-12">
-            <div v-show="applicants.data.length > 0" class="max-w-4xl mx-auto flex flex-row justify-between">
+            <div class="max-w-4xl mx-auto flex flex-row justify-between">
                 <div>
                     <Link :href="route('seafarer.form')" class="justify-end mb-5">
                     <PrimaryButton>On-board seafarer</PrimaryButton>
                     </Link>
                 </div>
-                <div>
+                <div v-show="applicants.data.length > 0">
                     <input type="text" v-model="search" placeholder="Search..."
                         class="rounded-md border-slate-400 mb-4">
                 </div>

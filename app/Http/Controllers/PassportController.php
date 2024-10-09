@@ -55,7 +55,7 @@ class PassportController extends Controller
         ]);
         $validated['status'] = 'active';
         Passport::create($validated);
-        return redirect(route('user.home'));
+
     }
 
     /**
