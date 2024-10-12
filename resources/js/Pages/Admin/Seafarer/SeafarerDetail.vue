@@ -49,7 +49,7 @@ const props = defineProps({
     leaves: {
         type: Array
     },
-    basic_salary:{
+    basic_salary: {
         type: Number
     },
     remarks: {
@@ -196,20 +196,22 @@ const fileBtn = ref(false)
 // const showFileBtn = () =>{
 //     fileBtn.value = true
 // }
+const showImageChange = ref(false)
 const profileForm = useForm({
-    seafarer_id : props.seafarer.id,
+    seafarer_id: props.seafarer.id,
     profile: ''
 });
 const changeProfile = (e) => {
-    profileForm.profile= e.target.files[0];
+    profileForm.profile = e.target.files[0];
 };
 
-const uploadImage = ()=>{
+const uploadImage = () => {
     profileForm.post(route('seafarer.changeProfile'), {
         onSuccess: (page) => {
             showModal.value = true;
             modalTitle.value = "Profile Image Changed";
             modalMessage.value = page.props.flash.message;
+            showImageChange.value = false;
         }
     })
 }
@@ -227,28 +229,41 @@ const uploadImage = ()=>{
 
         <div id="printableSection" class="py-12 overflow-auto">
             <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 overscroll-contain">
-                <input type="file" @change="changeProfile">
-                <PrimaryButton @click="uploadImage">Change Profile Image</PrimaryButton>
+
+                <PrimaryButton @click="showImageChange = !showImageChange">Change Profile Image</PrimaryButton>
+                <div class="flex flex-row" v-show="showImageChange">
+                    <button @click="uploadImage" class="my-2 mr-2 rounded-md bg-black text-white px-2"><svg
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                        </svg>
+                    </button>
+                    <input class="my-2" accept=".jpg,.jpeg,.png,.webp" @change="changeProfile" type="file">
+
+                </div>
                 <div class="overflow-hidden">
                     <div class="flex flex-row justify-end">
                         <PrimaryButton @click="printPdf">Print this page</PrimaryButton>
-                        <Link :href="route('seafarer.editPage', props.seafarer.id)"><PrimaryButton class="ms-2">Edit</PrimaryButton></Link>
+                        <Link :href="route('seafarer.editPage', props.seafarer.id)">
+                        <PrimaryButton class="ms-2">Edit</PrimaryButton>
+                        </Link>
                     </div>
 
                     <div class="flex flex-row">
-                        <!-- storag//app/public/images/66dacae161fb0vietnam.jpg -->
-                         <div>
+
+                        <div>
                             <img :src="`/storage/images/${props.seafarer.profile}`" class="w-48 h-48 rounded-md"
-                            :alt="props.seafarer.profile" />
+                                :alt="props.seafarer.profile" />
                             <!-- <PrimaryButton class="w-full my-2 text-center" @click="showFileBtn">Change Profile Image</PrimaryButton>
                              <input type="file" v-show="fileBtn" class="w"  accept=".jpg,.jpeg,.png,.webp" name="" id=""> -->
-                         </div>
+                        </div>
 
 
                         <PersonalDetail class="w-3/4" :fullname="props.seafarer.fullname"
-                            :expected_salary="props.seafarer.expected_salary"
-                            :nationality="props.seafarer.nationality" :religion="props.seafarer.religion"
-                            :dob="props.seafarer.dob" :height="props.seafarer.height" :weight="props.seafarer.weight"
+                            :expected_salary="props.seafarer.expected_salary" :nationality="props.seafarer.nationality"
+                            :religion="props.seafarer.religion" :dob="props.seafarer.dob"
+                            :height="props.seafarer.height" :weight="props.seafarer.weight"
                             :mobile_no="props.seafarer.mobile_no" :email="props.seafarer.email"
                             :next_of_kin="props.seafarer.next_of_kin" :relationship="props.seafarer.relationship"
                             :next_of_kin_phone="props.seafarer.next_of_kin_mobile"
@@ -256,7 +271,8 @@ const uploadImage = ()=>{
                             :issue_date="props.passport.issue_date" :expiry_date="props.passport.expiry_date"
                             :seaman_book="props.seafarer.seaman_book"
                             :book_place_of_issue="props.seafarer.place_of_issue"
-                            :book_issue_date="props.seafarer.issue_date"></PersonalDetail>
+                            :book_issue_date="props.seafarer.issue_date">
+                        </PersonalDetail>
                     </div>
                 </div>
 
@@ -271,10 +287,12 @@ const uploadImage = ()=>{
 
                 </div>
                 <div class="mt-5" v-show="showPayrollSection">
-                    <PayrollTable class="overflow-x-auto" v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
+                    <PayrollTable class="overflow-x-auto" v-show="props.payrolls.length > 0" :payrolls="props.payrolls">
+                    </PayrollTable>
                     <PrimaryButton v-show="printHide" @click="togglePayrollForm">Calculate Payroll</PrimaryButton>
-                    <Payroll :basic_salary="props.basic_salary" v-show="showPayrollForm" class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3"
-                        :seafarer_id="props.seafarer.id"></Payroll>
+                    <Payroll :basic_salary="props.basic_salary" v-show="showPayrollForm"
+                        class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3" :seafarer_id="props.seafarer.id">
+                    </Payroll>
                 </div>
                 <div class="page-break"></div>
                 <!--Payroll-->
@@ -490,7 +508,6 @@ const uploadImage = ()=>{
     </AuthenticatedLayout>
 </template>
 <style scoped>
-
 .page-break {
     page-break-before: always;
 }
