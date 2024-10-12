@@ -1,15 +1,16 @@
 <script setup>
 import { ref, watch } from 'vue';
+import { router, useForm, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
-import { router } from '@inertiajs/vue3';
 
+const page = usePage();
 const props = defineProps({
     Religions: {
         type: Array,
@@ -27,38 +28,24 @@ const props = defineProps({
 
 });
 
-const selectedReligion = ref('');
-const selectReligion = (religion) => {
-    selectedReligion.value = religion;
-    form.religion = religion
-}
-
-const selectedRole = ref(props.seafarer.role.name);
-const selectRole = (role) => {
-    selectedRole.value = role.name;
-    form.role_id = role.id
-}
-const showPlaceholder = ref(true);
 const src = ref('');
 
-const change = (e) => {
-    const file = e.target.files[0];
-    form.profile = file;
+// const change = (e) => {
+//     form.profile= e.target.files[0];
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        src.value = event.target.result;
-    };
+//     const reader = new FileReader();
+//     reader.onload = (event) => {
+//         src.value = event.target.result;
+//     };
 
-    if (file) {
-        reader.readAsDataURL(file);
-    }
-};
-
+//     if (e.target.files[0]) {
+//         reader.readAsDataURL(e.target.files[0]);
+//     }
+// };
 
 const form = useForm({
     role_id: props.seafarer.role_id,
-    profile: null,
+    profile: '' || props.seafarer.profile,
     fullname: props.seafarer.fullname,
     seaman_book: props.seafarer.seaman_book,
     seaman_book_place: props.seafarer.seaman_book_place,
@@ -74,9 +61,20 @@ const form = useForm({
     next_of_kin: props.seafarer.next_of_kin,
     relationship: props.seafarer.relationship,
     next_of_kin_mobile: props.seafarer.next_of_kin_mobile,
-
 });
 
+const selectedReligion = ref('');
+const selectReligion = (religion) => {
+    selectedReligion.value = religion;
+    form.religion = religion
+}
+
+const selectedRole = ref(props.seafarer.role ? props.seafarer.role.name : '');
+const selectRole = (role) => {
+    selectedRole.value = role.name;
+    form.role_id = role.id
+}
+const showPlaceholder = ref(true);
 
 watch(() => form.dob, (newValue) => {
     showPlaceholder.value = !newValue;
@@ -105,15 +103,17 @@ const closeModal = () => {
 const modalMessage = ref('');
 const modalTitle = ref('');
 
-const submit = () => {
+
+const update = () => {
     form.patch(route('seafarers.update', props.seafarer), {
-        onSuccess: () => {
-            showModal.value = true
-            modalTitle.value = 'Profile Edit Successful'
-            modalMessage.value = 'Seafarer Profile has been updated successfully!'
-        }
+        onSuccess: (page) => {
+            showModal.value = true;
+            modalTitle.value = 'Profile Edit Successful';
+            modalMessage.value = page.props.flash.message;
+        },
+
     });
-}
+};
 </script>
 
 <template>
@@ -126,11 +126,13 @@ const submit = () => {
 
         <div class="max-w-5xl mx-auto">
 
-            <form @submit.prevent="submit" class="p-3 bg-white shadow-md rounded-md border-gray-400 mt-4">
+            <form @submit.prevent="update" enctype="multipart/form-data" class="p-3 bg-white shadow-md rounded-md border-gray-400 mt-4">
                 <!--Personal Details-->
                 <div>
                     <h1 class="my-2 text-xl">Personal Details</h1>
-                    <input type="file" @input="change" />
+                    <!-- <input type="file" accept=".jpg,.jpeg,.png,.webp" @change="change" />
+                    <InputError class="mt-2" :message="form.errors.profile" ></InputError> -->
+
                     <img :src="`/storage/images/${props.seafarer.profile}`" alt="" class="w-24 h-24">
                     <div class="flex flex-row gap-2 my-2">
                         <div class="w-1/3">

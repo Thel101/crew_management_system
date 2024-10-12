@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('document_date');
             $table->string('result')->nullable();
             $table->string('file');
-            $table->enum('status', ['uploaded', 'approved', 'rejected']);
+            $table->boolean('status');
             $table->timestamps();
         });
     }

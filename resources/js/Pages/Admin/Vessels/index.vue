@@ -134,6 +134,7 @@ watch(vesselUrl, newUrl => {
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessel Type</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">IMO Number</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Built</th>
+                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">GRT</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">DWT</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Engine</th>
                                 <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">BHP</th>

@@ -11,6 +11,7 @@ class Vessels extends Model
     use HasFactory;
     protected $fillable = [
         'name',
+        'image',
         'flag',
         'type',
         'IMO_number',

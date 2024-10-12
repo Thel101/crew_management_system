@@ -18,9 +18,11 @@ const props = defineProps([
     'BHP',
     'trade',
     'edit',
-    'vessel'
+    'vessel',
+    'image'
 
 ])
+
 const form = useForm({
     name: props.name,
     flag: props.flag,
@@ -31,17 +33,22 @@ const form = useForm({
     DWT: props.DWT,
     Engine: props.Engine,
     BHP: props.BHP,
-    Trade: props.trade
+    Trade: props.trade,
+    image: ''
 
 });
 const showModal = ref(false);
 const closeModal = () => {
     showModal.value = false
 }
+const src = ref('');
+
+
 const modalMessage = ref('');
 const modalTitle = ref('');
 const submit = () => {
     if (props.edit == true) {
+        console.log(form)
         form.patch(route('vessels.update', props.vessel),
             {
                 onSuccess: () => {
@@ -64,6 +71,9 @@ const submit = () => {
         <h1 v-if="props.edit =true" class="text-center text-xl font-semibold mb-5 mt-3">Vessel Information</h1>
         <h1 v-else class="text-center text-xl font-semibold mb-5 mt-3">Create New Vessel</h1>
         <form @submit.prevent="submit">
+            <img v-if="props.vessel.image != null" :src="`/storage/images/${props.vessel.image}`"
+                    class="w-36 h-36 rounded-md" :alt="props.vessel.image" />
+                <img v-else src="/images/logo1.jpeg" class="w-36 h-36 rounded-md" alt="vessel-image" />
             <div class="flex flex-row justify-between">
                 <div class="mr-5">
                     <InputLabel for="name" value="Vessel Name" />

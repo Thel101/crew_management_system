@@ -51,14 +51,22 @@ const printPdf = () => {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Seafarers on {{ vessel.name }}</h2>
         </template>
-        <div v-show="printHide">
+        <div v-show="printHide" class="mt-10">
+            <div class="max-w-7xl">
+                <a class="mx-20 underline-offset-2 text-blue-500 text-lg" :href="route('vessels.index')">Back to Vessel
+                    list</a>
+
+            </div>
+
             <vesselForm :vessel="props.vessel" :name="props.vessel.name" :flag="props.vessel.flag"
                 :type="props.vessel.type" :IMO_number="props.vessel.IMO_number" :built="props.vessel.built"
                 :GRT="props.vessel.GRT" :DWT="props.vessel.DWT" :Engine="props.vessel.Engine" :BHP="props.vessel.BHP"
-                :trade="props.vessel.Trade" :edit="true"></vesselForm>
+                :trade="props.vessel.Trade" :image="props.vessel.image" :edit="true"></vesselForm>
         </div>
         <div class="py-12" id="printableSection">
-            <h2 v-show="!printHide" class="font-semibold text-xl text-gray-800 leading-tight text-center">Seafarers on {{ vessel.name }}</h2>
+            <h2 v-show="!printHide" class="font-semibold text-xl text-gray-800 leading-tight text-center">Seafarers on
+                {{
+                vessel.name }}</h2>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight"></h2>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
@@ -67,9 +75,16 @@ const printPdf = () => {
                     <div class="flex flex-row justify-around my-5">
                         <h1 class="text-xl text-left lg:ms-14 md:ms-20"> Crew List </h1>
                         <div>
-                            <a v-show="pagination==true && printHide" :href="route('vessel.show', [props.vessel, true])"><PrimaryButton>View All</PrimaryButton> </a>
-                            <a v-show="pagination==false && printHide" :href="route('vessel.show', [props.vessel])"><PrimaryButton>View Less</PrimaryButton> </a>
-                            <PrimaryButton v-show="pagination==false && printHide" class="ms-2" @click="printPdf">Print List</PrimaryButton>
+                            <a v-show="pagination == true && printHide"
+                                :href="route('vessel.show', [props.vessel, true])">
+                                <PrimaryButton>View All</PrimaryButton>
+                            </a>
+                            <a v-show="pagination == false && printHide" :href="route('vessel.show', [props.vessel])">
+                                <PrimaryButton>View Less</PrimaryButton>
+                            </a>
+                            <PrimaryButton v-show="pagination == false && printHide" class="ms-2" @click="printPdf">Print
+                                List
+                            </PrimaryButton>
                         </div>
 
                     </div>
@@ -97,7 +112,8 @@ const printPdf = () => {
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.email }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.role.name }} </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.seaman_book }} </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new Date(seafarer.sign_on).toLocaleDateString()}} </td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new
+                                    Date(seafarer.sign_on).toLocaleDateString()}} </td>
 
 
                                 <td class="whitespace-nowrap px-4 py-2">
@@ -136,7 +152,8 @@ const printPdf = () => {
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.email }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.role.name }} </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.seaman_book }} </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new Date(seafarer.sign_on).toLocaleDateString() }} </td>
+                            <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new
+                                Date(seafarer.sign_on).toLocaleDateString() }} </td>
 
 
                             <td class="whitespace-nowrap px-4 py-2">

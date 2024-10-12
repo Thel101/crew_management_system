@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('medical_documents', function (Blueprint $table) {
-            $table->boolean('status')->change();
+        Schema::table('vessels',function(Blueprint $table){
+            $table->after('name', function($table){
+                $table->string('image')->nullable();
+            });
         });
     }
 
@@ -21,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('medical_documents', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('vessel', function(Blueprint $table){
+            $table->dropColumn('image');
         });
     }
 };

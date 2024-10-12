@@ -51,6 +51,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
         Route::get('/seafarer/edit/{id}','show')->name('seafarer.editPage');
         Route::get('/form/seafarer', 'seafarerForm')->name('seafarer.form');
+        Route::post('/seafarer/change/profileImage', 'changeProfileImage')->name('seafarer.changeProfile');
         Route::get('/send/email/{id}', 'send_email')->name('assign.email');
         Route::get('/applicant/{filename}', 'serveFile')->name('applicant.serveFile');
         Route::patch('/remark', 'postRemark')->name('seafarer.remark');

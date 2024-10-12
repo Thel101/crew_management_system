@@ -1,7 +1,7 @@
 <script setup>
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm, Link, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 import PersonalDetail from '../PersonalDetail.vue';
@@ -19,6 +19,7 @@ import MedicalDocumentsTable from '@/Components/MedicalDocumentsTable.vue';
 import BankAccountTable from '@/Components/BankAccountTable.vue';
 import html2pdf from 'html2pdf.js';
 
+const page = usePage();
 const props = defineProps({
     seafarer:
     {
@@ -191,6 +192,27 @@ const printPdf = () => {
     }
 
 }
+const fileBtn = ref(false)
+// const showFileBtn = () =>{
+//     fileBtn.value = true
+// }
+const profileForm = useForm({
+    seafarer_id : props.seafarer.id,
+    profile: ''
+});
+const changeProfile = (e) => {
+    profileForm.profile= e.target.files[0];
+};
+
+const uploadImage = ()=>{
+    profileForm.post(route('seafarer.changeProfile'), {
+        onSuccess: (page) => {
+            showModal.value = true;
+            modalTitle.value = "Profile Image Changed";
+            modalMessage.value = page.props.flash.message;
+        }
+    })
+}
 
 </script>
 
@@ -205,9 +227,8 @@ const printPdf = () => {
 
         <div id="printableSection" class="py-12 overflow-auto">
             <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 overscroll-contain">
-                <div v-if="$page.props.flash.message">
-                    {{ $page.props.flash.message }}
-                </div>
+                <input type="file" @change="changeProfile">
+                <PrimaryButton @click="uploadImage">Change Profile Image</PrimaryButton>
                 <div class="overflow-hidden">
                     <div class="flex flex-row justify-end">
                         <PrimaryButton @click="printPdf">Print this page</PrimaryButton>
@@ -216,8 +237,13 @@ const printPdf = () => {
 
                     <div class="flex flex-row">
                         <!-- storag//app/public/images/66dacae161fb0vietnam.jpg -->
-                        <img :src="`/storage/images/${props.seafarer.profile}`" class="w-48 h-48 rounded-md"
+                         <div>
+                            <img :src="`/storage/images/${props.seafarer.profile}`" class="w-48 h-48 rounded-md"
                             :alt="props.seafarer.profile" />
+                            <!-- <PrimaryButton class="w-full my-2 text-center" @click="showFileBtn">Change Profile Image</PrimaryButton>
+                             <input type="file" v-show="fileBtn" class="w"  accept=".jpg,.jpeg,.png,.webp" name="" id=""> -->
+                         </div>
+
 
                         <PersonalDetail class="w-3/4" :fullname="props.seafarer.fullname"
                             :expected_salary="props.seafarer.expected_salary"

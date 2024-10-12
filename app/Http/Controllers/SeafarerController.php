@@ -9,6 +9,7 @@ use App\Models\Roles;
 use App\Models\Seafarer;
 use Illuminate\Http\Request;
 use App\Models\MedicalDocuments;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -107,14 +108,12 @@ class SeafarerController extends Controller
             $jobsQuery->whereHas('role', function ($query) use ($request) {
                 $query->where('id', $request->role_id);
             });
-
         }
         $jobs = $jobsQuery->get();
         $assigne = Seafarer::with('role')->find($request->query('user_id'));
-        if($jobs->isNotEmpty()){
+        if ($jobs->isNotEmpty()) {
             $assignedJobs = $jobs;
-        }
-        else{
+        } else {
             $assignedJobs = 'No vacancy for this role';
         }
         return Inertia::render('Admin/Applicant/ApplicantList', [
@@ -155,7 +154,7 @@ class SeafarerController extends Controller
         $role_id = $data['seafarer']->role_id;
         $vessel_id = $data['seafarer']->vessel_id;
         $basic_salary = Jobs::where('role_id', $role_id)
-        ->where('vessel_id', $vessel_id)->pluck('basic_salary')->first();
+            ->where('vessel_id', $vessel_id)->pluck('basic_salary')->first();
         return Inertia::render('Admin/Seafarer/SeafarerDetail', [
             'seafarer' => $data['seafarer'],
             'passport' => $data['passport'],
@@ -319,7 +318,7 @@ class SeafarerController extends Controller
     {
         return [
             'role_id' => 'required',
-            'profile' => ($seafarer ? 'nullable' : 'required') . '|sometimes|mimes:jpg,jpeg,webp,png',
+            'profile' => 'required|mimes:jpg,jpeg,webp,png',
             'fullname' => 'required|string|max:30',
             'seaman_book' => 'required|string|max:10',
             'seaman_book_place' => 'required|string|max:30',
@@ -337,6 +336,7 @@ class SeafarerController extends Controller
             'next_of_kin_mobile' => 'required|starts_with:09',
         ];
     }
+
     /**
      *
      * Update the specified resource in storage.
@@ -344,19 +344,43 @@ class SeafarerController extends Controller
 
     public function update(Request $request, Seafarer $seafarer)
     {
-        $updateSeafarer = Seafarer::find($seafarer->id);
-        if ($updateSeafarer) {
-            $validated = $request->validate($this->validateSeafarer($seafarer));
-            if ($request->hasFile('profile')) {
-                $file = uniqid() . $request->file('profile')->getClientOriginalName();
-                $request->file('profile')->storeAs('public/images', $file);
-                $validated['profile'] = $file;
-            } else {
-                $validated['profile'] = $seafarer->profile;
-            }
-            $seafarer->update($validated);
-            return redirect(route('seafarer.detail', $seafarer->id))->with(['message' => 'Seafarer profile updated successfully!']);
-        }
+        $validated = $request->validate($this->updateValidateSeafarer());
+        $seafarer->update($validated);
+
+        return redirect()->back()->with(
+            [
+                'message' => 'Seafarer profile updated successfully',
+            ]
+        );
+    }
+    protected function updateValidateSeafarer()
+    {
+        return [
+            'role_id' => 'sometimes',
+            'fullname' => 'sometimes|string|max:30',
+            'seaman_book' => 'sometimes|string|max:10',
+            'seaman_book_place' => 'sometimes|string|max:30',
+            'nationality' => 'sometimes',
+            'religion' => 'sometimes',
+            'height' => 'sometimes|string|max:10',
+            'weight' => 'sometimes|integer',
+            'mobile_no' => 'sometimes|starts_with:09',
+            'next_of_kin' => 'sometimes|string|max:30',
+            'relationship' => 'sometimes|string|max:20',
+            'next_of_kin_mobile' => 'sometimes|starts_with:09',
+        ];
+    }
+    public function changeProfileImage(Request $request){
+        $seafarer = Seafarer::find($request->seafarer_id);
+        $request->validate([
+            'profile' => 'required|mimes:jpg,jpeg,webp,png'
+        ]);
+        $file = uniqid() . $request->file('profile')->getClientOriginalName();
+        $request->file('profile')->storeAs('public/images', $file);
+        $seafarer->update([
+            'profile' => $file
+        ]);
+        return redirect()->back()->with(['message' => 'Profile image updated successfully']);
     }
 
     /**
