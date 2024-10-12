@@ -33,7 +33,7 @@ use App\Http\Controllers\MedicalDocumentsController;
 Route::get('/', [UserController::class, 'welcome'])->name('user.welcome');
 Route::get('passport/{seafarer_id}', [PassportController::class, 'index'])->name('passport.index');
 Route::resource('passport', PassportController::class)->only('store');
-Route::resource('seafarers', SeafarerController::class)->only('store','update','show');
+Route::resource('seafarers', SeafarerController::class)->only('store', 'update', 'show');
 Route::resource('certificates', CertificatesController::class)->only('index', 'store');
 Route::resource('experiences', ExperiencesController::class)->only('index', 'store');
 
@@ -49,29 +49,30 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/pdf/applicant/{id}', 'viewpdf')->name('applicant.pdf');
         Route::get('/seafarers', 'seafarer_list')->name('seafarer.list');
         Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
-        Route::get('/seafarer/edit/{id}','show')->name('seafarer.editPage');
+        Route::get('/seafarer/edit/{id}', 'show')->name('seafarer.editPage');
         Route::get('/form/seafarer', 'seafarerForm')->name('seafarer.form');
         Route::post('/seafarer/change/profileImage', 'changeProfileImage')->name('seafarer.changeProfile');
         Route::get('/send/email/{id}', 'send_email')->name('assign.email');
         Route::get('/applicant/{filename}', 'serveFile')->name('applicant.serveFile');
         Route::patch('/remark', 'postRemark')->name('seafarer.remark');
     });
-    Route::controller(PayrollController::class)->group(function(){
-        Route::post('/payroll','calculate')->name('payroll.calculate');
-        Route::get('/status/{id}','changeStatus')->name('payroll.pay');
+    Route::controller(PayrollController::class)->group(function () {
+        Route::post('/payroll', 'calculate')->name('payroll.calculate');
+        Route::get('/status/{id}', 'changeStatus')->name('payroll.pay');
     });
 
-    Route::patch('/certificate/status',[CertificatesController::class,'changeStatus'])->name('certificate.status');
+    Route::patch('/certificate/status', [CertificatesController::class, 'changeStatus'])->name('certificate.status');
     Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index', 'store', 'update');
     Route::resource('bankAccounts', BankAccountsController::class)->only('index', 'store', 'update');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
-    Route::get('/vessel/{vessel}/{option?}',[VesselsController::class,'show'])->name('vessel.show');
+    Route::post('/vessel/image', [VesselsController::class, 'changeVesselImage'])->name('vessel.updateImage');
+    Route::get('/vessel/{vessel}/{option?}', [VesselsController::class, 'show'])->name('vessel.show');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'show', 'edit', 'update');
     Route::resource('jobs', JobsController::class)->only('index', 'store', 'update', 'edit');
     Route::get('/assign/seafarers/{role_id}', [JobsController::class, 'assignSeafarers'])->name('assign.seafarers');
     Route::resource('leave', LeaveController::class)->only('index');
-    Route::get('/email', function(){
-       return Inertia::render('Admin/Applicant/SendEmail');
+    Route::get('/email', function () {
+        return Inertia::render('Admin/Applicant/SendEmail');
     })->name('send.email');
     Route::post('/send/email', [EmailController::class, 'sendEmail'])->name('send.cv');
 });
@@ -83,7 +84,6 @@ Route::middleware(['auth', 'user'])->group(function () {
         Route::get('/profile/{id}', 'profile')->name('seafarer.profile');
     });
     Route::resource('leave', LeaveController::class)->only('store');
-
 });
 Route::resource('leave', LeaveController::class)->only('update');
 Route::middleware('auth')->group(function () {

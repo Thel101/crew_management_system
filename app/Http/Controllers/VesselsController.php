@@ -29,13 +29,6 @@ class VesselsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -49,7 +42,11 @@ class VesselsController extends Controller
             $validated['image'] = $file;
         }
         vessels::create($validated);
-        return redirect(route('vessels.index'));
+        return redirect()->back()->with(
+            [
+                'message' => 'New Vessel successfully',
+            ]
+        );
     }
 
     /**
@@ -81,13 +78,6 @@ class VesselsController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Vessels $vessels)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -97,7 +87,7 @@ class VesselsController extends Controller
 
         $vessel = Vessels::find($vessel->id);
         if ($vessel) {
-            dd($request);
+
             $validated = $request->validate($this->validateVessel($vessel->id, true));
             if ($request->file('image')) {
                 $file = uniqid() . $request->file('image')->getClientOriginalName();
@@ -105,10 +95,26 @@ class VesselsController extends Controller
                 $validated['image'] = $file;
             }
 
-            $vessel->fill($validated);
-            $vessel->save();
-            return redirect()->back();
+            $vessel->update($validated);
+            return redirect()->back()->with(
+                [
+                    'message' => 'Vessel information updated successfully',
+                ]
+            );
         }
+    }
+    public function changeVesselImage(Request $request)
+    {
+        $seafarer = Vessels::find($request->vessel_id);
+        $request->validate([
+            'image' => 'required|mimes:jpg,jpeg,webp,png'
+        ]);
+        $file = uniqid() . $request->file('image')->getClientOriginalName();
+        $request->file('image')->storeAs('public/images', $file);
+        $seafarer->update([
+            'image' => $file
+        ]);
+        return redirect()->back()->with(['message' => 'Vessel image updated successfully']);
     }
 
     /**

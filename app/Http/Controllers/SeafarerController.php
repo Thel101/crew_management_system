@@ -370,7 +370,8 @@ class SeafarerController extends Controller
             'next_of_kin_mobile' => 'sometimes|starts_with:09',
         ];
     }
-    public function changeProfileImage(Request $request){
+    public function changeProfileImage(Request $request)
+    {
         $seafarer = Seafarer::find($request->seafarer_id);
         $request->validate([
             'profile' => 'required|mimes:jpg,jpeg,webp,png'

@@ -66,13 +66,16 @@ const printPdf = () => {
         <div class="py-12" id="printableSection">
             <h2 v-show="!printHide" class="font-semibold text-xl text-gray-800 leading-tight text-center">Seafarers on
                 {{
-                vessel.name }}</h2>
+                    vessel.name }}</h2>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight"></h2>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
 
                 <div class="overflow-x-auto">
-                    <div class="flex flex-row justify-around my-5">
+                    <div class="text-center text-red-600 text-lg" v-show="seafarers.data.length < 1">
+                        There is no active seafarers on this vessel!!
+                    </div>
+                    <div class="flex flex-row justify-around my-5" v-show="seafarers.data.length > 0">
                         <h1 class="text-xl text-left lg:ms-14 md:ms-20"> Crew List </h1>
                         <div>
                             <a v-show="pagination == true && printHide"
@@ -82,7 +85,8 @@ const printPdf = () => {
                             <a v-show="pagination == false && printHide" :href="route('vessel.show', [props.vessel])">
                                 <PrimaryButton>View Less</PrimaryButton>
                             </a>
-                            <PrimaryButton v-show="pagination == false && printHide" class="ms-2" @click="printPdf">Print
+                            <PrimaryButton v-show="pagination == false && printHide" class="ms-2" @click="printPdf">
+                                Print
                                 List
                             </PrimaryButton>
                         </div>
@@ -113,7 +117,7 @@ const printPdf = () => {
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.role.name }} </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ seafarer.seaman_book }} </td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ new
-                                    Date(seafarer.sign_on).toLocaleDateString()}} </td>
+                                    Date(seafarer.sign_on).toLocaleDateString() }} </td>
 
 
                                 <td class="whitespace-nowrap px-4 py-2">
@@ -167,7 +171,7 @@ const printPdf = () => {
 
                     </tbody>
                 </table>
-                <div v-if="pagination == true" class="flex justify-end">
+                <div v-if="pagination == true && seafarers.length > 0" class="flex justify-end">
 
                     <ul class="flex">
                         <li class="mr-2" v-for="link in seafarers.links" :key="link.label">

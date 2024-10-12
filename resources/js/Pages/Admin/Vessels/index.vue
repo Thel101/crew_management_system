@@ -63,8 +63,7 @@ watch(vesselUrl, newUrl => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
-                    <vesselForm></vesselForm>
-
+                    <vesselForm :edit="false"></vesselForm>
                 </div>
                 <div v-show="vessels.data.length <= 0">
                     <h1 class="text-center text-red-500 font-bold text-2xl">There is no registered vessels!</h1>
@@ -100,22 +99,24 @@ watch(vesselUrl, newUrl => {
                             <!--Type Filter-->
                             <div class="me-2">
                                 <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
-                                <template #trigger>
-                                    <div class="flex flex-row bg-white border-gray-300 border-2 rounded-md py-2 px-2">
-                                        Vessel Type <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                        </svg>
-                                    </div>
-                                </template>
-                                <template #content>
-                                    <button @click="changeFilter('')">All</button>
-                                    <div v-for="(type, index) in types" :key="index">
-                                        <button @click="changeFilter(type)">{{ type }}</button>
-                                    </div>
-                                </template>
-                            </Dropdown>
+                                    <template #trigger>
+                                        <div
+                                            class="flex flex-row bg-white border-gray-300 border-2 rounded-md py-2 px-2">
+                                            Vessel Type <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </div>
+                                    </template>
+                                    <template #content>
+                                        <button @click="changeFilter('')">All</button>
+                                        <div v-for="(type, index) in types" :key="index">
+                                            <button @click="changeFilter(type)">{{ type }}</button>
+                                        </div>
+                                    </template>
+                                </Dropdown>
                             </div>
 
 

@@ -3,9 +3,11 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
+import { Inertia } from '@inertiajs/inertia';
+const page = usePage();
 const props = defineProps([
     'name',
     'flag',
@@ -19,7 +21,9 @@ const props = defineProps([
     'trade',
     'edit',
     'vessel',
-    'image'
+    'image',
+    'edit',
+    'vessel'
 
 ])
 
@@ -34,7 +38,7 @@ const form = useForm({
     Engine: props.Engine,
     BHP: props.BHP,
     Trade: props.trade,
-    image: ''
+    image: props.image
 
 });
 const showModal = ref(false);
@@ -43,37 +47,102 @@ const closeModal = () => {
 }
 const src = ref('');
 
+const change = (e) => {
+    const file = e.target.files[0];
+    form.image = file;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        src.value = event.target.result;
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+};
+const showImageChange = ref(false);
 
 const modalMessage = ref('');
 const modalTitle = ref('');
+
 const submit = () => {
     if (props.edit == true) {
-        console.log(form)
         form.patch(route('vessels.update', props.vessel),
             {
-                onSuccess: () => {
+                onSuccess: (page) => {
                     showModal.value = true
                     modalTitle.value = 'Vessel Edit Successful'
-                    modalMessage.value = 'Vessel information has been updated successfully!'
+                    modalMessage.value = page.props.flash.message
+                    Inertia.visit(route('vessel.show', [props.vessel]));
+
                 }
             })
     }
     else {
         form.post(route('vessels.store'), {
-            onSuccess: () => form.reset()
+            onSuccess: (page) => {
+                src.value = ''
+                form.reset()
+                showModal.value = true
+                modalTitle.value = 'Vessel Creation Successful'
+                modalMessage.value = page.props.flash.message
+            }
         });
     }
 
 };
+const vesselImageForm = useForm({
+    vessel_id: props.vessel.id,
+    image: null
+});
+const update = (e) => {
+    const file = e.target.files[0];
+    vesselImageForm.image = file;
+};
+
+const updateImage = () => {
+    vesselImageForm.post(route('vessel.updateImage'), {
+        onSuccess: (page) => {
+            showModal.value = true
+            modalTitle.value = 'Image Update Successful'
+            modalMessage.value = page.props.flash.message
+            Inertia.reload()
+            showImageChange.value = false
+        }
+    });
+}
 </script>
+
 <template>
     <div class="max-w-2xl mx-auto bg-slate-200 rounded-md p-3 mb-5">
-        <h1 v-if="props.edit =true" class="text-center text-xl font-semibold mb-5 mt-3">Vessel Information</h1>
+        <h1 v-if="props.edit = true" class="text-center text-xl font-semibold mb-5 mt-3">Vessel Information</h1>
         <h1 v-else class="text-center text-xl font-semibold mb-5 mt-3">Create New Vessel</h1>
+        <PrimaryButton @click="showImageChange = !showImageChange" class="my-2">Change Image</PrimaryButton>
+        <div class="flex flex-row" v-show="showImageChange">
+            <button @click="updateImage" class="my-2 mr-2 rounded-md bg-black text-white px-2"><svg
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                </svg>
+            </button>
+            <input class="my-2" accept=".jpg,.jpeg,.png,.webp" @change="update" type="file">
+
+        </div>
+
         <form @submit.prevent="submit">
-            <img v-if="props.vessel.image != null" :src="`/storage/images/${props.vessel.image}`"
-                    class="w-36 h-36 rounded-md" :alt="props.vessel.image" />
-                <img v-else src="/images/logo1.jpeg" class="w-36 h-36 rounded-md" alt="vessel-image" />
+            <div>
+
+                <img v-if="props.image" :src="`/storage/images/${props.image}`" class="w-36 h-36 rounded-md"
+                    :alt="form.image" />
+                <img class="w-36 h-36 rounded-md" v-show="src" :src="src" :alt="src">
+                <input v-show="props.edit == false" accept=".jpg,.jpeg,.png,.webp" type="file" @change="change">
+
+
+
+            </div>
+
+
             <div class="flex flex-row justify-between">
                 <div class="mr-5">
                     <InputLabel for="name" value="Vessel Name" />
