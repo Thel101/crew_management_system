@@ -17,7 +17,7 @@ class LeaveController extends Controller
     {
         $leaves = Leave::with('seafarer.vessel')->paginate();
 
-        return Inertia::render('Admin/Leaves/index',[
+        return Inertia::render('Admin/Leaves/index', [
             'leaves' => $leaves
 
         ]);
@@ -46,7 +46,7 @@ class LeaveController extends Controller
         $end = Carbon::parse($validated['leave_end']);
         $validated['count'] = $start->diffInDays($end);
         $leave = Leave::create($validated);
-        return redirect(route('seafarer.profile',$leave->seafarer_id ));
+        return redirect(route('seafarer.profile', $leave->seafarer_id));
     }
 
     /**
@@ -71,9 +71,13 @@ class LeaveController extends Controller
     public function update(Request $request, $id)
     {
         $leave = Leave::find($id);
-        $leave->status ='approved';
+        $leave->status = 'approved';
         $leave->save();
-        return redirect(route('leave.index'));
+        return redirect()->back()->with(
+            [
+                'message' => 'Leave has been approved'
+            ]
+        );
     }
 
     /**

@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link,usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import BottomNavigationBar from '@/Components/BottomNavigationBar.vue'
 import Register from '@/Pages/Auth/Register.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -80,11 +80,13 @@ console.log($page.props.auth.user);
                             <path :class="{
                                 hidden: showingNavigationDropdown,
                                 'inline-flex': !showingNavigationDropdown,
-                            }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
                             <path :class="{
                                 hidden: !showingNavigationDropdown,
                                 'inline-flex': showingNavigationDropdown,
-                            }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </span>
@@ -149,7 +151,7 @@ console.log($page.props.auth.user);
             </h1>
             <div class="grid grid-cols-2 gap-x-4 md:grid-cols-5 md:gap-x-12 justify-items-stretch md:mx-32">
                 <div class="hover:cursor-pointer px-5 py-8 rounded-lg" v-for="vessel in vessels" :key="vessel.id">
-                    <img src="/images/logo1.jpeg" class="border-2 rounded-md">
+                    <img :src="`/storage/images/${vessel.image}`" class="w-36 h-36 border-2 rounded-md">
                     <div class="text-lg text-center">{{ vessel.name }}</div>
                     <div class="text-lg text-center">{{ vessel.flag }}</div>
                     <div class="text-lg text-center">{{ vessel.type }}</div>
@@ -177,7 +179,8 @@ console.log($page.props.auth.user);
 
             </div>
             <div class="flex flex-row justify-center">
-                <button class="bg-blue-300 w-full md:w-auto px-5 py-3 rounded-full text-lg mb-3" @click="scrollToSection('home')">Apply
+                <button class="bg-blue-300 w-full md:w-auto px-5 py-3 rounded-full text-lg mb-3"
+                    @click="scrollToSection('home')">Apply
                     Now</button>
             </div>
 

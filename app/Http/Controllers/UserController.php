@@ -21,39 +21,37 @@ class UserController extends Controller
 
     public function welcome()
     {
-        if(auth()->check() && auth()->user()->role == 'admin'){
+        if (auth()->check() && auth()->user()->role == 'admin') {
             return redirect(route('dashboard'));
         }
         $jobs = Jobs::latest()->take(3)->get();
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'vessels' => Vessels::latest()->take(6)->get(),
+            'vessels' => Vessels::latest()->take(5)->get(),
             'jobs' => $jobs->load(['role']),
             'seafarer_count' => Seafarer::count()
         ]);
     }
     public function index()
     {
-        if(auth()->user()->role == 'admin'){
+        if (auth()->user()->role == 'admin') {
             $users = User::whereIn('role', ['admin', 'staff'])->paginate(5);
             return Inertia::render('Admin/User/UserList', [
                 'users' => $users
             ]);
-        }
-        else{
+        } else {
             session()->flash('message', 'Registration successful');
-            return Inertia::render('User/Profile',[
+            return Inertia::render('User/Profile', [
                 'message' => session('message')
             ]);
-
         }
-
     }
     /**
      * user creation
      */
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required|unique:users,email,except,id',
@@ -62,37 +60,29 @@ class UserController extends Controller
         $validated['password'] = Hash::make('password');
         $validated['role'] = 'staff';
         $user = User::create($validated);
-        if($user->role=='admin' || $user->role =='staff'){
-            return redirect(route('users.index'))->with(['message'=>'New User has been created!']);
-        }
-        else
-        {
-            $seafarer= Seafarer::where('user_id', $user->id);
-            return redirect(route('seafarer.profile', $seafarer->id))->with(['message'=>'Application Successful']);
+        if ($user->role == 'admin' || $user->role == 'staff') {
+            return redirect(route('users.index'))->with(['message' => 'New User has been created!']);
+        } else {
+            $seafarer = Seafarer::where('user_id', $user->id);
+            return redirect(route('seafarer.profile', $seafarer->id))->with(['message' => 'Application Successful']);
         }
     }
     /**
      * Assign as admin
      */
-    public function update(User $user){
+    public function update(User $user)
+    {
         $user = User::find($user->id);
-        if($user->role == 'staff'){
+        if ($user->role == 'staff') {
             $user->update([
                 'role' => 'admin'
             ]);
-            return redirect(route('users.index'))->with('message','User Role has been changed to!');
-
-        }
-
-        else{
+            return redirect(route('users.index'))->with('message', 'User Role has been changed to!');
+        } else {
             $user->update([
                 'role' => 'staff'
             ]);
             return redirect(route('users.index'))->with('message', 'User Role has been changed to!');
-
         }
-
     }
-
-
 }

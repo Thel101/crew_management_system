@@ -62,8 +62,7 @@ const change = (e) => {
 };
 const showImageChange = ref(false);
 
-const modalMessage = ref('');
-const modalTitle = ref('');
+
 
 const submit = () => {
     if (props.edit == true) {
@@ -92,7 +91,7 @@ const submit = () => {
 
 };
 const vesselImageForm = useForm({
-    vessel_id: props.vessel.id,
+    vessel_id: props.edit == true ? props.vessel.id || null : null,
     image: null
 });
 const update = (e) => {
@@ -114,7 +113,7 @@ const updateImage = () => {
 </script>
 
 <template>
-    <div class="max-w-2xl mx-auto bg-slate-200 rounded-md p-3 mb-5">
+    <div class="max-w-2xl mx-auto bg-white shadow-md rounded-md border-gray-400 mt-4 p-3">
         <h1 v-if="props.edit = true" class="text-center text-xl font-semibold mb-5 mt-3">Vessel Information</h1>
         <h1 v-else class="text-center text-xl font-semibold mb-5 mt-3">Create New Vessel</h1>
         <PrimaryButton @click="showImageChange = !showImageChange" class="my-2">Change Image</PrimaryButton>

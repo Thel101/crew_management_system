@@ -255,8 +255,7 @@ const uploadImage = () => {
                         <div>
                             <img :src="`/storage/images/${props.seafarer.profile}`" class="w-48 h-48 rounded-md"
                                 :alt="props.seafarer.profile" />
-                            <!-- <PrimaryButton class="w-full my-2 text-center" @click="showFileBtn">Change Profile Image</PrimaryButton>
-                             <input type="file" v-show="fileBtn" class="w"  accept=".jpg,.jpeg,.png,.webp" name="" id=""> -->
+
                         </div>
 
 
