@@ -65,8 +65,6 @@ const showImageChange = ref(false);
 const modalTitle = ref('');
 const modalMessage = ref('');
 
-
-
 const submit = () => {
     if (props.edit == true) {
         form.patch(route('vessels.update', props.vessel),
@@ -117,9 +115,10 @@ const updateImage = () => {
 
 <template>
     <div class="max-w-2xl mx-auto bg-white shadow-md rounded-md border-gray-400 mt-4 p-3">
-        <h1 v-if="props.edit = true" class="text-center text-xl font-semibold mb-5 mt-3">Vessel Information</h1>
+        <h1 v-if="props.edit == true" class="text-center text-xl font-semibold mb-5 mt-3">Vessel Information</h1>
         <h1 v-else class="text-center text-xl font-semibold mb-5 mt-3">Create New Vessel</h1>
-        <PrimaryButton @click="showImageChange = !showImageChange" class="my-2">Change Image</PrimaryButton>
+        <PrimaryButton v-if="props.edit == true" @click="showImageChange = !showImageChange" class="my-2">Change Image
+        </PrimaryButton>
         <div class="flex flex-row" v-show="showImageChange">
             <button @click="updateImage" class="my-2 mr-2 rounded-md bg-black text-white px-2"><svg
                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
