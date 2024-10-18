@@ -43,14 +43,10 @@ watch(seafarerUrl, newUrl => {
             <div class="overflow-hidden shadow-sm sm:rounded-lg">
 
                 <div class="overflow-x-auto max-w-5xl mx-auto">
-                    <div v-show="seafarers.data.length < 0" class="text-center text-red-400 font-bold text-2xl">There
+                    <div v-show="seafarers.data.length < 1" class="text-center text-red-400 font-bold text-2xl">There
                         is no
-                        applicants!</div>
-                    <div class="flex flex-row bg-green-200">
-                        <Link :href="route('seafarer.form')" class="justify-end">
-                        <PrimaryButton>On-board seafarer</PrimaryButton>
-                        </Link>
-                    </div>
+                        seafarers!</div>
+
 
                     <div class="flex justify-end me-9" v-show="seafarers.data.length > 0">
                         <input type="text" v-model="search" placeholder="Search..." class=" border-slate-400 mb-4">

@@ -4,12 +4,13 @@ import PersonalDetails from '../Admin/PersonalDetail.vue';
 import TextInput from '@/Components/TextInput.vue'
 import InputLabel from '@/Components/InputLabel.vue'
 import PrimaryButton from '@/Components/PrimaryButton.vue'
-import { useForm, Link } from '@inertiajs/vue3'
+import { useForm, Link, usePage } from '@inertiajs/vue3'
 import CertificateTable from '@/Components/CertificateTable.vue';
 import ExperienceTable from '@/Components/ExperienceTable.vue';
 import LeaveList from '@/Components/LeaveList.vue';
 import PayrollTable from '../Admin/Payroll/PayrollTable.vue';
 import { watch, ref } from 'vue';
+const page = usePage();
 const props = defineProps({
     message: {
         type: Object
@@ -39,7 +40,7 @@ const props = defineProps({
 })
 const today = new Date().toISOString().split('T')[0];
 
-// if (props.applicant) {
+
 const form = useForm({
     seafarer_id: props.applicant.id,
     leave_start: '',
@@ -64,7 +65,7 @@ const submitLeave = () => {
         }
     })
 }
-// }
+
 
 const showLeaveForm = ref(false);
 const toggleLeaveForm = () => {
@@ -77,16 +78,19 @@ const toggleLeaveForm = () => {
         <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
     </div>
     <div v-if="props.message">
-        <h1 class="text-center text-green-500 text-xl mt-5">{{ props.message }} !!</h1>
+        <h1 class="text-center text-green-500 text-xl mt-5">{{ props.message }}</h1>
         <div class="flex justify-center">
             <a :href="route('cvforms.index')">
                 <PrimaryButton class="w-64 justify-center">
                     Apply Now
                 </PrimaryButton>
             </a>
+            <Link method="post" :href="route('logout')"
+                class="bg-yellow-300 px-2 py-1 rounded-lg hidden md:inline ms-2 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
+            Log out</Link>
         </div>
     </div>
-    <div class="text-center my-2">
+    <div v-else class="text-center my-2">
         <Link class="text-center hover:underline text-blue-600" :href="route('user.welcome')">Back to Home Page</Link>
     </div>
     <div class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2" v-if="props.applicant && props.passport">
@@ -113,7 +117,8 @@ const toggleLeaveForm = () => {
         </div>
         <div>
             <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
-            <div class="text-red-400 mx-2 font-semibold" v-show="props.payrolls.length == 0">No payroll calculated yet!</div>
+            <div class="text-red-400 mx-2 font-semibold" v-show="props.payrolls.length == 0">No payroll calculated yet!
+            </div>
         </div>
         <div>
             <LeaveList v-show="props.leaves.length > 0" :leaves="props.leaves"></LeaveList>

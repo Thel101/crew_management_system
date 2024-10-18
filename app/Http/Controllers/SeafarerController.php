@@ -185,7 +185,7 @@ class SeafarerController extends Controller
         ]);
     }
     /**
-     * Display profile on user page
+     * Display ewsaqswedrftjhgff on user page
      */
     public function profile($id)
     {
@@ -261,7 +261,6 @@ class SeafarerController extends Controller
             ->where('vessel_id', $request->vessel_id)
             ->first();
 
-
         if ($job && $seafarer && $seafarer->status == 'new') {
 
             // Update the seafarer's status and job_id if conditions are met
@@ -270,7 +269,7 @@ class SeafarerController extends Controller
                 'status' => 'on_boarding'
             ]);
 
-            return redirect(route('applicants.list'));
+            return redirect()->back()->with(['message' => 'Seafarer assigned to vessel successfully']);
         }
     }
     /**
@@ -320,7 +319,7 @@ class SeafarerController extends Controller
             'role_id' => 'required',
             'profile' => 'required|mimes:jpg,jpeg,webp,png',
             'fullname' => 'required|string|max:30',
-            'seaman_book' => 'required|string|max:10',
+            'seaman_book' => 'required|string|max:10|unique:seafarers,seaman_book,' . ($seafarer ? $seafarer->id : 'NULL'),
             'seaman_book_place' => 'required|string|max:30',
             'issue_date' => 'required',
             'nationality' => 'required',
@@ -345,6 +344,13 @@ class SeafarerController extends Controller
     public function update(Request $request, Seafarer $seafarer)
     {
         $validated = $request->validate($this->updateValidateSeafarer());
+
+        if ($request->file('profile')) {
+            $file = uniqid() . $request->file('profile')->getClientOriginalName();
+            $request->file('profile')->storeAs('public/images', $file);
+            $validated['profile'] = $file;
+        }
+
         $seafarer->update($validated);
 
         return redirect()->back()->with(

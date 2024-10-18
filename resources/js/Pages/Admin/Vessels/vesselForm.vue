@@ -7,6 +7,7 @@ import { useForm, usePage } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Inertia } from '@inertiajs/inertia';
+
 const page = usePage();
 const props = defineProps([
     'name',
@@ -61,6 +62,8 @@ const change = (e) => {
     }
 };
 const showImageChange = ref(false);
+const modalTitle = ref('');
+const modalMessage = ref('');
 
 
 

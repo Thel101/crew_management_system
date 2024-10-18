@@ -3,10 +3,19 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
+import { Inertia } from '@inertiajs/inertia';
+import { ref } from 'vue';
 
+const page = usePage();
 const props = defineProps({
-    role: ''
+    message: {
+        type: String
+    },
+    user: {
+        type: Object
+    }
 })
 const form = useForm({
     name: '',
@@ -14,15 +23,24 @@ const form = useForm({
     password: '',
     password_confirmation: '',
 });
+const showModal = ref(false);
+const closeModal = () => {
+    showModal.value = false;
+    const user_id = page.props.auth.user.id;
+    Inertia.get(route('seafarer.profile', { id: user_id }));
+}
 
+const modalMessage = ref('');
+const modalTitle = ref('');
 const submit = () => {
     form.post(route('register'), {
-        onFinish: () => {
-            form.name = '',
-            form.email = '',
-            form.password = '',
-            form.password_confirmation = ''
-        },
+        onSuccess: (page) => {
+
+            form.reset();
+            showModal.value = true;
+            modalTitle.value = 'Registration Successful';
+            modalMessage.value = page.props.flash.message;
+        }
     });
 };
 </script>
@@ -80,6 +98,16 @@ const submit = () => {
             </div>
         </form>
     </div>
+    <Modal :show="showModal" :closeable="true" @close="closeModal">
+        <div class="p-4 bg-green-200">
+            <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
+            <p>{{ modalMessage }}</p>
+            <div class="flex flex-row justify-end">
+                <button @click="closeModal"
+                    class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+            </div>
+        </div>
+    </Modal>
 
 
 </template>

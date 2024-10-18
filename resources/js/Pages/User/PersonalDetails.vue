@@ -8,7 +8,7 @@ import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
-    roles:{
+    roles: {
         type: Array
     },
     Religions: {
@@ -103,7 +103,7 @@ const maxDate = eighteenYearsAgo.toISOString().split('T')[0];
 
 const submit = () => {
     form.post(route('seafarers.store'), {
-        onFinish: () => {
+        onSuccess: () => {
             form.reset()
         }
     });
@@ -260,7 +260,8 @@ const submit = () => {
                     </div>
                     <div class="w-1/3">
                         <InputLabel for="book_issue_date">Book Issue Date</InputLabel>
-                        <TextInput id="book_issue_date" type="date" class="mt-1 block w-full" v-model="form.issue_date" />
+                        <TextInput id="book_issue_date" type="date" class="mt-1 block w-full"
+                            v-model="form.issue_date" />
 
                         <InputError class="mt-2" :message="form.errors.issue_date" />
                     </div>

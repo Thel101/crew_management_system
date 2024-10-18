@@ -33,7 +33,7 @@ const seaman_book = ref('');
 const seafarer_role = ref('');
 const assignRoleId = ref('')
 const search = ref(''), pageNumber = ref(0)
-const AssignSeafarer = (id,role_name, roleId) => {
+const AssignSeafarer = (id, role_name, roleId) => {
     showAssignForm.value = true
     seafarer_role.value = role_name
     assignRoleId.value = roleId
@@ -46,17 +46,17 @@ watch([() => assignRoleId.value, () => form.user_id], ([newRoleId, newUserId]) =
 });
 
 
-if (Array.isArray(props.jobs)) {
-    if (props.assigne) {
-        seafarer_name.value = props.assigne.fullname
-        seaman_book.value = props.assigne.seaman_book
-        seafarer_role.value = props.assigne.role.name
-        form.user_id = props.assigne.id
-        form.role_id = props.assigne.role_id
-    }
 
-
+if (props.assigne) {
+    seafarer_name.value = props.assigne.fullname
+    seaman_book.value = props.assigne.seaman_book
+    seafarer_role.value = props.assigne.role.name
+    form.user_id = props.assigne.id
+    form.role_id = props.assigne.role_id
 }
+
+
+
 const selectedVessel = ref('');
 const selectVessel = (vessel_id, vessel_name) => {
     selectedVessel.value = vessel_name;
@@ -117,7 +117,7 @@ watch(applicantUrl, newUrl => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="overflow-hidden">
 
-                    <div v-show="applicants.data.length <= 0" class="text-center text-red-400 font-bold text-2xl">There
+                    <div v-show="applicants.data.length < 1" class="text-center text-red-400 font-bold text-2xl">There
                         is no
                         applicants!</div>
 
@@ -154,11 +154,10 @@ watch(applicantUrl, newUrl => {
                                             text-white hover:bg-indigo-700">
                                             View
                                         </a>
-                                        <Link preserve-state
-                                            @click="AssignSeafarer(applicant.id, applicant.role.name, applicant.role.id)"
-                                            href="#"
+                                        <!-- :href="route('assign.seafarer', applicant.id, applicant.role.id) -->
+                                        <Link :href="route('assign.seafarer', [applicant.id, applicant.role.id])"
                                             class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                                        Assign
+                                        Assign {{ applicant.role.id }}
                                         </Link>
                                     </div>
 
@@ -173,7 +172,8 @@ watch(applicantUrl, newUrl => {
 
                         </tbody>
                     </table>
-                    <div v-show="applicants.data.length > 0" class="flex justify-end lg:me-24" v-if="applicants.links.length > 0">
+                    <div v-show="applicants.data.length > 0" class="flex justify-end lg:me-24"
+                        v-if="applicants.links.length > 0">
                         <ul class="flex">
                             <li class="mr-2" v-for="link in applicants.links" :key="link.label">
                                 <a :href="link.url" v-html="link.label"></a>

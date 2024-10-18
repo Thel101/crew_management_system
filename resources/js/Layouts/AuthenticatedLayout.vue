@@ -104,7 +104,7 @@ const showingNavigationDropdown = ref(false);
                         <NavLink :href="route('applicants.list')" :active="route().current('applicants.list')">
                             Applicants
                             <span class="ms-2 bg-green-500 px-3 rounded-full m-5">{{ $page.props.applied.count
-                            }}</span>
+                                }}</span>
                         </NavLink>
 
 
@@ -142,6 +142,4 @@ const showingNavigationDropdown = ref(false);
         </div>
     </div>
 </template>
-<style scoped>
-
-</style>
+<style scoped></style>

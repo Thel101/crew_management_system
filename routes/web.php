@@ -69,7 +69,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/vessel/{vessel}/{option?}', [VesselsController::class, 'show'])->name('vessel.show');
     Route::resource('roles', RolesController::class)->only('index', 'store', 'show', 'edit', 'update');
     Route::resource('jobs', JobsController::class)->only('index', 'store', 'update', 'edit');
-    Route::get('/assign/seafarers/{role_id}', [JobsController::class, 'assignSeafarers'])->name('assign.seafarers');
+    Route::get('/assign/seafarers/{applicant_id}/{role_id}', [JobsController::class, 'assignSeafarer'])->name('assign.seafarer');
     Route::resource('leave', LeaveController::class)->only('index');
     Route::get('/email', function () {
         return Inertia::render('Admin/Applicant/SendEmail');

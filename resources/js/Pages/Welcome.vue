@@ -43,16 +43,16 @@ const observeSection = () => {
         });
     }, options);
 
-    home.value && observer.observe(home.value);
-    partners.value && observer.observe(partners.value);
-    vacancies.value && observer.observe(vacancies.value);
-    about.value && observer.observe(about.value);
+    home.value && observer.value.observe(home.value);
+    partners.value && observer.value.observe(partners.value);
+    vacancies.value && observer.value.observe(vacancies.value);
+    about.value && observer.value.observe(about.value);
 }
 onMounted(() => {
     observeSection()
 })
 onUnmounted(() => {
-    observer.disconnect();
+    observer.value.disconnect();
 });
 const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -61,8 +61,7 @@ const scrollToSection = (sectionId) => {
     }
 }
 const showingNavigationDropdown = ref(false)
-const $page = usePage();
-console.log($page.props.auth.user);
+
 </script>
 
 <template>
@@ -108,12 +107,13 @@ console.log($page.props.auth.user);
                 </li>
                 <div v-if="canLogin">
                     <button v-if="$page.props.auth.user">
-                        <Link :href="route('seafarer.profile', $page.props.auth.user.id)"
-                            class="hidden md:inline text-lg font-semibold text-white hover:text-yellow-400 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                        Profile</Link> |
-                        <Link method="post" :href="route('logout')"
-                            class="hidden md:inline ms-2 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-900 dark:hover:text-gray-600 focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                        Log out</Link>
+
+
+                        <button class="rounded-full bg-orange-200 px-10 py-3 hover:bg-white">
+                            <Link method="post" :href="route('logout')"
+                                class="font-semibold text-gray-600 dark:text-gray-900">
+                            Log out</Link>
+                        </button>
 
                     </button>
 
@@ -131,20 +131,31 @@ console.log($page.props.auth.user);
 
 
         </div>
-        <section id="home" ref="home"
-            class="md:flex flex-row min-h-screen bg-gradient-to-r from-sky-500 to-indigo-500 sm:items-center sm:justify-around">
-            <div class="md:ms-5 md:px-5 mx-2">
-                <div class="text-3xl text-white leading-10">Join us to engage</div>
-                <div class="text-3xl text-white leading-10">in best seafarership working experience</div>
-                <span class="text-slate-300 leading-10">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quaerat,
-                    veniam.</span>
+        <section id="home" ref="home">
+            <div
+                class="md:flex flex-row min-h-screen bg-gradient-to-r from-sky-500 to-indigo-500 sm:items-center sm:justify-around">
+                <div class="md:ms-5 md:px-5 mx-2">
+                    <div class="text-3xl text-white leading-10">Join us to engage</div>
+                    <div class="text-3xl text-white leading-10">in best seafarership working experience</div>
+                    <span class="text-slate-300 leading-10">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Quaerat,
+                        veniam.</span>
+                </div>
+                <div v-if="!$page.props.auth.user" class="bg-white rounded-md shadow-md sm:px-10 sm:py-4">
+                    <h1 class="text-xl font-semibold text-center">Register Now!</h1>
+                    <Register></Register>
+                </div>
+                <div v-else>
+                    <Link :href="route('seafarer.profile', $page.props.auth.user.id)"
+                        class="bg-white rounded-full p-6 hidden md:inline text-lg font-semibold text-black hover:text-#d1e62d dark:text-gray-900 dark:hover:text-gray-600">
+
+                    Go to Profile Dashboard Now!</Link>
+                </div>
+
             </div>
-            <div class="bg-white rounded-md shadow-md sm:px-10 sm:py-4">
-                <h1 class="text-xl font-semibold text-center">Register Now!</h1>
-                <Register></Register>
-            </div>
+
         </section>
+
         <section id="partners" class="md:mt-10 md:pt-10" style="height: 25%;" ref="partners">
             <h1 class="text-3xl text-center font-light mb-10 mt-14 bg-blue-300 md:bg-transparent">Our Top Life-long
                 Partners

@@ -63,13 +63,14 @@ class JobsController extends Controller
         Jobs::create($validated);
         return redirect(route('jobs.index'));
     }
-    public function assignSeafarers($role_id)
+    public function assignSeafarer($applicant_id, $role_id)
     {
-        $applicants = Seafarer::with('passport', 'certificates', 'job.role', 'job.vessel')
-            ->whereHas('job', function ($query) use ($role_id) {
-                $query->where('id', $role_id);
-            })
-            ->get();
+        $seafarer = Seafarer::where('id', $applicant_id)->with('role')->first();
+        $jobs = Jobs::where('role_id', $role_id)->with('vessel', 'role')->get();
+        return Inertia::render('Admin/Applicant/Assign', [
+            'seafarer' => $seafarer,
+            'jobs' => $jobs
+        ]);
     }
     /**
      * Display the specified resource.
