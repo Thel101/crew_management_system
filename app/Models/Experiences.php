@@ -20,7 +20,7 @@ class Experiences extends Model
         'sign_on_date',
         'sign_off_date',
     ];
-    public function user(): BelongsTo
+    public function seafarer(): BelongsTo
     {
         return $this->belongsTo(Seafarer::class);
     }

@@ -121,7 +121,7 @@ const submit = () => {
     )
 
 }
-const home = ()=>{
+const home = () => {
     showModal.value = false
     router.visit(route('user.home'))
 }
@@ -315,7 +315,7 @@ const home = ()=>{
             <div class="flex flex-row justify-center mt-3">
                 <PrimaryButton class=" bg-blue-500 rounded-full p-3" :class="{ 'opacity-25': passport.processing }"
                     :disabled="passport.processing">
-                    Upload Personal Details
+                    Attach Documents
                 </PrimaryButton>
             </div>
         </form>

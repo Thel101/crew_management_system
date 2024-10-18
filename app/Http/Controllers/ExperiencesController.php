@@ -42,9 +42,12 @@ class ExperiencesController extends Controller
 
         ]);
         foreach ($request->experiences as $experience) {
-            Experiences::create($experience);
+            $experience = Experiences::create($experience);
+            if ($experience->seafarer) { // Ensure the seafarer relationship exists
+                $user_id = $experience->seafarer->user_id; // Get the user_id
+            }
         }
-        return redirect(route('user.home'));
+        return redirect(route('seafarer.profile', $user_id));
     }
 
     /**

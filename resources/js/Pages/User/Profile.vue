@@ -78,8 +78,12 @@ const toggleLeaveForm = () => {
         <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
     </div>
 
-    <div v-if="props.applicant && props.passport" class="text-center my-2">
-        <Link class="text-center hover:underline text-blue-600" :href="route('user.welcome')">Back to Home Page</Link>
+    <div v-if="props.applicant && props.passport" class="my-2">
+        <div class="text-center">
+            <Link class="hover:underline text-blue-600" :href="route('user.welcome')">Back to Home
+            Page</Link>
+        </div>
+
         <div class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
             <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md border-slate-300 border-2" />
             <PersonalDetails :fullname="props.applicant.fullname" :expected_salary="props.applicant.expected_salary"
