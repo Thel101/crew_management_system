@@ -190,7 +190,9 @@ class SeafarerController extends Controller
     public function profile($id)
     {
         $seafarer = Seafarer::where('user_id', $id)->first();
-        if ($seafarer) {
+        if (!$seafarer) {
+            return Inertia::render('User/Profile')->with(['message' => 'You have not applied for any position yet!']);
+        } else {
             $data = $this->retrieveSeafarer($seafarer->id);
 
             return Inertia::render('User/Profile', [
@@ -202,8 +204,6 @@ class SeafarerController extends Controller
                 'leaves' => $data['leaves'],
                 'payrolls' => $data['payrolls']
             ]);
-        } else {
-            return Inertia::render('User/Profile')->with(['message' => 'You have not applied for any position yet!']);
         }
     }
     /**
