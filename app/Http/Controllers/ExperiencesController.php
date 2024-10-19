@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Experiences;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ExperiencesController extends Controller
 {
@@ -53,25 +54,31 @@ class ExperiencesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Experiences $experiences)
+    public function show(Experiences $experience)
     {
-        //
+        return Inertia::render('Admin/Seafarer/ExperienceForm', [
+            'experience' => $experience
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Experiences $experiences)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Experiences $experiences)
+    public function update(Request $request, Experiences $experience)
     {
-        //
+        $request->validate([
+            'ship_name' => 'required|string|max:30',
+            'flag' => 'required|string|max:30',
+            'ship_type' => 'required|string|max:30',
+            'rank' => 'required|string|max:30',
+            'GRT' => 'required|string|max:30',
+            'trade' => 'required|string|max:30',
+            'sign_on_date' => 'required',
+            'sign_off_date' => 'required',
+        ]);
+        $experience->update($request->all());
+        return redirect()->back()->with(['message' => 'Experience updated successfully']);
     }
 
     /**

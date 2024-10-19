@@ -31,18 +31,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return array_merge(parent::share($request),[
+        return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
             ],
-            'flash'=>[
-                'message'=> fn()=> $request->session()->get('message')
+            'flash' => [
+                'message' => fn() => $request->session()->get('message')
             ],
-            'applied' =>[
-                'count' => Seafarer::where('status','new')->count()
+            'applied' => [
+                'count' => Seafarer::where('status', 'new')->count()
             ],
-            'leave' =>[
-                'count' => Leave::where('status','pending')->count()
+            'on_boarding' => [
+                'count' => Seafarer::where('status', 'on_boarding')->count()
+            ],
+            'leave' => [
+                'count' => Leave::where('status', 'pending')->count()
             ]
         ]);
     }

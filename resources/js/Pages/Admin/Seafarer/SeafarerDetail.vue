@@ -63,9 +63,13 @@ const props = defineProps({
 const modalMessage = ref('');
 const modalTitle = ref('');
 
-const showForm = ref(false);
+const showMedicalDocumentsForm = ref(false);
 const toggleForm = () => {
-    showForm.value = !showForm.value
+    showMedicalDocumentsForm.value = !showMedicalDocumentsForm.value
+}
+const showMedicalDocuments = ref(false);
+const toggleMedicalDocuments = () => {
+    showMedicalDocuments.value = !showMedicalDocuments.value
 }
 const showCertificates = ref(false);
 const toggleCertificates = () => {
@@ -119,7 +123,8 @@ const form = useForm({
 const submitMedicalDocuments = () => {
     form.post(route('medicalDocuments.store'), {
         onSuccess: () => {
-            showForm.value = false;
+            form.reset();
+            showMedicalDocumentsForm.value = false;
             showModal.value = true;
             modalTitle.value = "Successful Medical Document Submission";
             modalMessage.value = "Medical Document has been uploaded!"
@@ -215,6 +220,11 @@ const uploadImage = () => {
         }
     })
 }
+const handleModal = (value) => {
+    showModal.value = value
+    modalTitle.value = 'Medical Document Submission'
+    modalMessage.value = 'New Document has been attached successfully!'
+}
 
 </script>
 
@@ -304,7 +314,7 @@ const uploadImage = () => {
                     </svg>
                 </div>
                 <div v-show="showCertificates">
-                    <CertificateTable :certificates="props.certificates"></CertificateTable>
+                    <CertificateTable :seafarer="true" :certificates="props.certificates"></CertificateTable>
                 </div>
                 <!--Certificates-->
                 <!--Experiences-->
@@ -316,11 +326,11 @@ const uploadImage = () => {
                     </svg>
                 </div>
                 <div v-show="showExperiences">
-                    <ExperienceTable :experiences="props.experiences"></ExperienceTable>
+                    <ExperienceTable :seafarer="true" :experiences="props.experiences"></ExperienceTable>
                 </div>
                 <!--Experiences-->
                 <!--Medical Documents-->
-                <div @click="toggleForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                <div @click="toggleMedicalDocuments" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
                     <h1>Medical Documents</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -328,9 +338,17 @@ const uploadImage = () => {
                     </svg>
 
                 </div>
-                <MedicalDocumentsTable v-show="props.medical_documents.length > 0" :documents="props.medical_documents">
-                </MedicalDocumentsTable>
-                <div v-show="showForm" class="bg-gray-200 mt-3 rounded-md shadow-sm p-3">
+                <div v-show="showMedicalDocuments">
+                    <MedicalDocumentsTable @showModal="handleModal" v-if="props.medical_documents.length > 0"
+                        :documents="props.medical_documents">
+                    </MedicalDocumentsTable>
+                    <div v-else>
+                        <p class="text-red">No medical documents uploaded</p>
+                    </div>
+                    <PrimaryButton class="my-3" @click="toggleForm">Toggle Form</PrimaryButton>
+                </div>
+
+                <div v-show="showMedicalDocumentsForm" class="bg-gray-200 mt-3 rounded-md shadow-sm p-3">
                     <form @submit.prevent="submitMedicalDocuments">
                         <div class="w-full">
                             <InputLabel>Clinic Name, Address</InputLabel>
@@ -370,7 +388,7 @@ const uploadImage = () => {
                             </div>
                         </div>
 
-                        <PrimaryButton>Upload Documents</PrimaryButton>
+                        <PrimaryButton class="my-3">Upload Documents</PrimaryButton>
                     </form>
                 </div>
                 <!--Bank Account-->
@@ -385,7 +403,7 @@ const uploadImage = () => {
                 </div>
                 <BankAccountTable v-show="props.bank_accounts.length > 0 && showBankSection"
                     :bank_accounts="props.bank_accounts"></BankAccountTable>
-                <div v-show="showBankForm" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
+                <div v-show="showBankSection" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
 
                     <form @submit.prevent="uploadBankAccount">
                         <div class="flex flex-row">
@@ -414,7 +432,7 @@ const uploadImage = () => {
                         </div>
 
 
-                        <PrimaryButton>Add Bank Account </PrimaryButton>
+                        <PrimaryButton class="my-2">Add Bank Account </PrimaryButton>
                     </form>
                 </div>
 

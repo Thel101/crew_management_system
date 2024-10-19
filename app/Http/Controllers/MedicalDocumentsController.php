@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MedicalDocuments;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Models\MedicalDocuments;
 
 class MedicalDocumentsController extends Controller
 {
@@ -15,13 +16,6 @@ class MedicalDocumentsController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -29,10 +23,10 @@ class MedicalDocumentsController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'seafarer_id'=> 'required',
-            'type'=> 'required',
-            'clinic'=> 'required|string|max:50',
-            'document_date'=> 'required',
+            'seafarer_id' => 'required',
+            'type' => 'required',
+            'clinic' => 'required|string|max:50',
+            'document_date' => 'required',
             'file' => 'required||mimes:pdf',
         ]);
         if ($request->file('file')) {
@@ -40,31 +34,25 @@ class MedicalDocumentsController extends Controller
             $request->file('file')->storeAs('public/documents', $file);
             $validated['file'] = $file;
         }
-        if(auth()->user()->role == 'admin'){
+        if (auth()->user()->role == 'admin') {
             $validated['status'] = 1;
-        }
-        else{
+        } else {
             $validated['status'] = 0;
         }
         $document = MedicalDocuments::create($validated);
-        return redirect()->route('seafarer.detail', $document->seafarer_id)->with('message','Document Uploaded successfully!');
+        return redirect()->route('seafarer.detail', $document->seafarer_id)->with('message', 'Document Uploaded successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(MedicalDocuments $medicalDocuments)
+    public function show(MedicalDocuments $medicalDocument)
     {
-        //
+        return Inertia::render('Admin/Seafarer/MedicalDocumentForm', [
+            'document' => $medicalDocument
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(MedicalDocuments $medicalDocuments)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -72,6 +60,20 @@ class MedicalDocumentsController extends Controller
     public function update(Request $request, MedicalDocuments $medicalDocuments)
     {
         //
+    }
+    public function attachNewDocuments(Request $request)
+    {
+        $medicalDocument = MedicalDocuments::find($request->id);
+        $validated = $request->validate([
+            'file' => 'required||mimes:pdf',
+        ]);
+        if ($request->file('file')) {
+            $file = uniqid() . $request->file('file')->getClientOriginalName();
+            $request->file('file')->storeAs('public/documents', $file);
+            $validated['file'] = $file;
+        }
+        $medicalDocument->update($validated);
+        return redirect()->route('seafarer.detail', $medicalDocument->seafarer_id)->with('message', 'Document Updated successfully!');
     }
 
     /**

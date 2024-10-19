@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Certificates;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CertificatesController extends Controller
 {
@@ -55,12 +57,13 @@ class CertificatesController extends Controller
     /**
      * Approve or Decline Certificate
      */
-    public function changeStatus($id){
+    public function changeStatus($id)
+    {
         $certificate = Certificates::find($id);
-        if($certificate){
-            if($certificate->status == 'pending'){
+        if ($certificate) {
+            if ($certificate->status == 'pending') {
                 $certificate->update(['status' => 'active']);
-                return redirect(route('applicant.detail', $certificate->seafarer_id))->with(['message'=>'Documents have been approved!']);
+                return redirect(route('applicant.detail', $certificate->seafarer_id))->with(['message' => 'Documents have been approved!']);
             }
         }
     }
@@ -68,25 +71,28 @@ class CertificatesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Certificates $certificates)
+    public function show(Certificates $certificate)
     {
-        //
+        return Inertia::render('Admin/Seafarer/CertificateForm', [
+            'certificate' => $certificate
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Certificates $certificates)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Certificates $certificates)
+    public function update(Request $request, Certificates $certificate)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'certificate_no' => 'required|string',
+            'issue_date' => 'required|string',
+            'expiry_date' => 'required|string',
+            'issuing_authority' => 'required|string',
+        ]);
+        $certificate->update($validated);
+        return redirect()->back()->with(['message' => 'Certificate updated successfully!']);
     }
 
     /**

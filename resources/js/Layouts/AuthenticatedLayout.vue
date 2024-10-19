@@ -110,7 +110,9 @@ const showingNavigationDropdown = ref(false);
 
 
                         <NavLink :href="route('seafarer.list')" :active="route().current('seafarer.list')">
-                            Seafarers
+                            Seafarers<span class="ms-2 bg-green-500 px-3 rounded-full m-5">{{
+                                $page.props.on_boarding.count
+                            }}</span>
                         </NavLink>
                         <NavLink :href="route('roles.index')" :active="route().current('roles.index')">
                             Roles

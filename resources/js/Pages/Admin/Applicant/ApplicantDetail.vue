@@ -1,7 +1,7 @@
 <script setup>
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, router, usePage, Link } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 import PersonalDetails from '../../Admin/PersonalDetail.vue';
@@ -77,29 +77,34 @@ const printPdf = () => {
                     </div>
                     <div id="printableSection">
                         <div class="flex flex-row">
-                        <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
-                        <PersonalDetails :fullname="props.applicant.fullname"
-                            :expected_salary="props.applicant.expected_salary"
-                            :nationality="props.applicant.nationality" :religion="props.applicant.religion"
-                            :dob="props.applicant.dob" :height="props.applicant.height" :weight="props.applicant.weight"
-                            :mobile_no="props.applicant.mobile_no" :email="props.applicant.email"
-                            :next_of_kin="props.applicant.next_of_kin" :relationship="props.applicant.relationship"
-                            :next_of_kin_phone="props.applicant.next_of_kin_mobile"
-                            :passport_no="props.passport.passport_no" :place_of_issue="props.passport.place_of_issue"
-                            :issue_date="props.passport.issue_date" :expiry_date="props.passport.expiry_date"
-                            :seaman_book="props.applicant.seaman_book"
-                            :book_place_of_issue="props.applicant.place_of_issue"
-                            :book_issue_date="props.applicant.issue_date">
-                        </PersonalDetails>
-                    </div>
+                            <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md" />
 
-                    <hr>
-                    <div>
-                        <CertificateTable :certificates="props.certificates"></CertificateTable>
-                    </div>
-                    <div>
-                        <ExperienceTable :experiences="props.experiences"></ExperienceTable>
-                    </div>
+                            <PersonalDetails :fullname="props.applicant.fullname"
+                                :expected_salary="props.applicant.expected_salary"
+                                :nationality="props.applicant.nationality" :religion="props.applicant.religion"
+                                :dob="props.applicant.dob" :height="props.applicant.height"
+                                :weight="props.applicant.weight" :mobile_no="props.applicant.mobile_no"
+                                :email="props.applicant.email" :next_of_kin="props.applicant.next_of_kin"
+                                :relationship="props.applicant.relationship"
+                                :next_of_kin_phone="props.applicant.next_of_kin_mobile"
+                                :passport_no="props.passport.passport_no"
+                                :place_of_issue="props.passport.place_of_issue" :issue_date="props.passport.issue_date"
+                                :expiry_date="props.passport.expiry_date" :seaman_book="props.applicant.seaman_book"
+                                :book_place_of_issue="props.applicant.place_of_issue"
+                                :book_issue_date="props.applicant.issue_date">
+                            </PersonalDetails>
+                        </div>
+
+                        <hr>
+                        <div>
+                            <CertificateTable :certificates="props.certificates"></CertificateTable>
+                        </div>
+                        <div v-if="props.experiences.length > 0">
+                            <ExperienceTable :experiences="props.experiences"></ExperienceTable>
+                        </div>
+                        <div v-else>
+                            <p class="text-red-400 text-lg">No relevant experience!</p>
+                        </div>
                     </div>
 
                     <!-- <PrimaryButton><a target="__blank" :href="route('applicant.pdf', applicant.id)">

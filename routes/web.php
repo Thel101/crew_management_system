@@ -34,8 +34,8 @@ Route::get('/', [UserController::class, 'welcome'])->name('user.welcome');
 Route::get('passport/{seafarer_id}', [PassportController::class, 'index'])->name('passport.index');
 Route::resource('passport', PassportController::class)->only('store');
 Route::resource('seafarers', SeafarerController::class)->only('store', 'update', 'show');
-Route::resource('certificates', CertificatesController::class)->only('index', 'store');
-Route::resource('experiences', ExperiencesController::class)->only('index', 'store');
+Route::resource('certificates', CertificatesController::class)->only('index', 'store', 'show', 'update');
+Route::resource('experiences', ExperiencesController::class)->only('index', 'store', 'show', 'update');
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
@@ -61,8 +61,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/status/{id}', 'changeStatus')->name('payroll.pay');
     });
 
-    Route::patch('/certificate/status', [CertificatesController::class, 'changeStatus'])->name('certificate.status');
-    Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index', 'store', 'update');
+    Route::patch('/certificate/status/{id}', [CertificatesController::class, 'changeStatus'])->name('certificate.status');
+    Route::resource('medicalDocuments', MedicalDocumentsController::class)->only('index', 'store', 'show', 'update');
+    Route::post('/medicalDocuments/file', [MedicalDocumentsController::class, 'attachNewDocuments'])->name('medicalDocuments.attach');
     Route::resource('bankAccounts', BankAccountsController::class)->only('index', 'store', 'update');
     Route::resource('vessels', VesselsController::class)->only('index', 'store', 'update');
     Route::post('/vessel/image', [VesselsController::class, 'changeVesselImage'])->name('vessel.updateImage');
