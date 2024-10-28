@@ -115,7 +115,7 @@ class JobsController extends Controller
             'description' => 'required|string',
             'count' => 'required|numeric',
             'joining_date' => 'required',
-            'port' => 'required|numeric',
+            'port' => 'required|string|max:30',
             'basic_salary' => 'required|numeric',
             'requirements' => 'required|string'
         ];
