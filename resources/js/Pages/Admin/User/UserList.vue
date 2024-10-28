@@ -16,6 +16,7 @@ const props = defineProps({
 const form = useForm({
     name: '',
     email: '',
+    role: 'staff',
     password: ''
 })
 const showMessage = ref(false);
