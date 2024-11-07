@@ -197,10 +197,7 @@ const printPdf = () => {
     }
 
 }
-const fileBtn = ref(false)
-// const showFileBtn = () =>{
-//     fileBtn.value = true
-// }
+
 const showImageChange = ref(false)
 const profileForm = useForm({
     seafarer_id: props.seafarer.id,
@@ -225,6 +222,12 @@ const handleModal = (value) => {
     modalTitle.value = 'Medical Document Submission'
     modalMessage.value = 'New Document has been attached successfully!'
 }
+const showPayrollSuccess = () => {
+    showModal.value = true
+    modalTitle.value = 'Payroll calculated'
+    modalMessage.value = 'Payroll has been calculated successfully!'
+    showPayrollForm.value = false
+}
 
 </script>
 
@@ -239,7 +242,10 @@ const handleModal = (value) => {
 
         <div id="printableSection" class="py-12 overflow-auto">
             <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 overscroll-contain">
-
+                <div class="mb-4">
+                    <a :href="route('seafarer.list')" class="text-blue-600 text-lg underline">Back to Seafarer
+                        List</a>
+                </div>
                 <PrimaryButton @click="showImageChange = !showImageChange">Change Profile Image</PrimaryButton>
                 <div class="flex flex-row" v-show="showImageChange">
                     <button @click="uploadImage" class="my-2 mr-2 rounded-md bg-black text-white px-2"><svg
@@ -255,7 +261,7 @@ const handleModal = (value) => {
                 <div class="overflow-hidden">
                     <div class="flex flex-row justify-end">
                         <PrimaryButton @click="printPdf">Print this page</PrimaryButton>
-                        <Link :href="route('seafarer.editPage', props.seafarer.id)">
+                        <Link :href="route('seafarer.editPage', props.seafarer.user_id)">
                         <PrimaryButton class="ms-2">Edit</PrimaryButton>
                         </Link>
                     </div>
@@ -287,7 +293,8 @@ const handleModal = (value) => {
 
                 <hr>
                 <!--Payroll-->
-                <div @click="togglePayrollSection" class="flex flex-row justify-between bg-gray-200 h-14 p-3">
+                <div @click="togglePayrollSection" v-show="printHide"
+                    class="flex flex-row justify-between bg-gray-200 h-14 p-3">
                     <h1>Payroll</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -295,18 +302,22 @@ const handleModal = (value) => {
                     </svg>
 
                 </div>
+
                 <div class="mt-5" v-show="showPayrollSection">
+                    <h1 class="text-lg font-bold" v-show="!printHide">Payroll</h1>
                     <PayrollTable class="overflow-x-auto" v-show="props.payrolls.length > 0" :payrolls="props.payrolls">
                     </PayrollTable>
                     <PrimaryButton v-show="printHide" @click="togglePayrollForm">Calculate Payroll</PrimaryButton>
-                    <Payroll :basic_salary="props.basic_salary" v-show="showPayrollForm"
-                        class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3" :seafarer_id="props.seafarer.id">
+                    <Payroll @payrollCalculated="showPayrollSuccess" :basic_salary="props.basic_salary"
+                        v-show="showPayrollForm" class="bg-gray-200 rounded-md shadow-sm px-2 py-3 mt-3"
+                        :seafarer_id="props.seafarer.id">
                     </Payroll>
                 </div>
                 <div class="page-break"></div>
                 <!--Payroll-->
                 <!--Certificates-->
-                <div @click="toggleCertificates" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                <div @click="toggleCertificates" v-show="printHide"
+                    class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
                     <h1>Certificates</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -314,11 +325,13 @@ const handleModal = (value) => {
                     </svg>
                 </div>
                 <div v-show="showCertificates">
+                    <h1 class="text-lg font-bold" v-show="!printHide">Certificates</h1>
                     <CertificateTable :seafarer="true" :certificates="props.certificates"></CertificateTable>
                 </div>
                 <!--Certificates-->
                 <!--Experiences-->
-                <div @click="toggleExperiences" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                <div @click="toggleExperiences" v-show="printHide"
+                    class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
                     <h1>Experiences</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -326,11 +339,13 @@ const handleModal = (value) => {
                     </svg>
                 </div>
                 <div v-show="showExperiences">
+                    <h1 class="text-lg font-bold" v-show="!printHide">Experiences</h1>
                     <ExperienceTable :seafarer="true" :experiences="props.experiences"></ExperienceTable>
                 </div>
                 <!--Experiences-->
                 <!--Medical Documents-->
-                <div @click="toggleMedicalDocuments" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                <div @click="toggleMedicalDocuments" v-show="printHide"
+                    class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
                     <h1>Medical Documents</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -339,16 +354,17 @@ const handleModal = (value) => {
 
                 </div>
                 <div v-show="showMedicalDocuments">
+                    <h1 class="text-lg font-bold" v-show="!printHide">Medical Documents</h1>
                     <MedicalDocumentsTable @showModal="handleModal" v-if="props.medical_documents.length > 0"
                         :documents="props.medical_documents">
                     </MedicalDocumentsTable>
                     <div v-else>
                         <p class="text-red">No medical documents uploaded</p>
                     </div>
-                    <PrimaryButton class="my-3" @click="toggleForm">Toggle Form</PrimaryButton>
+                    <PrimaryButton v-show="printHide" class="my-3" @click="toggleForm">Toggle Form</PrimaryButton>
                 </div>
 
-                <div v-show="showMedicalDocumentsForm" class="bg-gray-200 mt-3 rounded-md shadow-sm p-3">
+                <div v-show="showMedicalDocumentsForm && printHide" class="bg-gray-200 mt-3 rounded-md shadow-sm p-3">
                     <form @submit.prevent="submitMedicalDocuments">
                         <div class="w-full">
                             <InputLabel>Clinic Name, Address</InputLabel>
@@ -392,7 +408,8 @@ const handleModal = (value) => {
                     </form>
                 </div>
                 <!--Bank Account-->
-                <div @click="toggleBankForm" class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
+                <div @click="toggleBankForm" v-show="printHide"
+                    class="flex flex-row justify-between bg-gray-200 h-14 p-3 mt-3">
                     <h1>Bank Accounts</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -401,9 +418,14 @@ const handleModal = (value) => {
 
 
                 </div>
-                <BankAccountTable v-show="props.bank_accounts.length > 0 && showBankSection"
-                    :bank_accounts="props.bank_accounts"></BankAccountTable>
-                <div v-show="showBankSection" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
+                <h1 class="text-lg font-bold" v-show="!printHide">Bank Accounts</h1>
+                <BankAccountTable v-if="props.bank_accounts.length > 0 && showBankSection"
+                    :bank_accounts="props.bank_accounts">
+                </BankAccountTable>
+                <div v-else>
+                    <p class="text-red">No bank account updated</p>
+                </div>
+                <div v-show="showBankSection && printHide" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
 
                     <form @submit.prevent="uploadBankAccount">
                         <div class="flex flex-row">
@@ -468,7 +490,7 @@ const handleModal = (value) => {
 
                         </div>
 
-                        <form v-show="showRemarkForm" @submit.prevent="submitRemark"
+                        <form v-show="showRemarkForm && printHide" @submit.prevent="submitRemark"
                             class="mt-3 bg-gray-200 p-2 rounded-md shadow-sm">
                             <div class="flex flex-row w-full">
                                 <div class="mr-2 w-1/4">

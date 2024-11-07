@@ -22,7 +22,8 @@ const props = defineProps({
 </script>
 <template>
     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm my-2">
+        <table
+            class="min-w-full divide-y-2 divide-gray-200 bg-white text-sm my-2 border-slate-800 border-b-2 rounded-md">
             <thead class="text-center bg-slate-600">
                 <tr class="text-white">
                     <th class="whitespace-nowrap py-2 font-medium rounded-tl-lg">Ship Name</th>
@@ -34,7 +35,7 @@ const props = defineProps({
                     <th class="whitespace-nowrap py-2 font-medium">Trade</th>
                     <th class="whitespace-nowrap py-2 font-medium">Sign-on</th>
                     <th class="whitespace-nowrap py-2 font-medium rounded-tr-lg">Sign-off</th>
-                    <th></th>
+                    <th v-show="props.seafarer"></th>
                 </tr>
             </thead>
 

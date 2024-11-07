@@ -14,7 +14,8 @@ const props = defineProps({
 </script>
 <template>
     <div>
-        <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+        <h1 class="text-lg font-bold ml-4">Leaves</h1>
+        <table class="divide-y-2 divide-gray-200 bg-white text-sm my-3">
             <thead class="ltr:text-left rtl:text-right">
                 <tr>
 
@@ -24,8 +25,7 @@ const props = defineProps({
                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Days Taken</th>
                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Reason</th>
                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Status</th>
-                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Approved By
-                    </th>
+
                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900"></th>
 
                     <th class="px-4 py-2"></th>
@@ -47,7 +47,7 @@ const props = defineProps({
 
 
                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                        <span class="bg-yellow-300 px-2 py-1 rounded-md shadow-sm">{{leave.status }}</span>
+                        <span class="bg-yellow-300 px-2 py-1 rounded-md shadow-sm">{{ leave.status }}</span>
                     </td>
                     <td class="flex flex-row">
                         <!-- <a v-if="leave.status != 'active' && $page.props.auth.user.role == 'admin'" @click.prevent="changeStatus(leave.id)"><svg

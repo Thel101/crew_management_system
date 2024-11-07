@@ -30,19 +30,6 @@ const props = defineProps({
 
 const src = ref('');
 
-// const change = (e) => {
-//     form.profile= e.target.files[0];
-
-//     const reader = new FileReader();
-//     reader.onload = (event) => {
-//         src.value = event.target.result;
-//     };
-
-//     if (e.target.files[0]) {
-//         reader.readAsDataURL(e.target.files[0]);
-//     }
-// };
-
 const form = useForm({
     role_id: props.seafarer.role_id,
     profile: '' || props.seafarer.profile,
@@ -126,7 +113,8 @@ const update = () => {
 
         <div class="max-w-5xl mx-auto">
 
-            <form @submit.prevent="update" enctype="multipart/form-data" class="p-3 bg-white shadow-md rounded-md border-gray-400 mt-4">
+            <form @submit.prevent="update" enctype="multipart/form-data"
+                class="p-3 bg-white shadow-md rounded-md border-gray-400 mt-4">
                 <!--Personal Details-->
                 <div>
                     <h1 class="my-2 text-xl">Personal Details</h1>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Certificates;
+use App\Models\Seafarer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,20 +19,12 @@ class CertificatesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
 
-        $request->validate([
+        $validated = $request->validate([
             'certificates' => 'required|array',
             'certificates.*.seafarer_id' => 'required',
             'certificates.*.name' => 'required|string',
@@ -42,7 +35,7 @@ class CertificatesController extends Controller
             'certificates.*.cert_image' => 'required',
         ]);
 
-        foreach ($request->certificates as $certificate) {
+        foreach ($validated['certificates'] as $certificate) {
             // Save each certificate record to the database
             if (isset($certificate['cert_image'])) {
                 $file = uniqid() . '_' . $certificate['cert_image']->getClientOriginalName();
@@ -51,8 +44,14 @@ class CertificatesController extends Controller
             }
             Certificates::create($certificate);
         }
-
-        return redirect(route('user.home'));
+        $hasExistingCertificate = collect($validated['certificates'])->contains('existing', true);
+        $seafarer = Seafarer::find($validated['certificates'][0]['seafarer_id']);
+        // Redirect based on the 'existing' value
+        if ($hasExistingCertificate) {
+            return redirect(route('user.home'));
+        } else {
+            return redirect()->back()->with(['applicant' => $seafarer]);
+        }
     }
     /**
      * Approve or Decline Certificate
@@ -63,7 +62,7 @@ class CertificatesController extends Controller
         if ($certificate) {
             if ($certificate->status == 'pending') {
                 $certificate->update(['status' => 'active']);
-                return redirect(route('applicant.detail', $certificate->seafarer_id))->with(['message' => 'Documents have been approved!']);
+                return redirect(route('seafarer.detail', $certificate->seafarer_id))->with(['message' => 'Documents have been approved!']);
             }
         }
     }

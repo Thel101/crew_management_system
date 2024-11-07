@@ -36,7 +36,8 @@ const props = defineProps([
                     <h1 class="text-2xl font-semi-bold ">Personal Details</h1>
                     <div id="pdf-content" class="max-w-7xl">
                         <div class="flex flex-row">
-                            <PersonalText :label="'Name'" :text="props.fullname"></PersonalText>
+                            <PersonalText class="w-1/2" :label="'Name'" :text="props.fullname"></PersonalText>
+                            <PersonalText class="w-1/2" :label="'Date of Birth'" :text="props.dob"></PersonalText>
                         </div>
                         <div class="flex flex-row">
                             <PersonalText class="w-1/2" :label="'Nationality'" :text="props.nationality"></PersonalText>

@@ -32,11 +32,12 @@ use App\Http\Controllers\MedicalDocumentsController;
 
 Route::get('/', [UserController::class, 'welcome'])->name('user.welcome');
 Route::get('passport/{seafarer_id}', [PassportController::class, 'index'])->name('passport.index');
+Route::get('/seafarer/edit/{id}', [SeafarerController::class, 'show'])->name('seafarer.editPage');
 Route::resource('passport', PassportController::class)->only('store');
 Route::resource('seafarers', SeafarerController::class)->only('store', 'update', 'show');
 Route::resource('certificates', CertificatesController::class)->only('index', 'store', 'show', 'update');
 Route::resource('experiences', ExperiencesController::class)->only('index', 'store', 'show', 'update');
-
+Route::post('/seafarer/change/profileImage', [SeafarerController::class, 'changeProfileImage'])->name('seafarer.changeProfile');
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
@@ -49,9 +50,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/pdf/applicant/{id}', 'viewpdf')->name('applicant.pdf');
         Route::get('/seafarers', 'seafarer_list')->name('seafarer.list');
         Route::get('/seafarer/{id}', 'showSeafarer')->name('seafarer.detail');
-        Route::get('/seafarer/edit/{id}', 'show')->name('seafarer.editPage');
         Route::get('/form/seafarer', 'seafarerForm')->name('seafarer.form');
-        Route::post('/seafarer/change/profileImage', 'changeProfileImage')->name('seafarer.changeProfile');
         Route::get('/send/email/{id}', 'send_email')->name('assign.email');
         Route::get('/applicant/{filename}', 'serveFile')->name('applicant.serveFile');
         Route::patch('/remark', 'postRemark')->name('seafarer.remark');
@@ -85,6 +84,7 @@ Route::middleware(['auth', 'user'])->group(function () {
         Route::get('/profile/{id}', 'profile')->name('seafarer.profile');
     });
     Route::resource('leave', LeaveController::class)->only('store');
+    Route::post('/seafarer/profile/update', [SeafarerController::class, 'profileEdit'])->name('seafarer.profileUpdate');
 });
 Route::resource('leave', LeaveController::class)->only('update');
 Route::middleware('auth')->group(function () {

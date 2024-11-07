@@ -71,7 +71,10 @@ class SeafarerController extends Controller
      */
     public function show($id)
     {
-        $data = $this->retrieveSeafarer($id);
+        $seafarer = Seafarer::where('user_id', $id)->first();
+        $seafarer_id = $seafarer->id;
+
+        $data = $this->retrieveSeafarer($seafarer_id);
         $roles = Roles::all();
 
         if (auth()->user()->role == 'admin') {
@@ -81,6 +84,11 @@ class SeafarerController extends Controller
                 'roles' => $roles
             ]);
         } else {
+            return Inertia::render('User/EditProfile', [
+                'seafarer' => $data['seafarer'],
+                'passport' => $data['passport'],
+                'roles' => $roles
+            ]);
         }
     }
     public function detail($seafarer_id)
@@ -303,6 +311,12 @@ class SeafarerController extends Controller
     /**
      * directs to seafarer create form
      */
+    public function profileEdit(Request $request)
+    {
+        $seafarer = Seafarer::find($request->seafarer_id);
+        $seafarer->update($request->all());
+        return redirect()->back()->with(['message' => 'Profile updated successfully']);
+    }
     public function seafarerForm()
     {
         $roles = Roles::all();
@@ -388,13 +402,5 @@ class SeafarerController extends Controller
             'profile' => $file
         ]);
         return redirect()->back()->with(['message' => 'Profile image updated successfully']);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Seafarer $seafarer)
-    {
-        //
     }
 }

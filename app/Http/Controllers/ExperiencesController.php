@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Seafarer;
 use App\Models\Experiences;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class ExperiencesController extends Controller
 {
@@ -29,7 +30,8 @@ class ExperiencesController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+
+        $validated = $request->validate([
             'experiences' => 'required|array',
             'experiences.*.seafarer_id' => 'required',
             'experiences.*.ship_name' => 'required|string|max:30',
@@ -42,13 +44,20 @@ class ExperiencesController extends Controller
             'experiences.*.sign_off_date' => 'required',
 
         ]);
-        foreach ($request->experiences as $experience) {
+        foreach ($validated['experiences'] as $experience) {
             $experience = Experiences::create($experience);
             if ($experience->seafarer) { // Ensure the seafarer relationship exists
                 $user_id = $experience->seafarer->user_id; // Get the user_id
             }
         }
-        return redirect(route('seafarer.profile', $user_id));
+        $hasExistingCertificate = collect($validated['experiences'])->contains('existing', true);
+        $seafarer = Seafarer::find($validated['experiences'][0]['seafarer_id']);
+        // Redirect based on the 'existing' value
+        if ($hasExistingCertificate) {
+            return redirect(route('seafarer.profile', $user_id));
+        } else {
+            return redirect()->back()->with(['applicant' => $seafarer]);
+        }
     }
 
     /**

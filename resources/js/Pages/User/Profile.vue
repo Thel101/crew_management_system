@@ -10,6 +10,10 @@ import ExperienceTable from '@/Components/ExperienceTable.vue';
 import LeaveList from '@/Components/LeaveList.vue';
 import PayrollTable from '../Admin/Payroll/PayrollTable.vue';
 import { watch, ref } from 'vue';
+import Modal from '@/Components/Modal.vue';
+import AddNewCertificate from './AddNewCertificate.vue';
+import AddNewExperience from './AddNewExperience.vue';
+import EditProfile from './EditProfile.vue';
 const page = usePage();
 const props = defineProps({
     message: {
@@ -71,6 +75,72 @@ const showLeaveForm = ref(false);
 const toggleLeaveForm = () => {
     showLeaveForm.value = !showLeaveForm.value
 }
+const showEditForm = ref(false);
+const editForm = useForm({
+    seafarer_id: props.applicant && props.applicant.id ? props.applicant.id : '',
+    fullname: props.applicant.fullname,
+    dob: props.applicant.dob,
+    nationality: props.applicant.nationality,
+    religion: props.applicant.religion,
+    height: props.applicant.height,
+    weight: props.applicant.weight,
+    overall_size: props.applicant.overall_size,
+    mobile_no: props.applicant.mobile_no,
+    email: props.applicant.email,
+    next_of_kin: props.applicant.next_of_kin,
+    relationship: props.applicant.relationship,
+    next_of_kin_mobile: props.applicant.next_of_kin_mobile,
+})
+const showModal = ref(false);
+const modalTitle = ref('');
+const modalMessage = ref('');
+const closeModal = () => {
+    showModal.value = false
+}
+const profileUpdate = () => {
+
+    editForm.post(route('seafarer.profileUpdate'), {
+        onFinish: () => {
+            showEditForm.value = false
+            showModal.value = true
+            modalTitle.value = 'Profile Updated'
+            modalMessage.value = 'Your profile has been updated successfully'
+        }
+    })
+}
+const showCertificateForm = ref(false);
+const addCertificateSuccess = () => {
+    showCertificateForm.value = false
+    showModal.value = true
+    modalTitle.value = 'Certificate Added'
+    modalMessage.value = 'Certificate has been added successfully'
+}
+const showExperienceForm = ref(false);
+const addExperienceSuccess = () => {
+    showExperienceForm.value = false
+    showModal.value = true
+    modalTitle.value = 'Experience Added'
+    modalMessage.value = 'Experience has been added successfully'
+}
+const profileForm = useForm({
+    seafarer_id: props.applicant.id,
+    profile: ''
+});
+const showImageChange = ref(false);
+const changeProfile = (e) => {
+    profileForm.profile = e.target.files[0];
+};
+
+const uploadImage = () => {
+    profileForm.post(route('seafarer.changeProfile'), {
+        onSuccess: (page) => {
+            showModal.value = true;
+            modalTitle.value = "Profile Image Changed";
+            modalMessage.value = 'Profile image has been changed successfully';
+            showImageChange.value = false;
+        }
+    })
+}
 </script>
 <template>
     <div class="flex flex-col items-center bg-gradient-to-r from-sky-700 to-indigo-500 p-3">
@@ -84,8 +154,36 @@ const toggleLeaveForm = () => {
             Page</Link>
         </div>
 
-        <div class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
-            <img :src="`/storage/images/${applicant.profile}`" class="w-48 h-48 rounded-md border-slate-300 border-2" />
+
+        <EditProfile v-if="showEditForm" class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
+
+        </EditProfile>
+        <div v-else class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
+            <div class="flex flex-row justify-between">
+
+                <img :src="`/storage/images/${applicant.profile}`"
+                    class="w-48 h-48 rounded-md border-slate-300 border-2" />
+                <div>
+                    <button class="bg-blue-400 px-5 py-3 rounded-md self-start mx-2"
+                        @click="showImageChange = !showImageChange">Update
+                        Image</button>
+                    <button class="bg-blue-400 px-5 py-3 rounded-md self-start"
+                        @click="showEditForm = !showEditForm">Edit</button>
+                </div>
+
+            </div>
+            <div class="flex flex-row" v-show="showImageChange">
+                <button @click="uploadImage" class="my-2 mr-2 rounded-md bg-black text-white px-2"><svg
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                    </svg>
+                </button>
+                <input class="my-2" accept=".jpg,.jpeg,.png,.webp" @change="changeProfile" type="file">
+
+            </div>
+
             <PersonalDetails :fullname="props.applicant.fullname" :expected_salary="props.applicant.expected_salary"
                 :nationality="props.applicant.nationality" :religion="props.applicant.religion"
                 :dob="props.applicant.dob" :height="props.applicant.height" :weight="props.applicant.weight"
@@ -97,15 +195,35 @@ const toggleLeaveForm = () => {
                 :book_place_of_issue="props.applicant.place_of_issue" :book_issue_date="props.applicant.issue_date">
             </PersonalDetails>
 
-            <div v-if="props.applicant.status == 'on_boarding' && vessel">
-                <span>Assigned Vessel: {{ props.vessel.name }}</span>
-                <span>Salary: 40000$</span>
+        </div>
+        <div class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
+            <div class="my-10 ml-6" v-if="props.applicant.status == 'on_boarding' && vessel">
+                <span class="bg-blue-400 p-5 rounded-md font-bold">Assigned Vessel: {{ props.vessel.name }}</span>
+                <span class="ml-4 bg-yellow-300 p-5 rounded-md font-bold">Salary: 40000$</span>
             </div>
             <div>
+                <div class="flex justify-between">
+                    <h1 class="text-lg font-bold">Certificates</h1>
+                    <PrimaryButton class="mr-12" @click="showCertificateForm = !showCertificateForm">Add New
+
+                    </PrimaryButton>
+                </div>
                 <CertificateTable :certificates="props.certificates"></CertificateTable>
+                <AddNewCertificate @certificateAdded="addCertificateSuccess" :seafarer_id="props.applicant.id"
+                    v-if="showCertificateForm">
+                </AddNewCertificate>
             </div>
             <div>
+                <div class="flex justify-between">
+                    <h1 class="text-lg font-bold">Experiences</h1>
+                    <PrimaryButton class="mr-12" @click="showExperienceForm = !showExperienceForm">Add New
+
+                    </PrimaryButton>
+                </div>
                 <ExperienceTable :experiences="props.experiences"></ExperienceTable>
+                <AddNewExperience @experienceAdded="addExperienceSuccess" :seafarer_id="props.applicant.id"
+                    v-if="showExperienceForm">
+                </AddNewExperience>
             </div>
             <div>
                 <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
@@ -154,6 +272,16 @@ const toggleLeaveForm = () => {
             Log out</Link>
         </div>
     </div>
+    <Modal :show="showModal" :closeable="true" class="max-w-md" @close="closeModal">
+        <div class="p-4 bg-green-200">
+            <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
+            <p>{{ modalMessage }}</p>
+            <div class="flex flex-row justify-end">
+                <button @click="closeModal"
+                    class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+            </div>
+        </div>
+    </Modal>
 
 
 </template>

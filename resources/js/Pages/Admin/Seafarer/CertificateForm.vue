@@ -1,12 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue'
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue'
 import { ref } from 'vue';
 import { useForm, usePage, router, Link } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
+import CertificateForm from '@/Components/CertificateForm.vue';
 const props = defineProps({
     'certificate': {
         type: Object,
@@ -42,42 +39,7 @@ const submit = () => {
 <template>
     <AuthenticatedLayout>
         <div class="p-5 bg-white rounded-md border-slate-500 shadow-md m-5 max-w-5xl">
-            <h1 class="text-2xl font-bold my-2">Seafarer Certificate</h1>
-            <form @submit.prevent="submit">
-                <div>
-                    <InputLabel for="cert_name">Certificate Name</InputLabel>
-                    <TextInput id="cert_name" type="text" class="mt-1 block w-full" v-model="form.name" />
-                    <InputError>{{ form.errors.name }}</InputError>
-                </div>
-                <div>
-                    <InputLabel for="cert_no">Certificate Number</InputLabel>
-                    <TextInput id="cert_no" type="text" class="mt-1 block w-full" v-model="form.certificate_no" />
-                </div>
-                <div>
-                    <InputLabel for="authority">Issuing Authority</InputLabel>
-                    <TextInput id="authority" type="text" class="mt-1 block w-full" v-model="form.issuing_authority" />
-                </div>
-                <div>
-                    <InputLabel for="issue_date">Certificate Issue Date</InputLabel>
-                    <TextInput id="issue_date" type="date" class="mt-1 block w-full" v-model="form.issue_date" />
-                </div>
-                <div>
-                    <InputLabel for="expiry_date">Certificate Expiry Date</InputLabel>
-                    <TextInput id="expiry_date" type="date" class="mt-1 block w-full" v-model="form.expiry_date" />
-                </div>
-                <!-- <div>
-                    <InputLabel for="cert_image">Certificate Image</InputLabel>
-                    <input type="file" accept=".pdf,.docx" @change="file($event)">
-                </div> -->
-
-                <div class="flex flex-row">
-                    <PrimaryButton class="my-2">Update Certificate</PrimaryButton>
-                    <PrimaryButton class="my-2">
-                        <Link :href="route('seafarer.detail', certificate.seafarer_id)">Cancel</Link>
-                    </PrimaryButton>
-                </div>
-
-            </form>
+            <CertificateForm :certificate="props.certificate"></CertificateForm>
         </div>
         <template>
             <Modal :show="showModal" :closeable="true" class="max-w-md" @close="closeModal">

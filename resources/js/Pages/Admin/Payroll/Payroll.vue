@@ -4,17 +4,18 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { defineEmits } from 'vue';
 const props = defineProps({
     seafarer_id: {
         type: Number
     },
-    basic_salary:{
+    basic_salary: {
         type: Number
     }
 })
-
+const emiit = defineEmits(['payrollCalculated'])
 const form = useForm({
-    seafarer_id : props.seafarer_id,
+    seafarer_id: props.seafarer_id,
     base_salary: props.basic_salary,
     bonus: '',
     overtime_pay: '',
@@ -23,11 +24,11 @@ const form = useForm({
     start_date: '',
     end_date: '',
 })
-const calculatePayroll = ()=>{
-    form.post(route('payroll.calculate'),{
-        onSuccess: ()=>{
+const calculatePayroll = () => {
+    form.post(route('payroll.calculate'), {
+        onSuccess: () => {
             form.reset();
-            console.log('success')
+            emiit('payrollCalculated')
         }
     })
 }
