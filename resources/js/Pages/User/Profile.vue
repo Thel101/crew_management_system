@@ -76,21 +76,39 @@ const toggleLeaveForm = () => {
     showLeaveForm.value = !showLeaveForm.value
 }
 const showEditForm = ref(false);
-const editForm = useForm({
-    seafarer_id: props.applicant && props.applicant.id ? props.applicant.id : '',
-    fullname: props.applicant.fullname,
-    dob: props.applicant.dob,
-    nationality: props.applicant.nationality,
-    religion: props.applicant.religion,
-    height: props.applicant.height,
-    weight: props.applicant.weight,
-    overall_size: props.applicant.overall_size,
-    mobile_no: props.applicant.mobile_no,
-    email: props.applicant.email,
-    next_of_kin: props.applicant.next_of_kin,
-    relationship: props.applicant.relationship,
-    next_of_kin_mobile: props.applicant.next_of_kin_mobile,
-})
+const editForm = useForm(
+    props.applicant
+        ? {
+            seafarer_id: props.applicant.id || '',
+            fullname: props.applicant.fullname,
+            dob: props.applicant.dob,
+            nationality: props.applicant.nationality,
+            religion: props.applicant.religion,
+            height: props.applicant.height,
+            weight: props.applicant.weight,
+            overall_size: props.applicant.overall_size,
+            mobile_no: props.applicant.mobile_no,
+            email: props.applicant.email,
+            next_of_kin: props.applicant.next_of_kin,
+            relationship: props.applicant.relationship,
+            next_of_kin_mobile: props.applicant.next_of_kin_mobile,
+        }
+        : {
+            seafarer_id: '',
+            fullname: '',
+            dob: '',
+            nationality: '',
+            religion: '',
+            height: '',
+            weight: '',
+            overall_size: '',
+            mobile_no: '',
+            email: '',
+            next_of_kin: '',
+            relationship: '',
+            next_of_kin_mobile: '',
+        }
+)
 const showModal = ref(false);
 const modalTitle = ref('');
 const modalMessage = ref('');
@@ -122,10 +140,18 @@ const addExperienceSuccess = () => {
     modalTitle.value = 'Experience Added'
     modalMessage.value = 'Experience has been added successfully'
 }
-const profileForm = useForm({
-    seafarer_id: props.applicant.id,
-    profile: ''
-});
+const profileForm = useForm(
+    props.applicant
+        ? {
+            seafarer_id: props.applicant.id || '',
+            profile: ''
+        }
+        : {
+            seafarer_id: '',
+            profile: ''
+        }
+
+);
 const showImageChange = ref(false);
 const changeProfile = (e) => {
     profileForm.profile = e.target.files[0];
@@ -155,7 +181,8 @@ const uploadImage = () => {
         </div>
 
 
-        <EditProfile v-if="showEditForm" class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
+        <EditProfile v-if="props.applicant && props.passport && showEditForm"
+            class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
 
         </EditProfile>
         <div v-else class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
@@ -192,7 +219,8 @@ const uploadImage = () => {
                 :next_of_kin_phone="props.applicant.next_of_kin_mobile" :passport_no="props.passport.passport_no"
                 :place_of_issue="props.passport.place_of_issue" :issue_date="props.passport.issue_date"
                 :expiry_date="props.passport.expiry_date" :seaman_book="props.applicant.seaman_book"
-                :book_place_of_issue="props.applicant.place_of_issue" :book_issue_date="props.applicant.issue_date">
+                :book_place_of_issue="props.applicant.place_of_issue" :book_issue_date="props.applicant.issue_date"
+                :status="props.applicant.status">
             </PersonalDetails>
 
         </div>
@@ -225,18 +253,18 @@ const uploadImage = () => {
                     v-if="showExperienceForm">
                 </AddNewExperience>
             </div>
-            <div>
+            <div v-if="props.applicant.status != 'new'">
                 <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
                 <div class="text-red-400 mx-2 font-semibold" v-show="props.payrolls.length == 0">No payroll calculated
                     yet!
                 </div>
             </div>
-            <div>
+            <div v-if="props.applicant.status != 'new'">
                 <LeaveList v-show="props.leaves.length > 0" :leaves="props.leaves"></LeaveList>
                 <div class="text-red-400 mx-2 font-semibold" v-show="props.leaves.length == 0">No leaves taken yet!
                 </div>
             </div>
-            <PrimaryButton @click="toggleLeaveForm">Request Leave</PrimaryButton>
+            <PrimaryButton v-if="props.applicant.status != 'new'" @click="toggleLeaveForm">Request Leave</PrimaryButton>
             <div v-show="showLeaveForm" class="mt-2">
                 <form @submit.prevent="submitLeave">
                     <div class="flex flex-row">

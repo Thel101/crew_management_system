@@ -10,7 +10,8 @@ use Response;
 
 class PayrollController extends Controller
 {
-    public function calculate(Request $request){
+    public function calculate(Request $request)
+    {
         $validated = $request->validate([
             'seafarer_id' => 'required',
             'base_salary' => 'required',
@@ -24,22 +25,21 @@ class PayrollController extends Controller
         $total_salary = $gain_salary - $validated['deduction'];
         $validated['total_salary'] = $total_salary;
         $payroll = Payroll::create($validated);
-        if($payroll){
+        if ($payroll) {
             return redirect(route('seafarer.detail', $payroll->seafarer_id));
-        }
-        else{
+        } else {
             return response('Payroll calculation failed', 300);
         }
     }
-    public function changeStatus($id){
+    public function changeStatus($id)
+    {
         $payroll = Payroll::find($id);
-        if($payroll && !$payroll->status){
+        if ($payroll && !$payroll->status) {
             $payroll->update([
                 'status' => true,
                 'payment_date' => Carbon::now()->toDate()
             ]);
+            return redirect(route('seafarer.detail', $payroll->seafarer_id));
         }
-        return redirect(route('seafarer.detail', $payroll->seafarer_id));
-
     }
 }

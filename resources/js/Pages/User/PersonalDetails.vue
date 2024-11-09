@@ -113,8 +113,12 @@ const submit = () => {
 <template>
 
     <Head title="CMS" />
-
-    <div class="max-w-5xl mx-auto">
+    <div v-if="$page.props.auth.user.role != 'admin'"
+        class="flex flex-col items-center bg-gradient-to-r from-sky-700 to-indigo-500 p-3">
+        <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
+        <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
+    </div>
+    <div class="max-w-5xl mx-auto my-2">
 
         <form @submit.prevent="submit" class="p-3 bg-white shadow-md rounded-md border-gray-400 mt-4">
             <!--Personal Details-->

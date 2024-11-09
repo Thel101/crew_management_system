@@ -19,7 +19,8 @@ const props = defineProps([
     'expiry_date',
     'seaman_book',
     'book_place_of_issue',
-    'book_issue_date'
+    'book_issue_date',
+    'status'
 
 ])
 
@@ -32,8 +33,14 @@ const props = defineProps([
             <div>
 
                 <div class="">
+                    <div class="flex flex-row">
+                        <h1 class="text-2xl font-semi-bold ">Personal Details</h1>
+                        <span class="bg-yellow-300 mt-2 rounded-md ms-3 px-3 text-sm self-start"
+                            v-if="props.status == 'new'">{{
+                                props.status }}
+                        </span>
+                    </div>
 
-                    <h1 class="text-2xl font-semi-bold ">Personal Details</h1>
                     <div id="pdf-content" class="max-w-7xl">
                         <div class="flex flex-row">
                             <PersonalText class="w-1/2" :label="'Name'" :text="props.fullname"></PersonalText>

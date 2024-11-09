@@ -93,9 +93,7 @@ const showingNavigationDropdown = ref(false);
 
                 <main class="flex flex-row min-h-screen">
                     <div id="nav" class="flex flex-col bg-gray-300 w-2/12 min-h-screen">
-                        <!-- <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </NavLink> -->
+
                         <NavLink v-show="$page.props.auth.user.role == 'admin'" :href="route('users.index')"
                             :active="route().current('users.index')">
                             Users
@@ -112,7 +110,7 @@ const showingNavigationDropdown = ref(false);
                         <NavLink :href="route('seafarer.list')" :active="route().current('seafarer.list')">
                             Seafarers<span class="ms-2 bg-green-500 px-3 rounded-full m-5">{{
                                 $page.props.on_boarding.count
-                            }}</span>
+                                }}</span>
                         </NavLink>
                         <NavLink :href="route('roles.index')" :active="route().current('roles.index')">
                             Roles

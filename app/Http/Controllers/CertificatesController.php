@@ -62,7 +62,7 @@ class CertificatesController extends Controller
         if ($certificate) {
             if ($certificate->status == 'pending') {
                 $certificate->update(['status' => 'active']);
-                return redirect(route('seafarer.detail', $certificate->seafarer_id))->with(['message' => 'Documents have been approved!']);
+                return redirect()->back()->with([$id => $certificate->seafarer_id]);
             }
         }
     }

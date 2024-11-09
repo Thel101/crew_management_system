@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function welcome()
     {
-        if (auth()->check() && auth()->user()->role == 'admin') {
+        if (auth()->check() && (auth()->user()->role == 'admin' || auth()->user()->role == 'staff')) {
             return redirect(route('dashboard'));
         }
         $jobs = Jobs::latest()->take(3)->get();
@@ -40,6 +40,8 @@ class UserController extends Controller
             return Inertia::render('Admin/User/UserList', [
                 'users' => $users
             ]);
+        } elseif (auth()->user()->role == 'staff') {
+            return redirect(route('applicants.list'));
         } else {
             session()->flash('message', 'Registration successful');
             return Inertia::render('User/Profile', [

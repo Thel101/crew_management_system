@@ -209,26 +209,30 @@ const changeProfile = (e) => {
 
 const uploadImage = () => {
     profileForm.post(route('seafarer.changeProfile'), {
-        onSuccess: (page) => {
-            showModal.value = true;
-            modalTitle.value = "Profile Image Changed";
-            modalMessage.value = page.props.flash.message;
+        onSuccess: () => {
+            displayModal('Profile Image Change', 'Profile Image has been changed successfully!')
             showImageChange.value = false;
         }
     })
 }
 const handleModal = (value) => {
-    showModal.value = value
-    modalTitle.value = 'Medical Document Submission'
-    modalMessage.value = 'New Document has been attached successfully!'
+    displayModal('Medical Document Submission', 'New Document has been attached successfully!')
 }
 const showPayrollSuccess = () => {
-    showModal.value = true
-    modalTitle.value = 'Payroll calculated'
-    modalMessage.value = 'Payroll has been calculated successfully!'
+    displayModal('Payroll calculated', 'Payroll has been calculated successfully!')
     showPayrollForm.value = false
 }
-
+const handlePayrollPaid = () => {
+    console.log('payroll paid')
+};
+const handleCertificateModal = () => {
+    displayModal('Certificate Approval', 'Certificate has been approved!')
+}
+const displayModal = (title, message) => {
+    showModal.value = true
+    modalTitle.value = title
+    modalMessage.value = message
+}
 </script>
 
 <template>
@@ -305,7 +309,8 @@ const showPayrollSuccess = () => {
 
                 <div class="mt-5" v-show="showPayrollSection">
                     <h1 class="text-lg font-bold" v-show="!printHide">Payroll</h1>
-                    <PayrollTable class="overflow-x-auto" v-show="props.payrolls.length > 0" :payrolls="props.payrolls">
+                    <PayrollTable @payrollPaid="handlePayrollPaid" class="overflow-x-auto"
+                        v-show="props.payrolls.length > 0" :payrolls="props.payrolls">
                     </PayrollTable>
                     <PrimaryButton v-show="printHide" @click="togglePayrollForm">Calculate Payroll</PrimaryButton>
                     <Payroll @payrollCalculated="showPayrollSuccess" :basic_salary="props.basic_salary"
@@ -326,7 +331,9 @@ const showPayrollSuccess = () => {
                 </div>
                 <div v-show="showCertificates">
                     <h1 class="text-lg font-bold" v-show="!printHide">Certificates</h1>
-                    <CertificateTable :seafarer="true" :certificates="props.certificates"></CertificateTable>
+                    <CertificateTable @certificateStatusChanged="handleCertificateModal" :seafarer="true"
+                        :certificates="props.certificates">
+                    </CertificateTable>
                 </div>
                 <!--Certificates-->
                 <!--Experiences-->
@@ -469,25 +476,24 @@ const showPayrollSuccess = () => {
 
                     </div>
                     <div v-show="showRemarkSection">
-
-                        <div class="mt-3" v-show="seafarer.remark_type != ''">
-                            <div class="flex flex-row ms-3">
-                                <div class="w-1/4 font-bold text-md">{{ capitalize(seafarer.remark_type) + ' : ' }}
-                                </div>
-                                <div class="w-3/4 flex flex-row justify-between">
-                                    <div>{{ seafarer.comment }}</div>
-                                    <div>
-                                        <svg @click="toggleRemarkForm" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                            class="size-6 text-blue-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                        </svg>
-
-                                    </div>
-                                </div>
+                        <div class="flex flex-row" v-show="seafarer.remark_type">
+                            <div class="w-1/4 font-bold text-md">
+                                {{ capitalize(seafarer.remark_type) }}
+                                <span v-if="seafarer.remark_type">:</span>
                             </div>
+                            <div>{{ seafarer.comment }}</div>
+                        </div>
 
+                        <div class="mt-3">
+                            <div>
+                                <svg @click="toggleRemarkForm" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                    class="size-6 text-blue-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                </svg>
+
+                            </div>
                         </div>
 
                         <form v-show="showRemarkForm && printHide" @submit.prevent="submitRemark"

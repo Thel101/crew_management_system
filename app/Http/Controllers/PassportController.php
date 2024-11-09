@@ -14,16 +14,14 @@ class PassportController extends Controller
      */
     public function index($seafarer_id)
     {
-        if(auth()->user()->role != 'admin'){
-            return Inertia::render('User/PassportForm',[
+        if (auth()->user()->role != 'admin') {
+            return Inertia::render('User/PassportForm', [
                 'seafarer_id' => $seafarer_id
             ]);
         }
-        return Inertia::render('Admin/Seafarer/SeafarerPassportForm',[
+        return Inertia::render('Admin/Seafarer/SeafarerPassportForm', [
             'seafarer_id' => $seafarer_id
         ]);
-
-
     }
 
     /**
@@ -45,17 +43,16 @@ class PassportController extends Controller
             'passport_no' => 'required|string|max:10|unique:passports,passport_no,except,id',
             'place_of_issue' => 'required|string|max:15',
             'issue_date' => 'required',
-            'expiry_date' => ['required','date', function($attribute, $value, $fail){
+            'expiry_date' => ['required', 'date', function ($attribute, $value, $fail) {
                 $expiryDate = Carbon::parse($value);
                 $minExpiryDate = Carbon::today()->addMonths(6);
-                if ($expiryDate->lte($minExpiryDate)){
+                if ($expiryDate->lte($minExpiryDate)) {
                     $fail('The expiry date must be at least 6 months from today.');
                 }
             }],
         ]);
         $validated['status'] = 'active';
         Passport::create($validated);
-
     }
 
     /**

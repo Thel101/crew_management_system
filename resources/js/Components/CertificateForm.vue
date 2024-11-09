@@ -68,8 +68,8 @@ const submit = () => {
         </div>
 
 
-        <div class="flex flex-row">
-            <PrimaryButton class="my-2">Update Certificate</PrimaryButton>
+        <div class="flex flex-row gap-2">
+            <PrimaryButton @click="submit" class="my-2">Update Certificate</PrimaryButton>
 
             <PrimaryButton v-if="$page.props.auth.user.role != 'user'" class="my-2">
                 <Link :href="route('seafarer.detail', certificate.seafarer_id)">Cancel</Link>

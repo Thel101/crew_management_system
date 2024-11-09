@@ -1,5 +1,6 @@
 <script setup>
-
+import { router } from '@inertiajs/vue3'
+import { defineEmits } from 'vue';
 const props = defineProps({
     'payrolls': {
         type: Array,
@@ -18,7 +19,15 @@ const props = defineProps({
     }
 
 })
+const emit = defineEmits(['payrollPaid'])
+const handlePay = (payrollId) => {
+    router.visit(route('payroll.pay', payrollId), {
+        onSuccess: () => {
+            emit('payrollPaid')
 
+        }
+    })
+}
 </script>
 <template>
     <div>
@@ -58,15 +67,14 @@ const props = defineProps({
                     <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ payroll.end_date }}</td>
                     <td class="whitespace-nowrap px-4 py-2 text-gray-700"> {{ payroll.payment_date }}</td>
                     <td class="whitespace-nowrap px-4 py-2 text-gray-700 ">
-                        <span v-if="payroll.status == 0"
-                            class="bg-yellow-300 rounded-md px-2 py-1">pending</span>
-                            <span v-if="payroll.status == 1"
-                            class="bg-green-300 rounded-md px-2 py-1">paid</span>
-                        </td>
-                    <td v-if="payroll.status == 0 && $page.props.auth.user.role == 'admin'" class="whitespace-nowrap px-4 py-2 text-gray-700">
-                        <a :href="route('payroll.pay', payroll.id)"
-                            class="bg-blue-400 py-1 px-3 font-bold rounded-md shadow-sm text-white"><button>Pay</button>
-                        </a>
+                        <span v-if="payroll.status == 0" class="bg-yellow-300 rounded-md px-2 py-1">pending</span>
+                        <span v-if="payroll.status == 1" class="bg-green-300 rounded-md px-2 py-1">paid</span>
+                    </td>
+                    <td v-if="payroll.status == 0 && $page.props.auth.user.role == 'admin'"
+                        class="whitespace-nowrap px-4 py-2 text-gray-700">
+                        <button class="bg-blue-400 py-1 px-3 font-bold rounded-md shadow-sm text-white"
+                            @click="handlePay(payroll.id)">Pay</button>
+
 
                     </td>
                 </tr>

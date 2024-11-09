@@ -1,5 +1,6 @@
 <script setup>
 import { router, usePage } from '@inertiajs/vue3';
+import { defineEmits } from 'vue';
 const props = defineProps({
     seafarer: {
         type: Boolean
@@ -19,8 +20,13 @@ const props = defineProps({
     }
 
 })
+const emit = defineEmits(['certificateStatusChanged'])
 const changeStatus = (id) => {
-    router.patch(route('certificate.status', id))
+    router.patch(route('certificate.status', id), {}, {
+        onSuccess: () => {
+            emit('certificateStatusChanged')
+        }
+    })
 }
 
 </script>

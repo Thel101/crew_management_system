@@ -50,10 +50,10 @@ class ExperiencesController extends Controller
                 $user_id = $experience->seafarer->user_id; // Get the user_id
             }
         }
-        $hasExistingCertificate = collect($validated['experiences'])->contains('existing', true);
+        $hasExistingExperience = collect($validated['experiences'])->contains('existing', true);
         $seafarer = Seafarer::find($validated['experiences'][0]['seafarer_id']);
         // Redirect based on the 'existing' value
-        if ($hasExistingCertificate) {
+        if ($hasExistingExperience) {
             return redirect(route('seafarer.profile', $user_id));
         } else {
             return redirect()->back()->with(['applicant' => $seafarer]);

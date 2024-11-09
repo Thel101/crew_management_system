@@ -47,7 +47,7 @@ const submit = () => {
 <template>
     <AuthenticatedLayout>
         <div class="p-5 bg-white rounded-md border-slate-500 shadow-md m-5 max-w-5xl">
-            <h1>Assign Seafarer to Vessel</h1>
+            <h1 class="font-bold text-lg my-3">Assign Seafarer to Vessel</h1>
             <form @submit.prevent="submit">
                 <div>
                     <InputLabel for="recipient">Assigning Seafarer</InputLabel>
@@ -59,24 +59,29 @@ const submit = () => {
                     <TextInput id="body" type="text" class="mt-1 block w-full" v-model="props.seafarer.role.name" />
                     <input type="hidden" v-model="form.role_id" />
                 </div>
-                <InputLabel for="body">Assigned Vessel</InputLabel>
-                <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
-                    <template #trigger>
-                        <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                            {{ selectedVessel || 'Select Vessel' }}</div>
+                <div v-if="props.jobs.length > 1">
+                    <InputLabel for="body">Assigned Vessel</InputLabel>
+                    <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
+                        <template #trigger>
+                            <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
+                                {{ selectedVessel || 'Select Vessel' }}</div>
 
-                    </template>
-                    <template #content>
-                        <ul class="px-2">
-                            <li v-for="job in props.jobs" :key="job.id" @click="selectVessel(job)"
-                                class="cursor-pointer hover:bg-gray-200">
-                                {{ job.vessel.name }}</li>
-                        </ul>
-                    </template>
-                </Dropdown>
-
+                        </template>
+                        <template #content>
+                            <ul class="px-2">
+                                <li v-for="job in props.jobs" :key="job.id" @click="selectVessel(job)"
+                                    class="cursor-pointer hover:bg-gray-200">
+                                    {{ job.vessel.name }}</li>
+                            </ul>
+                        </template>
+                    </Dropdown>
+                </div>
+                <div v-else class="text-red-500">
+                    Currently, there is no vessel available for assignment.
+                </div>
 
                 <PrimaryButton class="my-2">Send</PrimaryButton>
+                <PrimaryButton class="ms-2 my-2"><a :href="route('applicants.list')">Cancel</a></PrimaryButton>
             </form>
         </div>
         <template>

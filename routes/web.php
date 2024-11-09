@@ -40,7 +40,7 @@ Route::resource('experiences', ExperiencesController::class)->only('index', 'sto
 Route::post('/seafarer/change/profileImage', [SeafarerController::class, 'changeProfileImage'])->name('seafarer.changeProfile');
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return redirect()->route('users.index');
     })->name('dashboard');
     Route::resource('users', UserController::class)->only('index', 'store', 'update');
     Route::controller(SeafarerController::class)->group(function () {

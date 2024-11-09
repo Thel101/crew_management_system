@@ -121,7 +121,8 @@ const clearFlashMessage = () => {
                                     </td>
 
                                     <td class="whitespace-nowrap px-4 py-2">
-                                        <a v-show="user.role == 'admin'" @click="changeRole(user)"
+                                        <a v-show="user.role == 'admin' && user.id != $page.props.auth.user.id"
+                                            @click="changeRole(user)"
                                             class="inline-block rounded bg-red-500 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                             Remove Admin
                                         </a> <a v-show="user.role == 'staff'" @click="changeRole(user)"

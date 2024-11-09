@@ -8,6 +8,7 @@ import PersonalDetails from '../../Admin/PersonalDetail.vue';
 import CertificateTable from '@/Components/CertificateTable.vue';
 import ExperienceTable from '@/Components/ExperienceTable.vue';
 import html2pdf from 'html2pdf.js';
+import Modal from '@/Components/Modal.vue';
 const open = ref(false)
 
 const props = defineProps({
@@ -49,6 +50,17 @@ const printPdf = () => {
 
 
 
+}
+const modalTitle = ref('')
+const modalMessage = ref('')
+const showModal = ref(false)
+const handleCertificateModal = () => {
+    showModal.value = true
+    modalTitle.value = 'Certificate Approval'
+    modalMessage.value = 'Certificate has been approved'
+}
+const closeModal = () => {
+    showModal.value = false
 }
 </script>
 
@@ -96,8 +108,13 @@ const printPdf = () => {
                         </div>
 
                         <hr>
-                        <div>
-                            <CertificateTable :certificates="props.certificates"></CertificateTable>
+                        <div v-if="props.experiences.length > 0">
+                            <CertificateTable @certificateStatusChanged="handleCertificateModal"
+                                :certificates="props.certificates">
+                            </CertificateTable>
+                        </div>
+                        <div v-else>
+                            <p class="text-red-400 text-lg">No relevant certificate!</p>
                         </div>
                         <div v-if="props.experiences.length > 0">
                             <ExperienceTable :experiences="props.experiences"></ExperienceTable>
@@ -116,6 +133,18 @@ const printPdf = () => {
                 </div>
             </div>
         </div>
+        <template>
+            <Modal :show="showModal" :closeable="true" class="max-w-md" @close="closeModal">
+                <div class="p-4 bg-green-200">
+                    <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
+                    <p>{{ modalMessage }}</p>
+                    <div class="flex flex-row justify-end">
+                        <button @click="closeModal"
+                            class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+                    </div>
+                </div>
+            </Modal>
+        </template>
 
 
     </AuthenticatedLayout>

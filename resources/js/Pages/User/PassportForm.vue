@@ -111,6 +111,10 @@ const submit = () => {
                 onSuccess: () => {
                     experiences.post(route('experiences.store'), {
                         onSuccess: () => {
+                            showProfile.value = true
+                            passport.reset()
+                            certificates.reset()
+                            experiences.reset()
                             showModal.value = true
                         }
                     })
@@ -121,6 +125,7 @@ const submit = () => {
     )
 
 }
+const showProfile = ref(false)
 const home = () => {
     showModal.value = false
     router.visit(route('user.home'))
@@ -131,7 +136,11 @@ const home = () => {
 
     <Head title="CMS" />
 
-
+    <div v-if="$page.props.auth.user.role != 'admin'"
+        class="flex flex-col items-center bg-gradient-to-r from-sky-700 to-indigo-500 p-3">
+        <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
+        <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
+    </div>
     <div class="max-w-7xl mx-auto">
 
         <template>
@@ -149,12 +158,10 @@ const home = () => {
                 </Modal>
             </div>
         </template>
-
-        <div v-if="$page.props.auth.user.role != 'admin'">
-            <img src="/images/logo1.jpeg" alt="" class="w-16 h-16 text-center">
-            <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
-        </div>
-
+        <a v-show="showProfile" class="hover:underline text-blue-600"
+            :href="route('seafarer.profile', $page.props.auth.user.id)">
+            Go to Profile
+        </a>
         <form @submit.prevent="submit" class="mt-3 p-3 bg-white rounded-md border-gray-400 shadow-md">
 
             <!---Passport-->
@@ -202,47 +209,60 @@ const home = () => {
                 <div>
                     <h1 class="mt-2 text-xl">Certificates</h1>
                     <!-- Labels displayed only once -->
-                    <div class="flex gap-5">
-                        <InputLabel>Certificate Name</InputLabel>
-                        <InputLabel class="ms-14">Certificate Number</InputLabel>
-                        <InputLabel class="ms-14">Issue Date</InputLabel>
-                        <InputLabel class="ms-16">Expiry Date</InputLabel>
-                        <InputLabel class="ms-20">Issuing Authority</InputLabel>
-
-                    </div>
-
 
                     <div v-for="(certificate, index) in certificates.certificates" :key="index"
-                        class="flex flex-col gap-2 mt-2">
+                        class="flex flex-row gap-2 my-2 pb-5 overflow-x-auto">
                         <div>
+                            <InputLabel>Certificate Name</InputLabel>
                             <TextInput type="text" v-model="certificate.name" placeholder="Certificate Name" />
+                        </div>
+                        <div>
+                            <InputLabel>Certificate Number</InputLabel>
                             <TextInput type="text" v-model="certificate.certificate_no"
                                 placeholder="Certificate Number" />
+                        </div>
+                        <div>
+                            <InputLabel>Issue Date</InputLabel>
                             <TextInput type="date" v-model="certificate.issue_date" placeholder="Issue Date" />
+                        </div>
+                        <div>
+                            <InputLabel>Expiry Date</InputLabel>
                             <TextInput type="date" v-model="certificate.expiry_date" placeholder="Expiry Date" />
+                        </div>
+                        <div>
+                            <InputLabel>Issuing Authority</InputLabel>
                             <TextInput type="text" v-model="certificate.issuing_authority"
                                 placeholder="Issuing Authority" />
-                            <input type="file" @input="certificateImage($event, index)">
-
                         </div>
+                        <input class="pt-5 w-64" type="file" accept=".pdf" @input="certificateImage($event, index)">
+                        <button class="text-green-400" type="button" @click="addCertificate(index)"><svg
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </button>
 
-                        <div class="flex flex-row gap-2">
-                            <button class="bg-red-300 p-2 rounded-md" type="button"
-                                @click="removeCertificate(index)">Remove</button>
-                            <button class="bg-green-300 p-2 rounded-md" type="button"
-                                @click="addCertificate(index)">Add</button>
-                        </div>
+                        <button v-if="certificates.certificates.length > 1" class="me-1 text-red-500" type="button"
+                            @click="removeCertificate(index)"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </button>
                         <hr style="border: 1px solid #ccc; margin: 20px 0;">
                     </div>
+
+
                     <br>
 
                 </div>
 
             </div>
 
-            <div>
+            <div class="overflow-x-auto">
                 <h1 class="text-xl">Past Experiences</h1>
-                <table class="overflow-x-auto ">
+                <table>
                     <thead>
                         <tr>
                             <th>Ship Name</th>
@@ -286,14 +306,7 @@ const home = () => {
                                     v-model="experience.sign_off_date" />
                             </td>
 
-                            <td>
-                                <button class="me-1 text-red-500" type="button" @click="removeExperience(index)"><svg
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-                                </button>
+                            <td class="flex flex-row mt-1">
                                 <button class="text-green-400" type="button" @click="addExperience(index)"><svg
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -301,6 +314,15 @@ const home = () => {
                                             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                 </button>
+                                <button v-if="experiences.experiences.length > 1" class="me-1 text-red-500"
+                                    type="button" @click="removeExperience(index)"><svg
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+
                             </td>
 
 
