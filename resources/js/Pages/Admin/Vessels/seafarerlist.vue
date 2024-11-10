@@ -26,16 +26,20 @@ const printPdf = () => {
     printHide.value = false
     const printElement = document.getElementById('printableSection');
     if (printElement) {
-        html2pdf(printElement, {
-            margin: 1,
-            filename: filename,
-            html2canvas: { scale: 2 },
-            jsPDF: { format: 'letter', orientation: 'portrait' }
-        })
-
+        html2pdf()
+            .from(printElement)
+            .set({
+                margin: 1,
+                filename: filename,
+                html2canvas: { scale: 2 },
+                jsPDF: { format: 'letter', orientation: 'landscape' }
+            })
+            .save()
+            .then(() => {
+                // Restore visibility after PDF generation completes
+                printHide.value = true;
+            });
     }
-    printHide.value = true
-
 
 }
 </script>

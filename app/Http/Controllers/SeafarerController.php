@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Dompdf\Dompdf;
 use App\Models\Jobs;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Roles;
 use App\Models\Seafarer;
@@ -366,7 +367,8 @@ class SeafarerController extends Controller
         }
 
         $seafarer->update($validated);
-
+        $user = User::find($seafarer->user_id);
+        $user->update(['email' => $validated['email']]);
         return redirect()->back()->with(
             [
                 'message' => 'Seafarer profile updated successfully',
@@ -378,6 +380,7 @@ class SeafarerController extends Controller
         return [
             'role_id' => 'sometimes',
             'fullname' => 'sometimes|string|max:30',
+            'email' => 'sometimes',
             'seaman_book' => 'sometimes|string|max:10',
             'seaman_book_place' => 'sometimes|string|max:30',
             'nationality' => 'sometimes',
