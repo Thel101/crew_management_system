@@ -187,16 +187,22 @@ const printPdf = () => {
     printHide.value = false
     const printElement = document.getElementById('printableSection');
     if (printElement) {
-        html2pdf(printElement, {
-            margin: 1,
-            filename: 'seafarer.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { format: 'letter', orientation: 'landscape' }
-        })
-        elementsToHide.forEach(el => el.style.display = '');
+        html2pdf()
+            .from(printElement)
+            .set({
+                margin: 1,
+                filename: 'seafarer.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: { format: 'letter', orientation: 'landscape' }
+            })
+            .save()
+            .then(() => {
+                // Restore visibility after PDF generation completes
+                printHide.value = true;
+            });
     }
-
 }
+
 
 const showImageChange = ref(false)
 const profileForm = useForm({
@@ -298,6 +304,13 @@ const displayModal = (title, message) => {
                 </div>
 
                 <hr>
+                <div class="my-10" v-if="props.seafarer.status == 'on_boarding'">
+                    <span class="bg-blue-400 p-5 rounded-md font-bold">Assigned Vessel: {{ props.seafarer.vessel.name
+                        }}</span>
+                    <span class="ml-4 bg-yellow-300 p-5 rounded-md font-bold">Salary: {{
+                        props.basic_salary
+                        }}</span>
+                </div>
                 <!--Payroll-->
                 <div @click="togglePayrollSection" v-show="printHide"
                     class="flex flex-row justify-between bg-gray-200 h-14 p-3">

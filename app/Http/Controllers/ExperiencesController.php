@@ -56,7 +56,8 @@ class ExperiencesController extends Controller
         if ($hasExistingExperience) {
             return redirect(route('seafarer.profile', $user_id));
         } else {
-            return redirect()->back()->with(['applicant' => $seafarer]);
+            return redirect(route('seafarer.profile', $user_id));
+            // return redirect()->back()->with(['applicant' => $seafarer]);
         }
     }
 

@@ -1,9 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
-import { Inertia } from '@inertiajs/inertia';
-import { debounce } from 'lodash';
+import { ref } from 'vue';
 import vesselForm from './vesselForm.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import html2pdf from 'html2pdf.js';
@@ -36,7 +34,7 @@ const printPdf = () => {
         })
 
     }
-    printHide.value = false
+    printHide.value = true
 
 
 }
@@ -49,7 +47,7 @@ const printPdf = () => {
     <AuthenticatedLayout>
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Seafarers on {{ vessel.name }}</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight mb-8">Seafarers on {{ vessel.name }}</h2>
         </template>
         <div v-show="printHide" class="mt-10">
             <div class="max-w-7xl">
@@ -72,27 +70,31 @@ const printPdf = () => {
 
 
                 <div class="overflow-x-auto">
-                    <div class="text-center text-red-600 text-lg" v-show="seafarers.data.length < 1">
+                    <div class="text-center text-red-600 text-lg"
+                        v-show="pagination ? seafarers.data.length < 1 : seafarers.length < 1">
                         There is no active seafarers on this vessel!!
                     </div>
-                    <div class="flex flex-row justify-around my-5" v-show="seafarers.data.length > 0">
+                    <div class="flex flex-row justify-around my-5"
+                        v-show="pagination ? seafarers.data.length > 0 : seafarers.length > 0">
                         <h1 class="text-xl text-left lg:ms-14 md:ms-20"> Crew List </h1>
                         <div>
-                            <a v-show="pagination == true && printHide"
-                                :href="route('vessel.show', [props.vessel, true])">
+                            <a v-show="pagination && printHide" :href="route('vessel.show', [props.vessel, true])">
                                 <PrimaryButton>View All</PrimaryButton>
                             </a>
-                            <a v-show="pagination == false && printHide" :href="route('vessel.show', [props.vessel])">
+                            <a v-show="!pagination && printHide" :href="route('vessel.show', [props.vessel,])">
                                 <PrimaryButton>View Less</PrimaryButton>
                             </a>
                             <PrimaryButton v-show="pagination == false && printHide" class="ms-2" @click="printPdf">
                                 Print
                                 List
                             </PrimaryButton>
+
+
                         </div>
 
                     </div>
                     <!--view all-->
+
                     <table v-if="pagination == false && seafarers.length > 0"
                         class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
                         <thead class="ltr:text-left rtl:text-right">
@@ -108,7 +110,7 @@ const printPdf = () => {
                             </tr>
                         </thead>
 
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody class="divide-y mt-3 divide-gray-200">
                             <tr v-for="seafarer in seafarers" :key="seafarer.id">
 
                                 <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ seafarer.fullname
@@ -134,7 +136,7 @@ const printPdf = () => {
                 </div>
                 <!--paginated table-->
                 <table v-if="pagination == true && seafarers.data.length > 0"
-                    class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                    class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm mt-10">
                     <thead class="ltr:text-left rtl:text-right">
                         <tr>
                             <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
