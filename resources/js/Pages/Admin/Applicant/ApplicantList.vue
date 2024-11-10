@@ -33,12 +33,7 @@ const seaman_book = ref('');
 const seafarer_role = ref('');
 const assignRoleId = ref('')
 const search = ref(''), pageNumber = ref(0)
-const AssignSeafarer = (id, role_name, roleId) => {
-    showAssignForm.value = true
-    seafarer_role.value = role_name
-    assignRoleId.value = roleId
-    form.user_id = id
-}
+
 watch([() => assignRoleId.value, () => form.user_id], ([newRoleId, newUserId]) => {
     if (newRoleId && newUserId) {
         router.visit(route('applicants.list', { role_id: newRoleId, user_id: newUserId }));
@@ -88,7 +83,11 @@ watch(applicantUrl, newUrl => {
         replace: true
     })
 })
+const flashMessage = computed(() => {
+    // Access the flash message from Inertia's page props
+    console.log(page.props.flash.message);
 
+});
 
 </script>
 

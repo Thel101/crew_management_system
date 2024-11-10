@@ -246,12 +246,13 @@ const displayModal = (title, message) => {
 
         <div id="printableSection" class="py-12 overflow-auto">
             <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 overscroll-contain">
-                <div class="mb-4">
+                <div class="mb-4" v-show="printHide">
                     <a :href="route('seafarer.list')" class="text-blue-600 text-lg underline">Back to Seafarer
                         List</a>
                 </div>
-                <PrimaryButton @click="showImageChange = !showImageChange">Change Profile Image</PrimaryButton>
-                <div class="flex flex-row" v-show="showImageChange">
+                <PrimaryButton v-show="printHide" @click="showImageChange = !showImageChange">Change Profile Image
+                </PrimaryButton>
+                <div class="flex flex-row" v-show="showImageChange && printHide">
                     <button @click="uploadImage" class="my-2 mr-2 rounded-md bg-black text-white px-2"><svg
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6">
@@ -259,11 +260,12 @@ const displayModal = (title, message) => {
                                 d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                         </svg>
                     </button>
-                    <input class="my-2" accept=".jpg,.jpeg,.png,.webp" @change="changeProfile" type="file">
+                    <input v-show="printHide" class="my-2" accept=".jpg,.jpeg,.png,.webp" @change="changeProfile"
+                        type="file">
 
                 </div>
                 <div class="overflow-hidden">
-                    <div class="flex flex-row justify-end">
+                    <div v-show="printHide" class="flex flex-row justify-end">
                         <PrimaryButton @click="printPdf">Print this page</PrimaryButton>
                         <Link :href="route('seafarer.editPage', props.seafarer.user_id)">
                         <PrimaryButton class="ms-2">Edit</PrimaryButton>

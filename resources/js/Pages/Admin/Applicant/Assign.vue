@@ -59,7 +59,7 @@ const submit = () => {
                     <TextInput id="body" type="text" class="mt-1 block w-full" v-model="props.seafarer.role.name" />
                     <input type="hidden" v-model="form.role_id" />
                 </div>
-                <div v-if="props.jobs.length > 1">
+                <div v-if="props.jobs.length > 0">
                     <InputLabel for="body">Assigned Vessel</InputLabel>
                     <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
                         <template #trigger>
@@ -80,7 +80,7 @@ const submit = () => {
                     Currently, there is no vessel available for assignment.
                 </div>
 
-                <PrimaryButton class="my-2">Send</PrimaryButton>
+                <PrimaryButton class="my-2">Assign</PrimaryButton>
                 <PrimaryButton class="ms-2 my-2"><a :href="route('applicants.list')">Cancel</a></PrimaryButton>
             </form>
         </div>

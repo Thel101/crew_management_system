@@ -32,7 +32,7 @@ const handlePay = (payrollId) => {
 <template>
     <div>
 
-        <table class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+        <table class="divide-y-2 divide-gray-200 bg-white text-sm">
             <thead class="ltr:text-left rtl:text-right">
                 <tr>
 

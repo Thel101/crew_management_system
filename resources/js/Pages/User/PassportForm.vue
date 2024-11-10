@@ -108,9 +108,9 @@ const submit = () => {
     passport.post(route('passport.store'), {
         onSuccess: () => {
             certificates.post(route('certificates.store'), {
-                onSuccess: () => {
+                onFinish: () => {
                     experiences.post(route('experiences.store'), {
-                        onSuccess: () => {
+                        onFinish: () => {
                             showProfile.value = true
                             passport.reset()
                             certificates.reset()
@@ -149,7 +149,7 @@ const home = () => {
                     <template #default>
                         <div class="p-4">
                             <h2 class="text-lg font-bold">Application Successful</h2>
-                            <p class="mt-2">Your application has been succesfully sent!</p>
+                            <p class="mt-2">Seafarer Application Successfully Completed!</p>
                             <button @click="home" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
                                 Close Modal
                             </button>

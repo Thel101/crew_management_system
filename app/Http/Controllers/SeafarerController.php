@@ -60,7 +60,7 @@ class SeafarerController extends Controller
             if (auth()->user()->role == 'user') {
                 return redirect(route('passport.index', $seafarer->id));
             } else {
-                return redirect(route('applicants.list'));
+                return redirect(route('applicants.list'))->with(['message' => 'Seafarer created successfully']);
             }
         } else {
             return 'something wrong';
@@ -402,5 +402,11 @@ class SeafarerController extends Controller
             'profile' => $file
         ]);
         return redirect()->back()->with(['message' => 'Profile image updated successfully']);
+    }
+    public function delete($seafarer_id)
+    {
+        $seafarer = Seafarer::find($seafarer_id);
+        $seafarer->delete();
+        return redirect()->back()->with(['message' => 'Seafarer deleted successfully']);
     }
 }

@@ -151,7 +151,7 @@ const page = usePage();
                     <Link :href="route('seafarer.profile', $page.props.auth.user.id)"
                         class="bg-white rounded-full p-6 hidden md:inline text-lg font-semibold text-black hover:text-#d1e62d dark:text-gray-900 dark:hover:text-gray-600">
 
-                    Go to Profile Dashboard Now! {{ $page.props.auth.user.id }}</Link>
+                    Go to Profile Dashboard Now!</Link>
                 </div>
 
             </div>

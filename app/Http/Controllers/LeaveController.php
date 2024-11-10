@@ -46,7 +46,8 @@ class LeaveController extends Controller
         $end = Carbon::parse($validated['leave_end']);
         $validated['count'] = $start->diffInDays($end);
         $leave = Leave::create($validated);
-        return redirect(route('seafarer.profile', $leave->seafarer_id));
+        $user_id = $leave->seafarer->user_id;
+        return redirect(route('seafarer.profile', $user_id));
     }
 
     /**

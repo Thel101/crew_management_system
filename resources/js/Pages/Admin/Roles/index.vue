@@ -5,7 +5,7 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref, watch,computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 defineProps({
     roles:
     {
@@ -137,10 +137,7 @@ watch(roleUrl, newUrl => {
                                         class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         Edit
                                     </a>
-                                    <a href="#"
-                                        class="ms-2 inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
-                                        Delete
-                                    </a>
+
                                 </td>
                             </tr>
 

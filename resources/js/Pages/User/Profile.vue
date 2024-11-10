@@ -62,9 +62,9 @@ watch(() => form.leave_start, (value) => {
 const submitLeave = () => {
     form.post(route('leave.store'), {
         onFinish: () => {
-            form.leave_start = '',
-                form.leave_end = '',
-                form.reason = ''
+            form.reset();
+            showLeaveForm.value = false;
+            handleModal('Leave Requested', 'Your leave request has been submitted successfully');
 
         }
     })
@@ -120,25 +120,19 @@ const profileUpdate = () => {
     editForm.post(route('seafarer.profileUpdate'), {
         onFinish: () => {
             showEditForm.value = false
-            showModal.value = true
-            modalTitle.value = 'Profile Updated'
-            modalMessage.value = 'Your profile has been updated successfully'
+            handleModal('Profile Updated', 'Your profile has been updated successfully');
         }
     })
 }
 const showCertificateForm = ref(false);
 const addCertificateSuccess = () => {
     showCertificateForm.value = false
-    showModal.value = true
-    modalTitle.value = 'Certificate Added'
-    modalMessage.value = 'Certificate has been added successfully'
+    handleModal('Certificate Added', 'Certificate has been added successfully');
 }
 const showExperienceForm = ref(false);
 const addExperienceSuccess = () => {
     showExperienceForm.value = false
-    showModal.value = true
-    modalTitle.value = 'Experience Added'
-    modalMessage.value = 'Experience has been added successfully'
+    handleModal('Experience Added', 'Experience has been added successfully');
 }
 const profileForm = useForm(
     props.applicant
@@ -159,13 +153,16 @@ const changeProfile = (e) => {
 
 const uploadImage = () => {
     profileForm.post(route('seafarer.changeProfile'), {
-        onSuccess: (page) => {
-            showModal.value = true;
-            modalTitle.value = "Profile Image Changed";
-            modalMessage.value = 'Profile image has been changed successfully';
+        onSuccess: () => {
+            handleModal('Profile Image Updated', 'Your profile image has been updated successfully');
             showImageChange.value = false;
         }
     })
+}
+const handleModal = (title, message) => {
+    showModal.value = true;
+    modalTitle.value = title;
+    modalMessage.value = message;
 }
 </script>
 <template>
@@ -254,6 +251,7 @@ const uploadImage = () => {
                 </AddNewExperience>
             </div>
             <div v-if="props.applicant.status != 'new'">
+                <h1 class="text-lg font-bold">Payrolls</h1>
                 <PayrollTable v-show="props.payrolls.length > 0" :payrolls="props.payrolls"></PayrollTable>
                 <div class="text-red-400 mx-2 font-semibold" v-show="props.payrolls.length == 0">No payroll calculated
                     yet!

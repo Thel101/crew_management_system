@@ -54,6 +54,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/send/email/{id}', 'send_email')->name('assign.email');
         Route::get('/applicant/{filename}', 'serveFile')->name('applicant.serveFile');
         Route::patch('/remark', 'postRemark')->name('seafarer.remark');
+        Route::delete('/remove/{id}', 'delete')->name('seafarer.delete');
     });
     Route::controller(PayrollController::class)->group(function () {
         Route::post('/payroll', 'calculate')->name('payroll.calculate');
