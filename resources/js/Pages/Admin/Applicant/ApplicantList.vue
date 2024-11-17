@@ -186,52 +186,6 @@ const flashMessage = computed(() => {
 
         </div>
 
-        <div v-show="showAssignForm">
-            <div class="max-w-lg mx-auto justify-center">
-                <h1></h1>
-                <form @submit.prevent="assign">
-                    <div class="flex flex-row justify-center gap-2">
-                        <div>
-                            <InputLabel>Applicant Name</InputLabel>
-                            <TextInput v-model="seafarer_name" placeholder="Applicant Name"></TextInput>
-                        </div>
-                        <div>
-                            <InputLabel>Seaman Book Number</InputLabel>
-                            <TextInput v-model="seaman_book" placeholder="Applicant Name"></TextInput>
-                        </div>
-                    </div>
-                    <div class="flex flex-row justify-center gap-2">
-                        <div>
-                            <InputLabel>Role</InputLabel>
-                            <TextInput aria-placeholder="Role" v-model="seafarer_role"></TextInput>
-                        </div>
-                        <div>
-                            <InputLabel>Vessel</InputLabel>
-                            <Dropdown align="left" width="48" contentClasses="py-2 bg-gray-100">
-                                <template #trigger>
-                                    <div class="mt-1 px-4 py-2 rounded-md border-2 bg-white text-gray-600 block w-full">
-                                        {{ selectedVessel || 'Select Vessel' }}</div>
-
-                                </template>
-                                <template #content>
-                                    <ul v-if="Array.isArray(jobs)">
-                                        <li v-for="job in jobs" :key="job.id"
-                                            @click="selectVessel(job.vessel.id, job.vessel.name)"
-                                            class="cursor-pointer hover:bg-gray-200"> {{ job.vessel.name }}</li>
-                                    </ul>
-                                </template>
-                            </Dropdown>
-
-                        </div>
-                    </div>
-                    <div class="flex flex-row justify-center">
-                        <PrimaryButton>Assign Seafarer</PrimaryButton>
-                    </div>
-
-                </form>
-
-            </div>
-        </div>
 
     </AuthenticatedLayout>
 </template>
