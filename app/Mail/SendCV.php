@@ -20,7 +20,7 @@ class SendCV extends Mailable
     public $body;
     public $file;
 
-    public function __construct($body,$file )
+    public function __construct($body, $file)
     {
         $this->body = $body;
         $this->file = $file;
@@ -43,7 +43,7 @@ class SendCV extends Mailable
     {
         return new Content(
             view: 'mail.email',
-            with: ['body'=> $this->body]
+            with: ['body' => $this->body]
         );
     }
 
@@ -55,10 +55,10 @@ class SendCV extends Mailable
     public function attachments(): array
     {
         $attachments = [];
-        if($this->file){
+        if ($this->file) {
             $attachments[] = Attachment::fromPath($this->file->getRealPath())
-            ->as($this->file->getClientOriginalName())
-            ->withMime($this->file->getMimeType());
+                ->as($this->file->getClientOriginalName())
+                ->withMime($this->file->getMimeType());
         }
         return $attachments;
     }

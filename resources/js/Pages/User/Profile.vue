@@ -175,14 +175,13 @@ const handleModal = (title, message) => {
         <div class="text-center">
             <Link class="hover:underline text-blue-600" :href="route('user.welcome')">Back to Home
             Page</Link>
+            <Link class="ms-10 text-red-400 hover:underline" :href="route('logout')" as="button" method="post">
+            Log out
+            </Link>
         </div>
 
 
-        <EditProfile v-if="props.applicant && props.passport && showEditForm"
-            class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
-
-        </EditProfile>
-        <div v-else class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
+        <div class="max-w-7xl mx-auto border-slate-300 border-2 rounded-md p-2">
             <div class="flex flex-row justify-between">
 
                 <img :src="`/storage/images/${applicant.profile}`"
@@ -191,8 +190,9 @@ const handleModal = (title, message) => {
                     <button class="bg-blue-400 px-5 py-3 rounded-md self-start mx-2"
                         @click="showImageChange = !showImageChange">Update
                         Image</button>
-                    <button class="bg-blue-400 px-5 py-3 rounded-md self-start"
-                        @click="showEditForm = !showEditForm">Edit</button>
+                    <Link :href="route('seafarer.editPage', props.applicant.user_id)">
+                    <PrimaryButton class="ms-2">Edit</PrimaryButton>
+                    </Link>
                 </div>
 
             </div>
@@ -213,11 +213,9 @@ const handleModal = (title, message) => {
                 :dob="props.applicant.dob" :height="props.applicant.height" :weight="props.applicant.weight"
                 :mobile_no="props.applicant.mobile_no" :email="props.applicant.email"
                 :next_of_kin="props.applicant.next_of_kin" :relationship="props.applicant.relationship"
-                :next_of_kin_phone="props.applicant.next_of_kin_mobile" :passport_no="props.passport.passport_no"
-                :place_of_issue="props.passport.place_of_issue" :issue_date="props.passport.issue_date"
-                :expiry_date="props.passport.expiry_date" :seaman_book="props.applicant.seaman_book"
-                :book_place_of_issue="props.applicant.place_of_issue" :book_issue_date="props.applicant.issue_date"
-                :status="props.applicant.status">
+                :next_of_kin_phone="props.applicant.next_of_kin_mobile" :passport="props.passport"
+                :seaman_book="props.applicant.seaman_book" :book_place_of_issue="props.applicant.place_of_issue"
+                :book_issue_date="props.applicant.issue_date" :status="props.applicant.status">
             </PersonalDetails>
 
         </div>

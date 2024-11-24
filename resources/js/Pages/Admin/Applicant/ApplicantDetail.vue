@@ -98,12 +98,10 @@ const closeModal = () => {
                                 :weight="props.applicant.weight" :mobile_no="props.applicant.mobile_no"
                                 :email="props.applicant.email" :next_of_kin="props.applicant.next_of_kin"
                                 :relationship="props.applicant.relationship"
-                                :next_of_kin_phone="props.applicant.next_of_kin_mobile"
-                                :passport_no="props.passport.passport_no"
-                                :place_of_issue="props.passport.place_of_issue" :issue_date="props.passport.issue_date"
-                                :expiry_date="props.passport.expiry_date" :seaman_book="props.applicant.seaman_book"
-                                :book_place_of_issue="props.applicant.place_of_issue"
-                                :book_issue_date="props.applicant.issue_date">
+                                :next_of_kin_phone="props.applicant.next_of_kin_mobile" :passport="props.passport"
+                                :seaman_book="props.applicant.seaman_book"
+                                :book_place_of_issue="props.applicant.seaman_book_place"
+                                :book_issue_date="props.applicant.issue_date" :status="props.applicant.status">
                             </PersonalDetails>
                         </div>
 

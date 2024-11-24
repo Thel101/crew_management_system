@@ -81,7 +81,7 @@ const submit = () => {
                         v-model="certificate.expiry_date" />
                 </div>
                 <div class="w-1/3">
-                    <input class="mt-5" type="file" @input="certificateImage($event, index)">
+                    <input class="mt-5" type="file" accept=".pdf" @input="certificateImage($event, index)">
                 </div>
             </div>
 

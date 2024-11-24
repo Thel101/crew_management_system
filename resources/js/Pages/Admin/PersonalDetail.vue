@@ -1,28 +1,27 @@
 <script setup>
-
+import { popScopeId, ref } from 'vue';
 import PersonalText from '@/Components/PersonalText.vue'
-const props = defineProps([
-    'fullname',
-    'nationality',
-    'religion',
-    'dob',
-    'height',
-    'weight',
-    'mobile_no',
-    'email',
-    'next_of_kin',
-    'relationship',
-    'next_of_kin_phone',
-    'passport_no',
-    'place_of_issue',
-    'issue_date',
-    'expiry_date',
-    'seaman_book',
-    'book_place_of_issue',
-    'book_issue_date',
-    'status'
+const props = defineProps({
+    fullname: String,
+    nationality: String,
+    religion: String,
+    dob: String,
+    height: String,
+    weight: String,
+    mobile_no: String,
+    email: String,
+    next_of_kin: String,
+    relationship: String,
+    next_of_kin_phone: String,
+    passport: {
+        type: Object
+    },
+    seaman_book: String,
+    book_place_of_issue: String,
+    book_issue_date: String,
+    status: String
+})
 
-])
 
 </script>
 
@@ -75,21 +74,25 @@ const props = defineProps([
                     <div class="w-1/2">
 
                         <h1 class="text-2xl font-semi-bold my-2">Passport</h1>
-
-                        <PersonalText :label="'Passport Number'" :text="props.passport_no"></PersonalText>
-                        <PersonalText :label="'Place of issue'" :text="props.place_of_issue"></PersonalText>
-                        <PersonalText :label="'Issue Date'" :text="props.issue_date"></PersonalText>
-                        <PersonalText :label="'Expiry Date'" :text="props.expiry_date"></PersonalText>
+                        <PersonalText :label="'Passport Number'" :text="props.passport.passport_no"></PersonalText>
+                        <PersonalText :label="'Place of issue'" :text="props.passport.place_of_issue"></PersonalText>
+                        <PersonalText :label="'Issue Date'" :text="props.passport.issue_date"></PersonalText>
+                        <PersonalText :label="'Expiry Date'" :text="props.passport.expiry_date"></PersonalText>
+                        <button v-show="$page.props.auth.user.role != 'user' && props.status != 'new'"><a
+                                :href="route('passport.edit', props.passport.id)"
+                                class="bg-blue-400 rounded-md p-1">edit {{ props.status }}</a></button>
                     </div>
+
                     <div class="w-1/2">
                         <h1 class="text-2xl font-semi-bold my-2">Seaman Book</h1>
                         <PersonalText :label="'Seaman book No'" :text="props.seaman_book"></PersonalText>
-                        <PersonalText :label="'Place of issue'" :text="props.place_of_issue"></PersonalText>
-                        <PersonalText :label="'Issue Date'" :text="props.issue_date"></PersonalText>
+                        <PersonalText :label="'Place of issue'" :text="props.book_place_of_issue"></PersonalText>
+                        <PersonalText :label="'Issue Date'" :text="props.book_issue_date"></PersonalText>
 
                     </div>
 
                 </div>
+
             </div>
             <!-- <a target="__blank" :href="route('applicant.pdf', applicant.id)">
                     Save as PDF

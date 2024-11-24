@@ -47,7 +47,7 @@ const submit = () => {
                     <TextInput id="body" type="text" class="mt-1 block w-full" v-model="form.body" />
                 </div>
                 <div>
-                    <input class="my-2" type="file" @change="file($event)">
+                    <input class="my-2" type="file" accept=".pdf" @change="file($event)">
                 </div>
                 <PrimaryButton>Send</PrimaryButton>
             </form>

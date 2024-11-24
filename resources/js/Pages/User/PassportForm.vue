@@ -200,8 +200,6 @@ const home = () => {
                     </div>
                 </div>
 
-
-
                 <!---Passport-->
 
 

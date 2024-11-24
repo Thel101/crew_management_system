@@ -140,7 +140,8 @@ const deleteSuccessModal = () => {
                                         class="inline-block rounded bg-indigo-600 px-4 py-2 mx-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         View
                                     </a>
-                                    <button @click="deleteSeafarer(seafarer.id)"
+                                    <button v-show="$page.props.auth.user.role == 'admin'"
+                                        @click="deleteSeafarer(seafarer.id)"
                                         class="inline-block rounded bg-red-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700">
                                         Delete
                                     </button>

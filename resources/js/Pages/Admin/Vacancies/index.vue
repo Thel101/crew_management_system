@@ -7,6 +7,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { ref, computed, watch } from 'vue';
+import Modal from '@/Components/Modal.vue';
 
 defineProps
     ({
@@ -48,13 +49,22 @@ const form = useForm({
     basic_salary: '',
     requirements: '',
 });
-
+const showModal = ref(false);
+const modalTitle = ref('');
+const modalMessage = ref('');
+const closeModal = () => {
+    showModal.value = false
+}
 const submit = () => {
     form.post(route('jobs.store'), {
         onSuccess: () => {
+            showModal.value = true
+            modalTitle.value = 'Vancancy Creation'
+            modalMessage.value = 'Vacancy created successfully'
             form.reset();
-            selectedVessel.value = '',
-               selectedRole.value = ''
+            selectedVessel.value = ''
+            selectedRole.value = ''
+
         }
     });
 };
@@ -196,8 +206,7 @@ watch(jobUrl, newUrl => {
                                 <div class="w-1/2">
                                     <InputLabel for="port" value="Joining Port" />
 
-                                    <TextInput id="port" type="text" class="mt-1 block w-full"
-                                        v-model="form.port" />
+                                    <TextInput id="port" type="text" class="mt-1 block w-full" v-model="form.port" />
 
                                     <InputError class="mt-2" :message="form.errors.port" />
                                 </div>
@@ -236,7 +245,8 @@ watch(jobUrl, newUrl => {
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Vessle Name</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Role</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Head Count</th>
-                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Estimated Joining Date</th>
+                                    <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Estimated Joining
+                                        Date</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Joining Port</th>
                                     <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Basic Salary</th>
                                     <th class="px-4 py-2"></th>
@@ -250,7 +260,8 @@ watch(jobUrl, newUrl => {
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.head_count }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.joining_date }}</td>
                                     <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.port }}</td>
-                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.basic_salary }} USD</td>
+                                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ job.basic_salary }} USD
+                                    </td>
 
                                     <td class="whitespace-nowrap px-4 py-2">
                                         <a :href="route('jobs.edit', job.job_id)"
@@ -274,15 +285,21 @@ watch(jobUrl, newUrl => {
 
                 </div>
 
-
-
             </div>
 
-
-
-
-
         </div>
+        <template>
+            <Modal :show="showModal" :closeable="true" class="max-w-md" @close="closeModal">
+                <div class="p-4 bg-green-200">
+                    <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
+                    <p>{{ modalMessage }}</p>
+                    <div class="flex flex-row justify-end">
+                        <button @click="closeModal"
+                            class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+                    </div>
+                </div>
+            </Modal>
+        </template>
 
     </AuthenticatedLayout>
 </template>

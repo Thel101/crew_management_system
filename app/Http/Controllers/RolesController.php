@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Roles;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Validation\Rule;
 
 class RolesController extends Controller
 {
@@ -61,7 +62,7 @@ class RolesController extends Controller
     public function update(Request $request, Roles $role)
     {
         $updateRole = Roles::find($role->id);
-        $validated = $request->validate($this->validateRole());
+        $validated = $request->validate($this->validateRole($role->id));
         $updateRole->update($validated);
         return redirect(route('roles.index'))->with(['message' => 'Role has been been modified!']);
     }
@@ -69,10 +70,15 @@ class RolesController extends Controller
      * validation
      */
 
-    protected function validateRole()
+    protected function validateRole($id = null)
     {
         return [
-            'name' => 'required|string|max:30|unique:roles,name,except,id',
+            'name' => [
+                'required',
+                'string',
+                'max:30',
+                Rule::unique('roles', 'name')->ignore($id),
+            ],
             'description' => 'required|max:100'
         ];
     }
@@ -88,12 +94,5 @@ class RolesController extends Controller
                 '%' . $search . '%'
             );
         });
-    }
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Roles $roles)
-    {
-        //
     }
 }

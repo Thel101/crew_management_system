@@ -15,7 +15,7 @@ const form = useForm({
     name: props.role.name,
     description: props.role.description
 })
-const submit = ()=>{
+const submit = () => {
     form.patch(route('roles.update', props.role))
 
 }
@@ -47,7 +47,7 @@ const submit = ()=>{
                 <div class="flex justify-center">
                     <PrimaryButton class="mt-5 mb-3" :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing">
-                        Create New Role
+                        Update Role
                     </PrimaryButton>
                 </div>
 

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Passport;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Passport;
+use App\Models\Seafarer;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PassportController extends Controller
 {
@@ -24,13 +26,6 @@ class PassportController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -66,9 +61,14 @@ class PassportController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Passport $passport)
+    public function edit($id)
     {
-        //
+        $passport = Passport::find($id);
+        $seafarer = Seafarer::find($passport->seafarer_id);
+        return Inertia::render('Admin/Seafarer/PassportForm', [
+            'passport' => $passport,
+            'seafarer' => $seafarer
+        ]);
     }
 
     /**
@@ -76,7 +76,26 @@ class PassportController extends Controller
      */
     public function update(Request $request, Passport $passport)
     {
-        //
+        $validated = $request->validate([
+            'passport_no' => [
+                'required',
+                'string',
+                'max:10',
+                Rule::unique('passports', 'passport_no')->ignore($passport->id),
+            ],
+            'place_of_issue' => 'required|string|max:15',
+            'issue_date' => 'required',
+            'expiry_date' => ['required', 'date', function ($attribute, $value, $fail) {
+                $expiryDate = Carbon::parse($value);
+                $minExpiryDate = Carbon::today()->addMonths(6);
+                if ($expiryDate->lte($minExpiryDate)) {
+                    $fail('The expiry date must be at least 6 months from today.');
+                }
+            }],
+        ]);
+        $validated['status'] = 'active';
+        $passport->update($validated);
+        return redirect()->back()->with(['message' => 'Passport has been updated!']);
     }
 
     /**

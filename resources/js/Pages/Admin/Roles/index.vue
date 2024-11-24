@@ -114,23 +114,26 @@ watch(roleUrl, newUrl => {
                     <input type="text" v-model="search" class="rounded-md border-slate-400 lg:me-20 md:me-4"
                         name="search" placeholder="search.....">
                 </div>
-                <div class="max-w-7xl mx-auto">
-                    <table v-show="roles.data.length > 0" class="mx-auto divide-y-2 divide-gray-200 bg-white text-sm">
+                <div class="max-w-4xl mx-auto">
+                    <table v-show="roles.data.length > 0"
+                        class="ml-6 mr-20 divide-y-2 divide-gray-200 bg-white text-sm table-fixed w-full">
 
                         <thead class="ltr:text-left rtl:text-right">
                             <tr>
-                                <th class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">Name</th>
-                                <th class="whitespace-no`wrap px-4 py-2 font-medium text-gray-900">Description</th>
+                                <th class="w-1/6 px-4 py-2 font-medium text-gray-900">Name</th>
+                                <th class="w-4/6 px-4 py-2 font-medium text-gray-900">Description</th>
 
-                                <th class="px-4 py-2"></th>
+                                <th class="w-1/6 px-4 py-2"></th>
                             </tr>
                         </thead>
 
                         <tbody class="divide-y divide-gray-200">
                             <tr v-for="role in roles.data" :key="role.id">
-                                <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">{{ role.name }}
+                                <td class="px-4 py-2 font-medium text-gray-900">{{ role.name }}
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-2 text-gray-700">{{ role.description }}</td>
+                                <td class="px-4 py-2 text-gray-700 w-40">
+                                    {{
+                                        role.description }}</td>
 
                                 <td class="whitespace-nowrap px-4 py-2">
                                     <a :href="route('roles.edit', role)"

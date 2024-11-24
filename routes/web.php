@@ -76,6 +76,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return Inertia::render('Admin/Applicant/SendEmail');
     })->name('send.email');
     Route::post('/send/email', [EmailController::class, 'sendEmail'])->name('send.cv');
+    Route::get('/passport/edit/{id}', [PassportController::class, 'edit'])->name('passport.edit');
+    Route::resource('passport', PassportController::class)->only('update');
 });
 
 Route::middleware(['auth', 'user'])->group(function () {

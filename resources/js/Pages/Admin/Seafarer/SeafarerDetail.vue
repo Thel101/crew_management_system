@@ -64,8 +64,14 @@ const modalMessage = ref('');
 const modalTitle = ref('');
 
 const showMedicalDocumentsForm = ref(false);
-const toggleForm = () => {
-    showMedicalDocumentsForm.value = !showMedicalDocumentsForm.value
+const toggleForm = (form) => {
+    if (form == 'medical') {
+        showMedicalDocumentsForm.value = !showMedicalDocumentsForm.value
+    }
+    else {
+        showBankForm.value = !showBankForm.value
+    }
+
 }
 const showMedicalDocuments = ref(false);
 const toggleMedicalDocuments = () => {
@@ -293,9 +299,7 @@ const displayModal = (title, message) => {
                             :height="props.seafarer.height" :weight="props.seafarer.weight"
                             :mobile_no="props.seafarer.mobile_no" :email="props.seafarer.email"
                             :next_of_kin="props.seafarer.next_of_kin" :relationship="props.seafarer.relationship"
-                            :next_of_kin_phone="props.seafarer.next_of_kin_mobile"
-                            :passport_no="props.passport.passport_no" :place_of_issue="props.passport.place_of_issue"
-                            :issue_date="props.passport.issue_date" :expiry_date="props.passport.expiry_date"
+                            :next_of_kin_phone="props.seafarer.next_of_kin_mobile" :passport="props.passport"
                             :seaman_book="props.seafarer.seaman_book"
                             :book_place_of_issue="props.seafarer.place_of_issue"
                             :book_issue_date="props.seafarer.issue_date">
@@ -383,7 +387,8 @@ const displayModal = (title, message) => {
                     <div v-else>
                         <p class="text-red">No medical documents uploaded</p>
                     </div>
-                    <PrimaryButton v-show="printHide" class="my-3" @click="toggleForm">Toggle Form</PrimaryButton>
+                    <PrimaryButton v-show="printHide" class="my-3" @click="toggleForm('medical')">Toggle Form
+                    </PrimaryButton>
                 </div>
 
                 <div v-show="showMedicalDocumentsForm && printHide" class="bg-gray-200 mt-3 rounded-md shadow-sm p-3">
@@ -440,45 +445,50 @@ const displayModal = (title, message) => {
 
 
                 </div>
-                <h1 class="text-lg font-bold" v-show="!printHide">Bank Accounts</h1>
-                <BankAccountTable v-if="props.bank_accounts.length > 0 && showBankSection"
-                    :bank_accounts="props.bank_accounts">
-                </BankAccountTable>
-                <div v-else>
-                    <p class="text-red">No bank account updated</p>
+                <div v-show="showBankSection">
+                    <h1 class="text-lg font-bold" v-show="!printHide">Bank Accounts</h1>
+                    <BankAccountTable v-if="props.bank_accounts.length > 0 && showBankSection"
+                        :bank_accounts="props.bank_accounts">
+                    </BankAccountTable>
+
+                    <div v-else>
+                        <p class="text-red">No bank account updated</p>
+                    </div>
+                    <PrimaryButton v-show="printHide" class="my-3" @click="toggleForm('bank')">Toggle Form
+                    </PrimaryButton>
+                    <div v-show="showBankForm && printHide" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
+                        <form @submit.prevent="uploadBankAccount">
+                            <div class="flex flex-row">
+                                <div class="w-1/2 me-3">
+                                    <InputLabel>Bank Account Number</InputLabel>
+                                    <TextInput class="w-full" v-model="bank.account_no"></TextInput>
+                                    <InputError class="mt-2" :message="bank.errors.account_no" />
+                                </div>
+                                <div class="w-1/2">
+                                    <InputLabel>Bank Branch</InputLabel>
+                                    <TextInput class="w-full" v-model="bank.bank_branch"></TextInput>
+                                    <InputError class="mt-2" :message="bank.errors.bank_branch" />
+                                </div>
+                            </div>
+                            <div class="flex flex-row">
+                                <div class="w-1/2 me-2">
+                                    <InputLabel>Account Holder Name</InputLabel>
+                                    <TextInput class="w-full" v-model="bank.account_holder"></TextInput>
+                                    <InputError class="mt-2" :message="bank.errors.account_holder" />
+                                </div>
+                                <div class="w-1/2">
+                                    <InputLabel>Account Phone Number</InputLabel>
+                                    <TextInput class="w-full" v-model="bank.holder_phone"></TextInput>
+                                    <InputError class="mt-2" :message="bank.errors.holder_phone" />
+                                </div>
+                            </div>
+
+
+                            <PrimaryButton class="my-2">Add Bank Account </PrimaryButton>
+                        </form>
+                    </div>
                 </div>
-                <div v-show="showBankSection && printHide" class="bg-gray-200 p-3 mt-2 rounded-md shadow-sm">
 
-                    <form @submit.prevent="uploadBankAccount">
-                        <div class="flex flex-row">
-                            <div class="w-1/2 me-3">
-                                <InputLabel>Bank Account Number</InputLabel>
-                                <TextInput class="w-full" v-model="bank.account_no"></TextInput>
-                                <InputError class="mt-2" :message="bank.errors.account_no" />
-                            </div>
-                            <div class="w-1/2">
-                                <InputLabel>Bank Branch</InputLabel>
-                                <TextInput class="w-full" v-model="bank.bank_branch"></TextInput>
-                                <InputError class="mt-2" :message="bank.errors.bank_branch" />
-                            </div>
-                        </div>
-                        <div class="flex flex-row">
-                            <div class="w-1/2 me-2">
-                                <InputLabel>Account Holder Name</InputLabel>
-                                <TextInput class="w-full" v-model="bank.account_holder"></TextInput>
-                                <InputError class="mt-2" :message="bank.errors.account_holder" />
-                            </div>
-                            <div class="w-1/2">
-                                <InputLabel>Account Phone Number</InputLabel>
-                                <TextInput class="w-full" v-model="bank.holder_phone"></TextInput>
-                                <InputError class="mt-2" :message="bank.errors.holder_phone" />
-                            </div>
-                        </div>
-
-
-                        <PrimaryButton class="my-2">Add Bank Account </PrimaryButton>
-                    </form>
-                </div>
 
                 <!--Remark Form-->
                 <div>

@@ -13,6 +13,7 @@ use App\Models\MedicalDocuments;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 class SeafarerController extends Controller
@@ -40,7 +41,7 @@ class SeafarerController extends Controller
         if (auth()->user()->role != 'admin') {
             $validated['user_id'] = auth()->user()->id;
         } else {
-            $user = \App\Models\User::create([
+            $user = User::create([
                 'name' => $validated['fullname'],
                 'email' => $validated['email'],
                 'password' => Hash::make('password')
@@ -369,6 +370,8 @@ class SeafarerController extends Controller
         $seafarer->update($validated);
         $user = User::find($seafarer->user_id);
         $user->update(['email' => $validated['email']]);
+        $currentRoute = Route::currentRouteName();
+        // dd($currentRoute);
         return redirect()->back()->with(
             [
                 'message' => 'Seafarer profile updated successfully',
