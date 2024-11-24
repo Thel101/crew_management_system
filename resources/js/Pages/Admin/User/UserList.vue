@@ -6,7 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import { ref } from 'vue';
-import { Inertia } from '@inertiajs/inertia';
+import Modal from '@/Components/Modal.vue';
 const props = defineProps({
     users:
     {
@@ -19,29 +19,34 @@ const form = useForm({
     role: 'staff',
     password: ''
 })
-const showMessage = ref(false);
+const showModal = ref(false)
+const modalTitle = ref('')
+const modalMessage = ref('')
+const closeModal = () => {
+    showModal.value = false
+}
 const submit = () => {
     form.post(route('users.store'), {
         onSuccess: () => {
             form.reset()
-            showMessage.value = true
+            showModal.value = true
+            modalTitle.value = 'User Created'
+            modalMessage.value = 'User has been created successfully'
         }
     })
 }
 const changeRole = (user) => {
     router.patch(route('users.update', user), {
         onSuccess: () => {
-            showMessage.value = true
+            console.log('success')
+            showModal.value = true
+            modalTitle.value = 'Role Changed'
+            modalMessage.value = 'User role has been changed successfully'
 
         }
     })
 }
-const clearFlashMessage = () => {
-    router.visit(window.location.href, {
-        preserveState: true,  // Keep the state of the current page
-        preserveScroll: true  // Maintain the scroll position
-    });
-}
+
 </script>
 
 <template>
@@ -54,16 +59,7 @@ const clearFlashMessage = () => {
         </template>
 
         <div class="py-12">
-            <div v-if="$page.props.flash.message"
-                class="max-w-lg mx-auto bg-green-300 flex flex-row justify-between p-3 rounded-md my-2">
-                <span>{{ $page.props.flash.message }}</span>
-                <button @click="clearFlashMessage"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg></button>
 
-            </div>
             <div class="max-w-lg mx-auto bg-white shadow sm:rounded-lg p-3 mb-5">
                 <h1 class="text-center text-xl font-semibold mb-5 mt-3">Create New User</h1>
                 <form @submit.prevent="submit">
@@ -150,5 +146,17 @@ const clearFlashMessage = () => {
                 </ul>
             </div>
         </div>
+        <template>
+            <Modal :show="showModal" :closeable="true" class="max-w-md" @close="closeModal">
+                <div class="p-4 bg-green-200">
+                    <h2 class="text-lg font-bold">{{ modalTitle }}</h2>
+                    <p>{{ modalMessage }}</p>
+                    <div class="flex flex-row justify-end">
+                        <button @click="closeModal"
+                            class="bg-gray-300 rounded-md border-2 border-slate-300 px-3 py-2 mt-4">Close</button>
+                    </div>
+                </div>
+            </Modal>
+        </template>
     </AuthenticatedLayout>
 </template>

@@ -107,21 +107,29 @@ const submit = () => {
     passport.post(route('passport.store'), {
         onSuccess: () => {
             certificates.post(route('certificates.store'), {
-                onFinish: () => {
+                onSuccess: () => {
                     experiences.post(route('experiences.store'), {
-                        onFinish: () => {
+                        onSuccess: () => {
                             showProfile.value = true
                             passport.reset()
                             certificates.reset()
                             experiences.reset()
                             showModal.value = true
+                        },
+                        onError: () => {
+                            console.log("Error in experiences")
                         }
                     })
+                },
+                onError: () => {
+                    console.log("Error in certificates")
                 }
             })
+        },
+        onError: () => {
+            console.log("Error in passport")
         }
-    }
-    )
+    });
 
 }
 const showProfile = ref(false)

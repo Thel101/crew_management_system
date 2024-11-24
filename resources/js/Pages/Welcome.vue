@@ -147,9 +147,9 @@ const page = usePage();
                     <h1 class="text-xl font-semibold text-center">Register Now!</h1>
                     <Register></Register>
                 </div>
-                <div v-else>
+                <div v-else class="mt-10 md:mt-0 ">
                     <Link :href="route('seafarer.profile', $page.props.auth.user.id)"
-                        class="bg-white rounded-full p-6 hidden md:inline text-lg font-semibold text-black hover:text-#d1e62d dark:text-gray-900 dark:hover:text-gray-600">
+                        class="bg-white rounded-full p-6 md:inline text-lg font-semibold text-black hover:text-#d1e62d dark:text-gray-900 dark:hover:text-gray-600">
 
                     Go to Profile Dashboard Now!</Link>
                 </div>

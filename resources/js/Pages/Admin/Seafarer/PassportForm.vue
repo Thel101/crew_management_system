@@ -41,10 +41,16 @@ const submit = () => {
         }
     })
 }
+const Back = () => {
+    history.back()
+    window.addEventListener('popstate', () => {
+        location.reload();
+    });
+}
 </script>
 <template>
     <AuthenticatedLayout>
-        <a href="#" class="ms-6 text-blue-600 text-lg underline" onclick="history.back()">Back</a>
+        <a href="#" class="ms-6 text-blue-600 text-lg underline" @click="Back">Back</a>
         <form @submit.prevent="submit">
             <div class="p-5 bg-white rounded-md border-slate-500 shadow-md m-5 max-w-5xl">
                 <div class="text-lg font-semibold">

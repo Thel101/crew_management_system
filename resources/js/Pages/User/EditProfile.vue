@@ -11,6 +11,12 @@ const props = defineProps({
         type: Object
     }
 })
+const Back = () => {
+    history.back()
+    window.addEventListener('popstate', () => {
+        location.reload();
+    });
+}
 </script>
 <template>
     <div class="flex flex-col items-center bg-gradient-to-r from-sky-700 to-indigo-500 p-3">
@@ -18,7 +24,7 @@ const props = defineProps({
         <h1 class="text-3xl text-white mt-5">Crew Management System</h1>
     </div>
     <div class="p-5 bg-white rounded-md border-slate-500 shadow-md m-5 max-w-5xl mx-auto">
-        <a href="#" class="ms-6 text-blue-600 text-lg underline" onclick="history.back()">Back</a>
+        <a href="#" class="ms-6 text-blue-600 text-lg underline" @click="Back">Back</a>
         <SeafarerEdit :seafarer="props.seafarer" :roles="props.roles" :props="props" />
 
     </div>

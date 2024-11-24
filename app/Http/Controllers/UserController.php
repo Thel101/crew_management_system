@@ -74,17 +74,16 @@ class UserController extends Controller
      */
     public function update(User $user)
     {
-        $user = User::find($user->id);
         if ($user->role == 'staff') {
             $user->update([
                 'role' => 'admin'
             ]);
-            return redirect(route('users.index'))->with('message', 'User Role has been changed to!');
+            return redirect()->back();
         } else {
             $user->update([
                 'role' => 'staff'
             ]);
-            return redirect(route('users.index'))->with('message', 'User Role has been changed to!');
+            return redirect()->back();
         }
     }
 }

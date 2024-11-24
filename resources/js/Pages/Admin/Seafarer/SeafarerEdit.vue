@@ -17,7 +17,12 @@ const props = defineProps({
     }
 
 });
-
+const Back = () => {
+    history.back()
+    window.addEventListener('popstate', () => {
+        location.reload();
+    });
+}
 
 </script>
 
@@ -27,7 +32,7 @@ const props = defineProps({
         <Head title="CMS" />
         <div class="flex flex-row justify-between">
             <h1 class="text-xl ms-24">Seafarer Personal Information Edit page</h1>
-            <a href="#" class="me-24 text-blue-600 text-lg underline" onclick="history.back()">Back</a>
+            <a href="#" class="me-24 text-blue-600 text-lg underline" @click="Back">Back</a>
         </div>
 
         <SeafarerEdit :seafarer="props.seafarer" :roles="props.roles" :props="props" />

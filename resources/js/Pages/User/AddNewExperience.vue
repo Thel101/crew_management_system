@@ -30,7 +30,7 @@ const experiences = useForm({
     ]
 })
 
-
+const today = new Date().toISOString().split('T')[0];
 const submit = () => {
     experiences.post(route('experiences.store'), {
         onSuccess: () => {
@@ -83,12 +83,14 @@ const submit = () => {
             <div class="flex flex-row">
                 <div class="w-1/3 mr-3">
                     <InputLabel for="sign_on">Sign On Date</InputLabel>
-                    <TextInput id="sign_on" type="date" class="mt-1 block w-full" v-model="experience.sign_on_date" />
+                    <TextInput id="sign_on" :max="today" type="date" class="mt-1 block w-full"
+                        v-model="experience.sign_on_date" />
                     <InputError>{{ experience.errors.flag }}</InputError>
                 </div>
                 <div class="w-1/3">
                     <InputLabel for="sign_off">Sign Off Date</InputLabel>
-                    <TextInput id="sign_off" type="date" class="mt-1 block w-full" v-model="experience.sign_off_date" />
+                    <TextInput id="sign_off" :max="today" type="date" class="mt-1 block w-full"
+                        v-model="experience.sign_off_date" />
                     <InputError>{{ experience.errors.flag }}</InputError>
                 </div>
             </div>
