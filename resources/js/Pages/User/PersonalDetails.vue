@@ -150,7 +150,7 @@ const submit = () => {
 
                             </template>
                             <template #content>
-                                <ul class="px-2">
+                                <ul class="px-2" style="max-height: 240px; overflow-y: auto;">
                                     <li v-for="role in props.roles" :key="role.id" @click="selectRole(role)"
                                         class="cursor-pointer hover:bg-gray-200">
                                         {{ role.name }}</li>
