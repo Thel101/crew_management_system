@@ -128,7 +128,7 @@ watch(jobUrl, newUrl => {
 
                                         </template>
                                         <template #content>
-                                            <ul>
+                                            <ul style="max-height: 240px; overflow-y: auto;">
                                                 <li v-for="vessel in vessels" :key="vessel"
                                                     @click="selectVessel(vessel.id, vessel.name)"
                                                     class="cursor-pointer hover:bg-gray-200">{{ vessel.name }}</li>
@@ -147,7 +147,7 @@ watch(jobUrl, newUrl => {
 
                                         </template>
                                         <template #content>
-                                            <ul>
+                                            <ul style="max-height: 240px; overflow-y: auto;">
                                                 <li v-for="role in roles" :key="role"
                                                     @click="selectRole(role.id, role.name)"
                                                     class="cursor-pointer hover:bg-gray-200">{{ role.name }}</li>
